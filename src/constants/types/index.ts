@@ -140,3 +140,11 @@ export interface INotification {
     | 'extras'
     | 'office';
 }
+
+export interface IUseFirebase {
+  db: any;
+  auth: any;
+  user?: IUser;
+  setUser?: (data?: IUser) => void;
+  dbSetUser?: (data?: IUser) => void;
+}

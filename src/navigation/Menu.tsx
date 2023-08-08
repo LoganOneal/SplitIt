@@ -8,18 +8,39 @@ import {
   DrawerContentOptions,
   DrawerContentScrollView,
 } from '@react-navigation/drawer';
+import { onAuthStateChanged } from 'firebase/auth';
 
-import Screens from './Screens';
+import AppStack from './AppStack';
+import AuthStack from './AuthStack';
 import {Block, Text, Switch, Button, Image} from '../components';
 import {useData, useTheme, useTranslation} from '../hooks';
+import { useFirebase } from '../hooks/useFirebase';
+import { IUser } from '../constants/types';
 
 const Drawer = createDrawerNavigator();
 
 /* drawer menu screens navigation */
 const ScreensStack = () => {
+  const { db, auth, user, setUser, dbSetUser } = useFirebase();
+
+  const [isLoading, setIsLoading] = useState(true);
   const {colors} = useTheme();
   const isDrawerOpen = useIsDrawerOpen();
   const animation = useRef(new Animated.Value(0)).current;
+  
+  useEffect(() => {
+    // onAuthStateChanged returns an unsubscriber
+    const unsubscribeAuthStateChanged = onAuthStateChanged(
+      auth,
+      (      authenticatedUser: IUser | undefined) => {
+        authenticatedUser ? dbSetUser(authenticatedUser) : setUser(null);
+        setIsLoading(false);
+      }
+    );
+
+    // unsubscribe auth listener on unmount
+    return unsubscribeAuthStateChanged;
+  }, [user]);
 
   const scale = animation.interpolate({
     inputRange: [0, 1],
@@ -56,7 +77,7 @@ const ScreensStack = () => {
         },
       ])}>
       {/*  */}
-      <Screens />
+      {user ? <AppStack /> : <AuthStack />}
     </Animated.View>
   );
 };

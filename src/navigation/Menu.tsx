@@ -8,11 +8,11 @@ import {
   DrawerContentOptions,
   DrawerContentScrollView,
 } from '@react-navigation/drawer';
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 
 import AppStack from './AppStack';
 import AuthStack from './AuthStack';
-import {Block, Text, Switch, Button, Image} from '../components';
+import {Block, Text, Switch, Button, Image, LoadingIndicator} from '../components';
 import {useData, useTheme, useTranslation} from '../hooks';
 import { useFirebase } from '../hooks/useFirebase';
 import { IUser } from '../constants/types';
@@ -21,13 +21,13 @@ const Drawer = createDrawerNavigator();
 
 /* drawer menu screens navigation */
 const ScreensStack = () => {
-  const { db, auth, user, setUser, dbSetUser } = useFirebase();
+  const { auth, user, setUser, dbSetUser } = useFirebase();
 
   const [isLoading, setIsLoading] = useState(true);
   const {colors} = useTheme();
   const isDrawerOpen = useIsDrawerOpen();
   const animation = useRef(new Animated.Value(0)).current;
-  
+
   useEffect(() => {
     // onAuthStateChanged returns an unsubscriber
     const unsubscribeAuthStateChanged = onAuthStateChanged(
@@ -65,6 +65,10 @@ const ScreensStack = () => {
     }).start();
   }, [isDrawerOpen, animation]);
 
+  if (isLoading) {
+    return <LoadingIndicator />;
+  }
+  
   return (
     <Animated.View
       style={StyleSheet.flatten([
@@ -89,6 +93,7 @@ const DrawerContent = (
   const {navigation} = props;
   const {t} = useTranslation();
   const {isDark, handleIsDark} = useData();
+  const {auth} = useFirebase();
   const [active, setActive] = useState('Home');
   const {assets, colors, gradients, sizes} = useTheme();
   const labelColor = colors.text;
@@ -112,9 +117,14 @@ const DrawerContent = (
     {name: t('screens.profile'), to: 'Profile', icon: assets.profile},
     {name: t('screens.settings'), to: 'Pro', icon: assets.settings},
     {name: t('screens.register'), to: 'Register', icon: assets.register},
+    {name: t('screens.login'), to: 'Login', icon: assets.register},
     {name: t('screens.extra'), to: 'Pro', icon: assets.extras},
   ];
 
+  const handleLogout = () => {
+    signOut(auth).catch(error => console.log('Error logging out: ', error));
+  };
+  
   return (
     <DrawerContentScrollView
       {...props}
@@ -192,9 +202,7 @@ const DrawerContent = (
           justify="flex-start"
           marginTop={sizes.sm}
           marginBottom={sizes.s}
-          onPress={() =>
-            handleWebLink('https://github.com/creativetimofficial')
-          }>
+          onPress={() => handleLogout()}>
           <Block
             flex={0}
             radius={6}
@@ -209,24 +217,13 @@ const DrawerContent = (
               width={14}
               height={14}
               color={colors.black}
-              source={assets.documentation}
+              source={assets.profile}
             />
           </Block>
           <Text p color={labelColor}>
-            {t('menu.started')}
+            {t('menu.logout')}
           </Text>
         </Button>
-
-        <Block row justify="space-between" marginTop={sizes.sm}>
-          <Text color={labelColor}>{t('darkMode')}</Text>
-          <Switch
-            checked={isDark}
-            onPress={(checked) => {
-              handleIsDark(checked);
-              Alert.alert(t('pro.title'), t('pro.alert'));
-            }}
-          />
-        </Block>
       </Block>
     </DrawerContentScrollView>
   );

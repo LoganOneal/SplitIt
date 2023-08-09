@@ -1,76 +1,63 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {Linking, Platform} from 'react-native';
 import {useNavigation} from '@react-navigation/core';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 import {useData, useTheme, useTranslation, useFirebase} from '../hooks/';
 import * as regex from '../constants/regex';
-import {Block, Button, Input, Image, Text, Checkbox} from '../components/';
+import {Block, Button, Input, Image, Text} from '../components/';
 
 const isAndroid = Platform.OS === 'android';
 
-interface IRegistration {
-  name: string;
+interface ILogin {
   email: string;
   password: string;
-  agreed: boolean;
-}
-interface IRegistrationValidation {
-  name: boolean;
-  email: boolean;
-  password: boolean;
-  agreed: boolean;
 }
 
-const Register = () => {
+interface ILoginValidation {
+  email: boolean;
+  password: boolean;
+}
+
+const Login = () => {
   const {isDark} = useData();
   const {t} = useTranslation();
   const navigation = useNavigation();
   const {auth} = useFirebase();
 
-  const [isValid, setIsValid] = useState<IRegistrationValidation>({
-    name: false,
+  const [isValid, setIsValid] = useState<ILoginValidation>({
     email: false,
     password: false,
-    agreed: false,
   });
   const [errorState, setErrorState] = useState('');
-  const [registration, setRegistration] = useState<IRegistration>({
-    name: '',
+  const [login, setLogin] = useState<ILogin>({
     email: '',
     password: '',
-    agreed: false,
   });
   const {assets, colors, gradients, sizes} = useTheme();
 
   const handleChange = useCallback(
     (value) => {
-      setRegistration((state) => ({...state, ...value}));
+      setLogin((state) => ({...state, ...value}));
     },
-    [setRegistration],
+    [setLogin],
   );
 
-  const handleSignUp = useCallback(() => {
+  const handleLogin = useCallback(() => {
     if (!Object.values(isValid).includes(false)) {
-      /** send/save registratin data */
-      console.log('email: ', registration.email);
-      console.log('password: ', registration.password);
-
-      createUserWithEmailAndPassword(auth, registration.email, registration.password).catch(error =>
+      signInWithEmailAndPassword(auth, login.email, login.password).catch(error =>
         setErrorState(error.message)
       );
     }
-  }, [isValid, registration]);
+  }, [isValid, login]);
 
   useEffect(() => {
     setIsValid((state) => ({
       ...state,
-      name: regex.name.test(registration.name),
-      email: regex.email.test(registration.email),
-      password: regex.password.test(registration.password),
-      agreed: registration.agreed,
+      email: regex.email.test(login.email),
+      password: regex.password.test(login.password),
     }));
-  }, [registration, setIsValid]);
+  }, [login, setIsValid]);
 
   return (
     <Block safe marginTop={sizes.md}>
@@ -188,20 +175,11 @@ const Register = () => {
                 <Input
                   autoCapitalize="none"
                   marginBottom={sizes.m}
-                  label={t('common.name')}
-                  placeholder={t('common.namePlaceholder')}
-                  success={Boolean(registration.name && isValid.name)}
-                  danger={Boolean(registration.name && !isValid.name)}
-                  onChangeText={(value) => handleChange({name: value})}
-                />
-                <Input
-                  autoCapitalize="none"
-                  marginBottom={sizes.m}
                   label={t('common.email')}
                   keyboardType="email-address"
                   placeholder={t('common.emailPlaceholder')}
-                  success={Boolean(registration.email && isValid.email)}
-                  danger={Boolean(registration.email && !isValid.email)}
+                  success={Boolean(login.email && isValid.email)}
+                  danger={Boolean(login.email && !isValid.email)}
                   onChangeText={(value) => handleChange({email: value})}
                 />
                 <Input
@@ -211,36 +189,18 @@ const Register = () => {
                   label={t('common.password')}
                   placeholder={t('common.passwordPlaceholder')}
                   onChangeText={(value) => handleChange({password: value})}
-                  success={Boolean(registration.password && isValid.password)}
-                  danger={Boolean(registration.password && !isValid.password)}
+                  success={Boolean(login.password && isValid.password)}
+                  danger={Boolean(login.password && !isValid.password)}
                 />
-              </Block>
-              {/* checkbox terms */}
-              <Block row flex={0} align="center" paddingHorizontal={sizes.sm}>
-                <Checkbox
-                  marginRight={sizes.sm}
-                  checked={registration?.agreed}
-                  onPress={(value) => handleChange({agreed: value})}
-                />
-                <Text paddingRight={sizes.s}>
-                  {t('common.agree')}
-                  <Text
-                    semibold
-                    onPress={() => {
-                      Linking.openURL('https://www.creative-tim.com/terms');
-                    }}>
-                    {t('common.terms')}
-                  </Text>
-                </Text>
               </Block>
               <Button
-                onPress={handleSignUp}
+                onPress={handleLogin}
                 marginVertical={sizes.s}
                 marginHorizontal={sizes.sm}
                 gradient={gradients.primary}
                 disabled={Object.values(isValid).includes(false)}>
                 <Text bold white transform="uppercase">
-                  {t('common.signup')}
+                  {t('common.signin')}
                 </Text>
               </Button>
               <Button
@@ -249,9 +209,9 @@ const Register = () => {
                 shadow={!isAndroid}
                 marginVertical={sizes.s}
                 marginHorizontal={sizes.sm}
-                onPress={() => navigation.navigate('Login')}>
+                onPress={() => navigation.navigate('Register')}>
                 <Text bold primary transform="uppercase">
-                  {t('common.signin')}
+                  {t('common.signup')}
                 </Text>
               </Button>
             </Block>
@@ -262,4 +222,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default Login;

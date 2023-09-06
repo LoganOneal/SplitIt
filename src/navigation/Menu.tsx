@@ -110,6 +110,7 @@ const DrawerContent = (
 
   // screen list for Drawer menu
   const screens = [
+    {name: t('screens.scanner'), to: 'Scanner', icon: assets.image},
     {name: t('screens.home'), to: 'Home', icon: assets.home},
     {name: t('screens.components'), to: 'Components', icon: assets.components},
     {name: t('screens.articles'), to: 'Articles', icon: assets.document},

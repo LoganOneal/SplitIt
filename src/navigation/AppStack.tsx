@@ -3,6 +3,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 
 import {Articles, Components, Home, Profile, Pro} from '../screens';
 import {useScreenOptions, useTranslation} from '../hooks';
+import Scanner from '../screens/Scanner';
 
 const Stack = createStackNavigator();
 
@@ -12,6 +13,12 @@ export default () => {
 
   return (
     <Stack.Navigator screenOptions={screenOptions.stack}>
+      <Stack.Screen
+        name="Scanner"
+        component={Scanner}
+        options={{title: t('navigation.scanner')}}
+      />
+      
       <Stack.Screen
         name="Home"
         component={Home}

@@ -175,6 +175,8 @@ export interface IReceipt {
   location?: ILocation;
   host?: IUser;
   items?: IReceiptItem[];
+  total: number;
+  paid: number;
   timestamp?: number;
   onPress?: (event?: any) => void;
 }

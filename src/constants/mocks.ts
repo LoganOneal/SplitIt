@@ -734,6 +734,8 @@ export const RECEIPTS: IReceipt[] = [
     location: LOCATIONS[0],
     host: USERS[0],
     items: ITEMS,
+    total: 15.57,
+    paid: 11.34,
     timestamp: dayjs().unix(),
   },
   {
@@ -743,6 +745,8 @@ export const RECEIPTS: IReceipt[] = [
     location: LOCATIONS[0],
     host: USERS[0],
     items: ITEMS,
+    total: 15.57,
+    paid: 11.34,
     timestamp: dayjs().unix(),
   },
   {
@@ -752,6 +756,8 @@ export const RECEIPTS: IReceipt[] = [
     location: LOCATIONS[0],
     host: USERS[0],
     items: ITEMS,
+    total: 15.57,
+    paid: 11.34,
     timestamp: dayjs().unix(),
   },
   {
@@ -761,6 +767,8 @@ export const RECEIPTS: IReceipt[] = [
     location: LOCATIONS[0],
     host: USERS[0],
     items: ITEMS,
+    total: 15.57,
+    paid: 11.34,
     timestamp: dayjs().unix(),
   },
   {
@@ -770,6 +778,8 @@ export const RECEIPTS: IReceipt[] = [
     location: LOCATIONS[0],
     host: USERS[0],
     items: ITEMS,
+    total: 15.57,
+    paid: 11.34,
     timestamp: dayjs().unix(),
   },
 ];

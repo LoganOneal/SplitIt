@@ -8,6 +8,7 @@ import {
   IUser,
   IUseData,
   ITheme,
+  IReceipt,
 } from '../constants/types';
 
 import {
@@ -16,6 +17,7 @@ import {
   TRENDING,
   CATEGORIES,
   ARTICLES,
+  RECEIPTS,
 } from '../constants/mocks';
 import {light} from '../constants';
 
@@ -31,6 +33,9 @@ export const DataProvider = ({children}: {children: React.ReactNode}) => {
   const [categories, setCategories] = useState<ICategory[]>(CATEGORIES);
   const [articles, setArticles] = useState<IArticle[]>(ARTICLES);
   const [article, setArticle] = useState<IArticle>({});
+
+  const [receipts, setReceipts] = useState<IReceipt[]>(RECEIPTS);
+
 
   // get isDark mode from storage
   const getIsDark = useCallback(async () => {
@@ -116,6 +121,8 @@ export const DataProvider = ({children}: {children: React.ReactNode}) => {
     setArticles,
     article,
     handleArticle,
+    receipts, 
+    setReceipts,
   };
 
   return (

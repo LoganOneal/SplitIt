@@ -19,6 +19,7 @@ export interface ICategory {
   id?: number;
   name?: string;
 }
+
 export interface IArticleOptions {
   id?: number;
   title?: string;
@@ -30,6 +31,7 @@ export interface IArticleOptions {
   user?: IUser;
   image?: string;
 }
+
 export interface IArticle {
   id?: number;
   title?: string;
@@ -84,6 +86,8 @@ export interface IUseData {
   handleArticle: (data?: IArticle) => void;
   notifications: INotification[];
   handleNotifications: (data?: INotification[]) => void;
+  receipts: IReceipt[];
+  setReceipts: (data?: IReceipt[]) => void;
 }
 
 export interface ITranslate {
@@ -147,4 +151,30 @@ export interface IUseFirebase {
   user?: IUser;
   setUser?: (data?: IUser) => void;
   dbSetUser?: (data?: IUser) => void;
+}
+
+export interface IUseAzureAI {
+  
+}
+
+export interface IReceiptCategory {
+  id?: number;
+  name?: string;
+}
+
+export interface IReceiptItem {
+  id?: number;
+  title?: string;
+  price?: number;
+}
+
+export interface IReceipt {
+  id?: number;
+  title?: string;
+  image?: string;
+  location?: ILocation;
+  host?: IUser;
+  items?: IReceiptItem[];
+  timestamp?: number;
+  onPress?: (event?: any) => void;
 }

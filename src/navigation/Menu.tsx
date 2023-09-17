@@ -94,7 +94,7 @@ const DrawerContent = (
   const {t} = useTranslation();
   const {isDark, handleIsDark} = useData();
   const {auth} = useFirebase();
-  const [active, setActive] = useState('Home');
+  const [active, setActive] = useState('Receipts');
   const {assets, colors, gradients, sizes} = useTheme();
   const labelColor = colors.text;
 
@@ -111,6 +111,7 @@ const DrawerContent = (
   // screen list for Drawer menu
   const screens = [
     {name: t('screens.scanner'), to: 'Scanner', icon: assets.image},
+    {name: t('screens.receipts'), to: 'Receipts', icon: assets.image},
     {name: t('screens.home'), to: 'Home', icon: assets.home},
     {name: t('screens.components'), to: 'Components', icon: assets.components},
     {name: t('screens.articles'), to: 'Articles', icon: assets.document},

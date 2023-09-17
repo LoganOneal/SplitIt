@@ -57,6 +57,7 @@
   "darkMode": "Dark Mode",
   "screens": {
     "scanner": "Scanner",
+    "receipts": "My Receipts",
     "home": "Home",
     "components": "Components",
     "articles": "Articles",
@@ -68,6 +69,7 @@
   },
   "navigation": {
     "scanner": "Receipt Scanner",
+    "receipts": "My Receipts",
     "home": "Soft UI",
     "components": "Components",
     "articles": "Soft UI",

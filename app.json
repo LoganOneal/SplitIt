@@ -29,6 +29,14 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(SplitIt) to access your camera."
+        }
+      ]
+    ]
   }
 }

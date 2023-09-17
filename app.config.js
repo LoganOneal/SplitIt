@@ -30,6 +30,7 @@ export default {
       storageBucket: process.env.STORAGE_BUCKET,
       messagingSenderId: process.env.MESSAGING_SENDER_ID,
       appId: process.env.APP_ID,
+      azureApiKey: process.env.AZURE_API_KEY,
       eas: {
         projectId: "f8f76a0c-b66e-4ee4-969d-77e8650baede"
       }

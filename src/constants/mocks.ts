@@ -8,6 +8,8 @@ import {
   ILocation,
   INotification,
   IProduct,
+  IReceipt,
+  IReceiptItem,
   IUser,
 } from './types';
 
@@ -701,6 +703,77 @@ export const NOTIFICATIONS: INotification[] = [
   },
 ];
 
+export const ITEMS: IReceiptItem[] = [
+  {
+    id: 1,
+    title: 'Grande Borrito',
+    price: 11.45,
+  },
+  {
+    id: 2,
+    title: 'Macho Fish Taco',
+    price: 11.97,
+  },  
+  {
+    id: 1,
+    title: 'BTL Water',
+    price: 7.97,
+  },  
+  {
+    id: 1,
+    title: 'Beer',
+    price: 4.99,
+  },
+];
+
+export const RECEIPTS: IReceipt[] = [
+  {
+    id: 1,
+    title: 'Spicy Mexican Grill',
+    image: 'https://images.unsplash.com/photo-1604998103924-89e012e5265a?fit=crop&w=450&q=80',
+    location: LOCATIONS[0],
+    host: USERS[0],
+    items: ITEMS,
+    timestamp: dayjs().unix(),
+  },
+  {
+    id: 2,
+    title: 'Spicy Mexican Grill',
+    image: 'https://images.unsplash.com/photo-1604998103924-89e012e5265a?fit=crop&w=450&q=80',
+    location: LOCATIONS[0],
+    host: USERS[0],
+    items: ITEMS,
+    timestamp: dayjs().unix(),
+  },
+  {
+    id: 3,
+    title: 'Spicy Mexican Grill',
+    image: 'https://images.unsplash.com/photo-1604998103924-89e012e5265a?fit=crop&w=450&q=80',
+    location: LOCATIONS[0],
+    host: USERS[0],
+    items: ITEMS,
+    timestamp: dayjs().unix(),
+  },
+  {
+    id: 4,
+    title: 'Spicy Mexican Grill',
+    image: 'https://images.unsplash.com/photo-1604998103924-89e012e5265a?fit=crop&w=450&q=80',
+    location: LOCATIONS[0],
+    host: USERS[0],
+    items: ITEMS,
+    timestamp: dayjs().unix(),
+  },
+  {
+    id: 5,
+    title: 'Spicy Mexican Grill',
+    image: 'https://images.unsplash.com/photo-1604998103924-89e012e5265a?fit=crop&w=450&q=80',
+    location: LOCATIONS[0],
+    host: USERS[0],
+    items: ITEMS,
+    timestamp: dayjs().unix(),
+  },
+];
+
 export default {
   USERS,
   FOLLOWING,
@@ -711,4 +784,5 @@ export default {
   MESSSAGES,
   EXTRAS,
   NOTIFICATIONS,
+  RECEIPTS,
 };

@@ -13,3 +13,7 @@ yarn install
 '''bash 
 npx expo start
 '''
+
+### Things to Know
+- use yarn not npm! 
+

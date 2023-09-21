@@ -253,9 +253,9 @@ export const OFFERS: IProduct[] = [
 
 // rental locations
 export const LOCATIONS: ILocation[] = [
-  {id: 1, city: 'Paris', country: 'France'},
-  {id: 2, city: 'Rome', country: 'Italy'},
-  {id: 3, city: 'London', country: 'United Kingdom'},
+  {id: 1, city: 'Knoxville', state: 'TN'},
+  {id: 2, city: 'Atanta', state: 'GA'},
+  {id: 3, city: 'Seattle', state: 'WA'},
 ];
 
 // articles
@@ -735,7 +735,7 @@ export const RECEIPTS: IReceipt[] = [
     host: USERS[0],
     items: ITEMS,
     total: 15.57,
-    paid: 11.34,
+    received: 11.34,
     timestamp: dayjs().unix(),
   },
   {
@@ -746,7 +746,7 @@ export const RECEIPTS: IReceipt[] = [
     host: USERS[0],
     items: ITEMS,
     total: 15.57,
-    paid: 11.34,
+    received: 11.34,
     timestamp: dayjs().unix(),
   },
   {
@@ -757,7 +757,7 @@ export const RECEIPTS: IReceipt[] = [
     host: USERS[0],
     items: ITEMS,
     total: 15.57,
-    paid: 11.34,
+    received: 11.34,
     timestamp: dayjs().unix(),
   },
   {
@@ -768,7 +768,7 @@ export const RECEIPTS: IReceipt[] = [
     host: USERS[0],
     items: ITEMS,
     total: 15.57,
-    paid: 11.34,
+    received: 11.34,
     timestamp: dayjs().unix(),
   },
   {
@@ -779,7 +779,7 @@ export const RECEIPTS: IReceipt[] = [
     host: USERS[0],
     items: ITEMS,
     total: 15.57,
-    paid: 11.34,
+    received: 11.34,
     timestamp: dayjs().unix(),
   },
 ];

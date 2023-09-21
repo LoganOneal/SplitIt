@@ -703,6 +703,34 @@ export interface ISwitchProps extends ISpacing {
   duration?: Animated.TimingAnimationConfig['duration'];
 }
 
+
+/**
+ * ## Checkbox
+ * Default usage:
+ * ```
+ * <Checkbox checked />
+ * ```
+ *
+ */
+export interface IProgressBarProps extends ISpacing {
+  /**
+   * Checkbox checked value
+   */
+  progress?: number;
+  /**
+   * Renders the Pressable container style
+   * @see https://reactnative.dev/docs/view#style
+   */
+  style?: ViewStyle;
+  /**
+   * Renders the progress bar  style
+   * @see https://reactnative.dev/docs/view#style
+   */
+  progressBarStyle?: ViewStyle;
+  onPress?: (checked: boolean) => void;
+}
+
+
 /**
  * ## Text
  * Default usage:

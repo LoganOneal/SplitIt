@@ -10,7 +10,7 @@ export const LoadingIndicator = () => {
     <Block safe marginTop={sizes.md}>
       <Block paddingHorizontal={sizes.s}>
         <Block flex={0} style={{zIndex: 0}}>      
-        <ActivityIndicator size='large' />
+          <ActivityIndicator size='large' />
         </Block>  
       </Block> 
     </Block>

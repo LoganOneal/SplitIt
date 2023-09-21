@@ -154,6 +154,9 @@ export const SIZES: ThemeSizes = {
   checkboxIconWidth: 10,
   checkboxIconHeight: 8,
 
+  // progress bar sizes
+  progressBarHeight: 8,
+
   // product link size
   linkSize: 12,
 

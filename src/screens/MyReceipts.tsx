@@ -3,7 +3,7 @@ import {FlatList} from 'react-native';
 
 import {useData, useTheme} from '../hooks/';
 import {IArticle, ICategory, IReceipt} from '../constants/types';
-import {Block, Button, Receipt, Text} from '../components/';
+import {Block, Button, ReceiptCard, Text} from '../components/';
 
 const MyReceipts = () => {
   const data = useData();
@@ -24,7 +24,7 @@ const MyReceipts = () => {
         keyExtractor={(item) => `${item?.id}`}
         style={{paddingHorizontal: sizes.padding}}
         contentContainerStyle={{paddingBottom: sizes.l}}
-        renderItem={({item}) => <Receipt {...item} />}
+        renderItem={({item}) => <ReceiptCard {...item} />}
       />
     </Block>
   );

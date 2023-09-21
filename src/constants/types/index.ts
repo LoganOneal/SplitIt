@@ -59,6 +59,7 @@ export interface IProduct {
 export interface ILocation {
   id?: number;
   city?: string;
+  state?: string;
   country?: string;
 }
 export interface IUseData {
@@ -176,7 +177,7 @@ export interface IReceipt {
   host?: IUser;
   items?: IReceiptItem[];
   total: number;
-  paid: number;
+  received: number;
   timestamp?: number;
   onPress?: (event?: any) => void;
 }

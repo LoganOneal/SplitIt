@@ -9,7 +9,7 @@ import Image from './Image';
 import Article from './Article';
 import Product from './Product';
 import { LoadingIndicator } from './LoadingIndicator';
-import Receipt from './Receipt';
+import ReceiptCard from './ReceiptCard';
 
 export {
   Block,
@@ -23,5 +23,5 @@ export {
   Product,
   Modal,
   LoadingIndicator,
-  Receipt
+  ReceiptCard
 };

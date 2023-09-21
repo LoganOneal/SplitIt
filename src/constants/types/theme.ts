@@ -171,6 +171,8 @@ export interface ThemeSizes {
   checkboxIconWidth: number;
   checkboxIconHeight: number;
 
+  progressBarHeight: number;
+
   linkSize: number;
 
   multiplier: number;

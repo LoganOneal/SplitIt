@@ -16,10 +16,13 @@ const ReceiptCard = ({
   title,
   location,
   host,
+  members,
   items,
   image,
   total,
   received,
+  tax, 
+  tip,
   timestamp,
  }: IReceipt) => {
     const {t} = useTranslation();
@@ -30,7 +33,7 @@ const ReceiptCard = ({
     const percentPaid = +(received / total * 100).toFixed(2);
 
     const handlePress = () => {
-        navigation.navigate('ReceiptDetails', {items});
+        navigation.navigate('ReceiptDetails', {title, members, items, total, received, tax, tip});
     };
 
     // render card for Newest & Fashion

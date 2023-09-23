@@ -71,6 +71,7 @@ const Block = (props: IBlockProps) => {
     bottom,
     end,
     start,
+    divider,
     ...rest
   } = props;
   const {colors, sizes} = useTheme();
@@ -128,6 +129,10 @@ const Block = (props: IBlockProps) => {
         shadowOpacity: sizes.shadowOpacity,
         shadowRadius: sizes.shadowRadius,
         elevation: sizes.elevation,
+      }),
+      ...(divider && {
+        backgroundColor: colors.gray,
+        height: 1,
       }),
       ...(margin !== undefined && {margin}),
       ...(marginBottom && {marginBottom}),

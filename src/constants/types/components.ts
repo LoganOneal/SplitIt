@@ -77,6 +77,11 @@ export interface IBlockProps
    * @see https://reactnative.dev/docs/shadow-props
    */
   card?: boolean;
+    /**
+   * Renders a View with predefined backgroundColor, borderRadius, padding, shadow / elevation
+   * @see https://reactnative.dev/docs/shadow-props
+   */
+  divider?: boolean;
   /**
    * Renders a View with predefined justifyContent: center
    * @see https://reactnative.dev/docs/flexbox#justify-content

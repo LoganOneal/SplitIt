@@ -176,9 +176,13 @@ export interface IReceipt {
   image?: string;
   location?: ILocation;
   host?: IUser;
+  members?: IUser[];
   items?: IReceiptItem[];
   total: number;
+  subtotal: number;
   received: number;
+  tax: number; 
+  tip: number;
   timestamp?: number;
   onPress?: (event?: any) => void;
 }

@@ -12,6 +12,7 @@ import Button from './Button';
 import ProgressBar from './ProgressBar';
 import Checkbox from './Checkbox';
 import Switch from './Switch';
+import { Divider } from 'react-native-paper';
 
 
 const ReceiptItem = ({
@@ -32,15 +33,10 @@ const ReceiptItem = ({
 
     return (
         <TouchableWithoutFeedback onPress={handlePress}>
-            <Block row card flex={0} padding={sizes.sm} marginTop={sizes.sm}>
+            <Block row marginBottom={sizes.sm}>
                 <Text h5 bold marginRight={sizes.xl}>{title}</Text>
                 <Block row align="center" justify="flex-end" marginRight={sizes.xs}>
-                    <Text h5 semibold marginRight={sizes.xxl}>{price}</Text>
-                    <Checkbox  
-                        marginRight={sizes.xs}
-                        checked={paid}
-                    />                    
-                    <Text h5 semibold>Paid</Text>
+                    <Text h5 bold>{price}</Text>                
                 </Block>
             </Block>
         </TouchableWithoutFeedback>

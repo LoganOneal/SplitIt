@@ -2,18 +2,32 @@ import React, {useEffect, useState} from 'react';
 import {FlatList} from 'react-native';
 
 import {useData, useTheme} from '../hooks';
-import {IArticle, ICategory, IReceipt} from '../constants/types';
+import {IReceiptItem} from '../constants/types';
 import {Block, Button, ReceiptItem, Text} from '../components';
 
-const ReceiptDetails = () => {
+const ReceiptDetails = ({ route }) => {
+  const {items} = route.params;
   const data = useData();
-  const [selected, setSelected] = useState<ICategory>();
-  const [receipts, setReceipts] = useState<IReceipt[]>([]);
   const {colors, gradients, sizes} = useTheme();
 
   return (
     <Block>
-     
+      <Block paddingHorizontal={sizes.padding} >
+        <Block card flex={0} padding={sizes.sm} marginTop={sizes.sm}>
+          <Text h4>
+            Flexible office space means growth.
+          </Text>
+        </Block>
+      </Block>
+
+      <FlatList
+        data={items}
+        showsVerticalScrollIndicator={false}
+        keyExtractor={(item) => `${item?.id}`}
+        style={{paddingHorizontal: sizes.padding}}
+        contentContainerStyle={{paddingBottom: sizes.l}}
+        renderItem={({item}) => <ReceiptItem {...item} />}
+      />
     </Block>
   );
 };

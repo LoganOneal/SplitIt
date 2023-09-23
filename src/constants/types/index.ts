@@ -167,6 +167,7 @@ export interface IReceiptItem {
   id?: number;
   title?: string;
   price?: number;
+  paid?: boolean;
 }
 
 export interface IReceipt {

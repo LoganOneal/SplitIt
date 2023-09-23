@@ -30,9 +30,7 @@ const ReceiptCard = ({
     const percentPaid = +(received / total * 100).toFixed(2);
 
     const handlePress = () => {
-        navigation.navigate('Screens', {
-            screen: 'ReceiptDetails',
-        });
+        navigation.navigate('ReceiptDetails', {items});
     };
 
     // render card for Newest & Fashion

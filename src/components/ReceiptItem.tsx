@@ -7,27 +7,22 @@ import Text from './Text';
 import Block from './Block';
 import Image from './Image';
 import {useTheme, useTranslation} from '../hooks';
-import {IReceipt} from '../constants/types';
+import {IReceiptItem} from '../constants/types';
 import Button from './Button';
 import ProgressBar from './ProgressBar';
+import Checkbox from './Checkbox';
+import Switch from './Switch';
 
 
 const ReceiptItem = ({
+  id,
   title,
-  location,
-  host,
-  items,
-  image,
-  total,
-  received,
-  timestamp,
- }: IReceipt) => {
+  price,
+  paid,
+ }: IReceiptItem) => {
     const {t} = useTranslation();
     const {colors, gradients, icons, sizes} = useTheme();
-    const [showModal, setModal] = useState(false);
     const navigation = useNavigation();
-
-    const percentPaid = +(received / total * 100).toFixed(2);
 
     const handlePress = () => {
         navigation.navigate('Screens', {
@@ -35,32 +30,17 @@ const ReceiptItem = ({
         });
     };
 
-    // render card for Newest & Fashion
     return (
         <TouchableWithoutFeedback onPress={handlePress}>
-            <Block card padding={sizes.sm} marginTop={sizes.sm}>
-                <Block row marginLeft={sizes.xs}>
-                        <Text 
-                            h5 
-                            bold 
-                            transform="uppercase"
-                            gradient={gradients.primary}>
-                            {title}
-                        </Text>
-                        <Text p>
-                            Total: {total}
-                        </Text>
-                        <Text p>
-                            Received: {received}
-                        </Text>
-                        <Block justify="center">
-                            <Text p gray>
-                                Percent Paid: {percentPaid}%
-                            </Text>
-                            <ProgressBar 
-                                progress={received / total}>
-                            </ProgressBar>
-                        </Block>
+            <Block row card flex={0} padding={sizes.sm} marginTop={sizes.sm}>
+                <Text h5 bold marginRight={sizes.xl}>{title}</Text>
+                <Block row align="center" justify="flex-end" marginRight={sizes.xs}>
+                    <Text h5 semibold marginRight={sizes.xxl}>{price}</Text>
+                    <Checkbox  
+                        marginRight={sizes.xs}
+                        checked={paid}
+                    />                    
+                    <Text h5 semibold>Paid</Text>
                 </Block>
             </Block>
         </TouchableWithoutFeedback>

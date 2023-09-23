@@ -26,15 +26,16 @@ const ReceiptCard = ({
   const {colors, gradients, icons, sizes} = useTheme();
   const [showModal, setModal] = useState(false);
 
+  const percentPaid = (received / total).toFixed(2) * 100;
+
     // render card for Newest & Fashion
     return (
         <TouchableWithoutFeedback onPress={onPress}>
             <Block card padding={sizes.sm} marginTop={sizes.sm}>
-                <Block row marginLeft={sizes.xs} marginBottom={sizes.xs}>
+                <Block row marginLeft={sizes.xs}>
                     <Image
                         radius={sizes.s}
-                        width={sizes.xxl}
-                        height={sizes.xxl}
+                        width={100}
                         source={{uri: image}}
                         style={{backgroundColor: colors.white}}
                     />
@@ -54,10 +55,10 @@ const ReceiptCard = ({
                         </Text>
                         <Block justify="center">
                             <Text p gray>
-                                Percent Paid: 
+                                Percent Paid: {percentPaid}%
                             </Text>
                             <ProgressBar 
-                                progress={0.5}>
+                                progress={received / total}>
                             </ProgressBar>
                         </Block>
                     </Block>

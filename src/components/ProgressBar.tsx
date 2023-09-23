@@ -13,10 +13,10 @@ import {IProgressBarProps} from '../constants/types';
 const ProgressBar = ({
   onPress,
   progressBarStyle,
+  progress,
   ...props
 }: IProgressBarProps) => {
   const {colors, icons, sizes} = useTheme();
-  const [progress, setProgress] = useState(0.5);
 
   const progressBarStyles = StyleSheet.flatten([
     {

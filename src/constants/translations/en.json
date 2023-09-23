@@ -70,6 +70,7 @@
   "navigation": {
     "scanner": "Receipt Scanner",
     "receipts": "My Receipts",
+    "receiptdetails": "Receipt Details",
     "home": "Soft UI",
     "components": "Components",
     "articles": "Soft UI",

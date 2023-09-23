@@ -20,3 +20,4 @@ export {default as Pro} from './Pro';
 
 export {default as Scanner} from './Scanner';
 export {default as MyReceipts} from  './MyReceipts'
+export {default as ReceiptDetails} from  './ReceiptDetails'

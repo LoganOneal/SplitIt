@@ -12,7 +12,7 @@ import Button from './Button';
 import ProgressBar from './ProgressBar';
 
 
-const ReceiptCard = ({
+const ReceiptItem = ({
   title,
   location,
   host,
@@ -31,7 +31,7 @@ const ReceiptCard = ({
 
     const handlePress = () => {
         navigation.navigate('Screens', {
-            screen: 'ReceiptDetails',
+            screen: 'Pro',
         });
     };
 
@@ -40,13 +40,6 @@ const ReceiptCard = ({
         <TouchableWithoutFeedback onPress={handlePress}>
             <Block card padding={sizes.sm} marginTop={sizes.sm}>
                 <Block row marginLeft={sizes.xs}>
-                    <Image
-                        radius={sizes.s}
-                        width={100}
-                        source={{uri: image}}
-                        style={{backgroundColor: colors.white}}
-                    />
-                    <Block justify="center" marginLeft={sizes.s}>
                         <Text 
                             h5 
                             bold 
@@ -68,11 +61,10 @@ const ReceiptCard = ({
                                 progress={received / total}>
                             </ProgressBar>
                         </Block>
-                    </Block>
                 </Block>
             </Block>
         </TouchableWithoutFeedback>
     );
 };
 
-export default ReceiptCard;
+export default ReceiptItem;

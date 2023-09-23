@@ -10,6 +10,7 @@ import Article from './Article';
 import Product from './Product';
 import { LoadingIndicator } from './LoadingIndicator';
 import ReceiptCard from './ReceiptCard';
+import ReceiptItem from './ReceiptItem';
 
 export {
   Block,
@@ -23,5 +24,6 @@ export {
   Product,
   Modal,
   LoadingIndicator,
-  ReceiptCard
+  ReceiptCard, 
+  ReceiptItem
 };

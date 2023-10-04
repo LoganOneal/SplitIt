@@ -16,5 +16,6 @@ npx expo start
 ```
 
 ### Things to Know
-- use yarn not npm! 
+- Use yarn not npm! 
+- Launch via expo mobile app. emulator does not support camera integration 
 

@@ -1,18 +1,18 @@
 ## SplitIt App
 
 ## Installation 
-'''bash
+```bash
 npm install -g expo-cli 
-'''
+```
 
-'''bash
+```bash
 yarn install 
-'''
+```
 
 ## Running the Application 
-'''bash 
+```bash 
 npx expo start
-'''
+```
 
 ### Things to Know
 - use yarn not npm! 

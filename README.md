@@ -1,4 +1,5 @@
 ## SplitIt App
+Using Node Version 20.5.1
 
 ## Installation 
 ```bash

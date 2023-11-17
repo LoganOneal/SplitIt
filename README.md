@@ -56,12 +56,22 @@
   - I work full time and I don't have time to provide detailed support.
 - I will try and keep this template updated, as and when I can, when major versions of the dependencies are changed.
 
-## Issues
+## Known Issues
 
 - React Navigation theme is not being passed into AppNavigator.ts file
   - [I have posted the issue posted on StackOverflow](https://stackoverflow.com/questions/77497977/react-navigation-v6-typescript-how-to-pass-theme-prop-to-navigation-container)
-
+- Firebase warning about AsyncStorage
+  - Even though this warning keeps coming up on the console, the app and authentication are working fine.
 
 ## TODO
 
 - Registration form wired up to Firebase.
+
+## How to get started
+
+- **Replace** the **FirebaseConfig** settings used in **useAuth.ts**
+  - **You MUST make this change, else the app will not work**
+- NPM Install
+- NPM run start
+  - Then choose a for Android
+  - Scan the QR code with EXPO Go or with camera app on IOS

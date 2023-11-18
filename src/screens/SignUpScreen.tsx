@@ -16,11 +16,15 @@ import * as AppConstants from "../constants/constants";
 import { ImageOverlay } from "../components/image-overlay";
 import { useAuth } from "../hooks/useAuth";
 import { IAuthState } from "../interfaces/IAuthentication";
-import { userLoggedIn } from "../store/authSlice";
+import { userRegistered } from "../store/authSlice";
+import { useValidation } from "../hooks/useValidation";
 
-type SignInFormData = {
+type SignUpFormData = {
+  firstName: string;
+  lastName: string;
   emailAddress: string;
   password: string;
+  confirmPassword: string;
 };
 
 export default function SignUpScreen({ navigation }) {
@@ -29,24 +33,37 @@ export default function SignUpScreen({ navigation }) {
   const [loading, setLoading] = useState(false);
   const [snackMessage, setSnackMessage] = useState("");
   const dispatch = useAppDispatch();
-  const { signinUser, getProfile } = useAuth();
+  const { signupUser, getProfile } = useAuth();
+  const { validateEmail } = useValidation();
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<SignInFormData>();
+    watch,
+  } = useForm<SignUpFormData>();
 
-  const onSubmit = (data: SignInFormData) => {
-    handleSignIn(data.emailAddress, data.password);
+  const onSubmit = (data: SignUpFormData) => {
+    handleSignUp(
+      data.firstName,
+      data.lastName,
+      data.emailAddress,
+      data.password
+    );
   };
 
   const onDismissSnackBar = () => setShowSnack(false);
 
-  const handleSignIn = async (email: string, password: string) => {
+  const handleSignUp = async (
+    fname: string,
+    lname: string,
+    email: string,
+    password: string
+  ) => {
     let parsedResponse = null;
     let firebaseToken = null;
+    const fullName = fname + lname;
     setLoading(true);
-    await signinUser(email, password).then((fbResponse) => {
+    await signupUser(fullName, email, password).then((fbResponse) => {
       parsedResponse = JSON.parse(fbResponse);
       // error response
       if (parsedResponse.error.code) {
@@ -70,12 +87,12 @@ export default function SignUpScreen({ navigation }) {
             sessionTimedOut: false,
             isLoading: false,
             isLoggedIn: true,
+            darkMode: false,
           };
           // Redux action
-          dispatch(userLoggedIn(user));
+          dispatch(userRegistered(user));
           setLoading(false);
-          // Redirect to home, if login worked
-          navigation.navigate("Home");
+          // React navigation will handle Redirect to home, if login worked
         }
       }
     });
@@ -98,7 +115,79 @@ export default function SignUpScreen({ navigation }) {
           <Controller
             control={control}
             rules={{
-              required: true,
+              required: {
+                message: AppConstants.ERROR_FirstNameIsRequired,
+                value: true,
+              },
+              pattern: {
+                value: /^[A-Za-z]+$/i,
+                message: AppConstants.ERROR_InvalidName,
+              },
+            }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput
+                label={AppConstants.LABEL_FirstName}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                mode="outlined"
+                placeholder={AppConstants.PLACEHOLDER_FirstName}
+                textContentType="name"
+                style={styles.textInput}
+              />
+            )}
+            name="firstName"
+          />
+          {errors.firstName?.message && (
+            <Text style={{ color: theme.colors.error }}>
+              {errors.firstName?.message}
+            </Text>
+          )}
+
+          <Controller
+            control={control}
+            rules={{
+              required: {
+                message: AppConstants.ERROR_LastNameIsRequired,
+                value: true,
+              },
+              pattern: {
+                value: /^[A-Za-z]+$/i,
+                message: AppConstants.ERROR_InvalidName,
+              },
+            }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput
+                label={AppConstants.LABEL_LastName}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                mode="outlined"
+                placeholder={AppConstants.PLACEHOLDER_LastName}
+                textContentType="name"
+                style={styles.textInput}
+              />
+            )}
+            name="lastName"
+          />
+          {errors.lastName?.message && (
+            <Text style={{ color: theme.colors.error }}>
+              {errors.lastName?.message}
+            </Text>
+          )}
+
+          <Controller
+            control={control}
+            rules={{
+              required: {
+                message: AppConstants.ERROR_EmailIsRequired,
+                value: true,
+              },
+              validate: {
+                invalidEmail: (value) => {
+                  return validateEmail(value);
+                },
+              },
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
@@ -114,16 +203,22 @@ export default function SignUpScreen({ navigation }) {
             )}
             name="emailAddress"
           />
-          {errors.emailAddress && (
+          {errors.emailAddress && errors.emailAddress.type === "required" && (
             <Text style={{ color: theme.colors.error }}>
               {AppConstants.ERROR_EmailIsRequired}
             </Text>
           )}
+          {errors.emailAddress &&
+            errors.emailAddress.type === "invalidEmail" && (
+              <Text style={{ color: theme.colors.error }}>
+                {AppConstants.ERROR_InvalidEmail}
+              </Text>
+            )}
 
           <Controller
             control={control}
             rules={{
-              maxLength: 100,
+              maxLength: 16,
               required: true,
             }}
             render={({ field: { onChange, onBlur, value } }) => (
@@ -146,6 +241,45 @@ export default function SignUpScreen({ navigation }) {
               {AppConstants.ERROR_PasswordIsRequired}
             </Text>
           )}
+
+          <Controller
+            control={control}
+            rules={{
+              maxLength: 16,
+              required: true,
+              validate: (val) => {
+                if (watch("password") != val) {
+                  return AppConstants.ERROR_ConfirmPassword;
+                }
+              },
+            }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput
+                label={AppConstants.LABEL_ConfirmPassword}
+                mode="outlined"
+                placeholder={AppConstants.PLACEHOLDER_ConfirmPassword}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                secureTextEntry
+                textContentType="password"
+                style={styles.textInput}
+              />
+            )}
+            name="confirmPassword"
+          />
+          {errors.confirmPassword &&
+            errors.confirmPassword.type === "required" && (
+              <Text style={{ color: theme.colors.error }}>
+                {AppConstants.ERROR_PasswordIsRequired}
+              </Text>
+            )}
+          {errors.confirmPassword &&
+            errors.confirmPassword.type === "validate" && (
+              <Text style={{ color: theme.colors.error }}>
+                {AppConstants.ERROR_ConfirmPassword}
+              </Text>
+            )}
 
           <Button
             mode="contained"
@@ -189,7 +323,7 @@ export default function SignUpScreen({ navigation }) {
 }
 
 const { height } = Dimensions.get("screen");
-const container_height = height * 0.45;
+const container_height = height * 0.7;
 
 const styles = StyleSheet.create({
   container: {

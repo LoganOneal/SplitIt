@@ -7,29 +7,39 @@ import * as React from "react";
 import { View, StyleSheet, Dimensions } from "react-native";
 import { Text, Button, Divider, useTheme } from "react-native-paper";
 import ThemeToggle from "./ThemeToggle";
-import { useAppDispatch } from "../store/hook";
-import { userLoggedOut } from "../store/authSlice";
+import { useAppDispatch, useAppSelector } from "../store/hook";
+import { selectAuthState, userLoggedOut } from "../store/authSlice";
 
 const DrawerContent = (props) => {
-  const [active, setActive] = React.useState("");
   const theme = useTheme();
   const dispatch = useAppDispatch();
+  const authState = useAppSelector(selectAuthState);
   return (
     <DrawerContentScrollView {...props}>
-      <DrawerItemList {...props} />
-      <View style={styles.container}>
-        <Divider style={{ alignSelf: "stretch" }} />
-        <View style={styles.containerItem}>
-          <ThemeToggle />
+      <View style={styles.drawerContainer}>
+        <View style={styles.drawerHeader}>
+          <Text variant="bodyLarge" style={{ color: theme.colors.primary }}>
+            Welcome {authState?.userName ?? "N/A"}
+          </Text>
         </View>
-        <View style={styles.containerItem}>
-          <Button
-            icon="logout"
-            mode="contained-tonal"
-            onPress={() => dispatch(userLoggedOut())}
-          >
-            Log out
-          </Button>
+        <Divider style={{ alignSelf: "stretch" }} />
+        <View style={styles.drawerItem}>
+          <DrawerItemList {...props} />
+        </View>
+        <Divider style={{ alignSelf: "stretch" }} />
+        <View style={styles.drawerFooter}>
+          <View style={styles.drawerItem}>
+            <ThemeToggle />
+          </View>
+          <View style={styles.drawerItem}>
+            <Button
+              icon="logout"
+              mode="contained-tonal"
+              onPress={() => dispatch(userLoggedOut())}
+            >
+              Log out
+            </Button>
+          </View>
         </View>
       </View>
     </DrawerContentScrollView>
@@ -39,17 +49,27 @@ const DrawerContent = (props) => {
 export default DrawerContent;
 
 const { height } = Dimensions.get("screen");
-const container_height = height * 0.25;
+const container_height = height * 0.2;
+const header_height = height * 0.04;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  drawerContainer: {
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  drawerHeader: {
+    paddingHorizontal: 10,
+    height: header_height,
+    marginTop: 2,
+  },
+  drawerFooter: {
     justifyContent: "flex-end",
     alignItems: "center",
     paddingHorizontal: 10,
     height: container_height,
+    width: "100%",
   },
-  containerItem: {
+  drawerItem: {
     paddingHorizontal: 1,
     paddingVertical: 10,
     width: "100%",

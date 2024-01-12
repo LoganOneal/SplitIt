@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {Linking, Platform} from 'react-native';
 import {useNavigation} from '@react-navigation/core';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import {createUserWithEmailAndPassword} from 'firebase/auth';
 
 import {useData, useTheme, useTranslation, useFirebase} from '../hooks/';
 import * as regex from '../constants/regex';
@@ -34,7 +34,9 @@ const Register = () => {
     password: false,
     agreed: false,
   });
+
   const [errorState, setErrorState] = useState('');
+  const [emailExists, setEmailExists] = useState(false);
   const [registration, setRegistration] = useState<IRegistration>({
     name: '',
     email: '',
@@ -44,23 +46,32 @@ const Register = () => {
   const {assets, colors, gradients, sizes} = useTheme();
 
   const handleChange = useCallback(
-    (value) => {
+    (value: any) => {
       setRegistration((state) => ({...state, ...value}));
+      setEmailExists(false);
     },
-    [setRegistration],
+    [setEmailExists, setRegistration],
   );
 
   const handleSignUp = useCallback(() => {
     if (!Object.values(isValid).includes(false)) {
-      /** send/save registratin data */
+      /** send/save registration data */
       console.log('email: ', registration.email);
       console.log('password: ', registration.password);
 
-      createUserWithEmailAndPassword(auth, registration.email, registration.password).catch(error =>
-        setErrorState(error.message)
-      );
+      createUserWithEmailAndPassword(
+        auth,
+        registration.email,
+        registration.password,
+      ).catch((error) => {
+        if (error.code === 'auth/email-already-in-use') {
+          setEmailExists(true);
+        }
+        console.log(error.message);
+        setErrorState(error.message);
+      });
     }
-  }, [isValid, registration]);
+  }, [auth, isValid, registration]);
 
   useEffect(() => {
     setIsValid((state) => ({
@@ -233,6 +244,12 @@ const Register = () => {
                   </Text>
                 </Text>
               </Block>
+              {/* Display error messages */}
+              {emailExists && (
+                <Text color={colors.danger} marginVertical={sizes.s}>
+                  The email has already been registered to an account.
+                </Text>
+              )}
               <Button
                 onPress={handleSignUp}
                 marginVertical={sizes.s}

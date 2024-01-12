@@ -29,10 +29,12 @@
     "namePlaceholder": "Enter your full name",
     "email": "Email",
     "emailPlaceholder": "Enter your email address",
+    "phoneNumber": "Phone Number",
     "password": "Password",
     "passwordPlaceholder": "Enter a password",
     "agree": "I agree with the ",
     "terms": "Terms and Conditions",
+    "submit": "Submit",
     "signup": "Sign Up",
     "signin": "Sign In",
     "goBack": "Go back",
@@ -70,6 +72,7 @@
   "navigation": {
     "scanner": "Receipt Scanner",
     "receipts": "My Receipts",
+    "receiptgroup": "Receipt Group",
     "receiptdetails": "Receipt Details",
     "home": "Soft UI",
     "components": "Components",
@@ -120,5 +123,11 @@
     "appTemplate": "Soft UI PRO React Native is an innovative app template that will help you built stunning mobile applications in no time. It features a huge number of components and screens built to fit together and look amazing:",
     "saveTime": "This modern app template will save you a lot of time going from prototyping to full-functional code, because all elements are implemented. We wanted the design process to be seamless, so switching from image to the real page is very easy to do!",
     "buyNow": "Buy now"
+  },
+  "groups": {
+    "members": "Group Members",
+    "add": "Add Member",
+    "addManually": "Add Member Manually",
+    "create": "Create Group"
   }
 }

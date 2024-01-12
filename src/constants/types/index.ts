@@ -186,3 +186,8 @@ export interface IReceipt {
   timestamp?: number;
   onPress?: (event?: any) => void;
 }
+
+export interface IMemberItem {
+  id?: number;
+  name?: string;
+}

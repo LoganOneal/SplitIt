@@ -5,11 +5,13 @@ import { Camera, CameraType } from 'expo-camera';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { FontAwesome, Ionicons,MaterialCommunityIcons } from '@expo/vector-icons';
 import * as MediaLibrary from 'expo-media-library';
+import {useNavigation} from '@react-navigation/core';
 
 const Scanner = () => {
   const [hasPermission, setHasPermission] = useState(null);
   const [cameraType, setCameraType] = useState(Camera.Constants.Type.back);
   const cameraRef = useRef(null);
+  const navigation = useNavigation()
 
   useEffect(() => {
     (async () => {
@@ -18,12 +20,16 @@ const Scanner = () => {
     })();
   }, []);
 
-  const takePicture = async () => {
-    if (cameraRef.current) {
-      const { uri } = await cameraRef.current.takePictureAsync();
-      savePictureToCameraRoll(uri);
-    }
-  };
+  // const takePicture = async () => {
+  //   if (cameraRef.current) {
+  //     const { uri } = await cameraRef.current.takePictureAsync();
+  //     savePictureToCameraRoll(uri);
+  //   }
+  // };
+
+  const takePicture = () => {
+    navigation.navigate('ReceiptGroup')
+  }
 
   const savePictureToCameraRoll = async (uri: any) => {
     if (uri) {

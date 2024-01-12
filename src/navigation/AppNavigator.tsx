@@ -5,6 +5,7 @@ import PublicStack from "./PublicStack";
 import { useAppSelector } from "../store/hook";
 import { selectAuthState } from "../store/authSlice";
 import DrawerNavigator from "./DrawerNavigator";
+import BottomNavigator from "./BottomNavigator"
 
 const AppNavigator = (theme: Theme) => {
   const authState = useAppSelector(selectAuthState);
@@ -12,7 +13,7 @@ const AppNavigator = (theme: Theme) => {
     // TODO - Pass theme prop into NavigationContainer
     <NavigationContainer>
       {/* Conditional stack navigator rendering based on login state */}
-      {authState?.isLoggedIn ? <DrawerNavigator /> : <PublicStack />}
+      {authState?.isLoggedIn ? <BottomNavigator /> : <PublicStack />}
     </NavigationContainer>
   );
 };

@@ -1,5 +1,5 @@
-export const CLIENT_NAME = "CLIENT/APP NAME";
-export const APP_SLOGAN = "Client/APP Slogan";
+export const CLIENT_NAME = "SplitIt";
+export const APP_SLOGAN = "Let's split the bill!";
 export const APP_DESCRIPTION = "App description text.";
 
 export const TITLE_Login = "Login";

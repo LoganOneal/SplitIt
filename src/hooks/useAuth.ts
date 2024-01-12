@@ -11,18 +11,18 @@ import {
   IFirebaseUser,
   IFirebaseResponse,
 } from "../interfaces/IAuthentication";
+import {API_KEY, AUTH_DOMAIN, PROJECT_ID, STORAGE_BUCKET, MESSAGING_SENDER_ID, APP_ID, MEASUREMENT_ID, AZURE_API_KEY} from '@env'
 
 // Firebase config get these details from firebase console
 // TODO: Please replace the details below with that of your Firebase App
 export const useAuth = () => {
   const firebaseConfig = {
-    apiKey: "REPLACE-ME",
-    authDomain: "REPLACE-ME.firebaseapp.com",
-    databaseURL: "https://REPLACE-ME.firebaseio.com",
-    projectId: "REPLACE-ME",
-    storageBucket: "REPLACE-ME.appspot.com",
-    messagingSenderId: "REPLACE-ME",
-    appId: "REPLACE-ME",
+    apiKey: API_KEY,
+    authDomain: AUTH_DOMAIN,
+    projectId:PROJECT_ID,
+    storageBucket: STORAGE_BUCKET,
+    messagingSenderId: MESSAGING_SENDER_ID,
+    appId: APP_ID,
   };
 
   const initFirebase = () => {

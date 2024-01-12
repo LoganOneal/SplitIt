@@ -4808,6 +4808,11 @@ expo-modules-core@1.2.7, expo-modules-core@~1.2.7:
     compare-versions "^3.4.0"
     invariant "^2.2.4"
 
+expo-sharing@^11.7.0:
+  version "11.7.0"
+  resolved "https://registry.yarnpkg.com/expo-sharing/-/expo-sharing-11.7.0.tgz#3c3ef244e1e1933b53b1431a4691129e7b00fcb0"
+  integrity sha512-konZ7DqFUCiGss1VO/NGeTauwl0B8PyfBPsyXVyGTf52RCbecmF3txsWwVFDFAN+ufGi7a8oAxvGv03kKiTEBA==
+
 expo-splash-screen@~0.18.2:
   version "0.18.2"
   resolved "https://registry.npmjs.org/expo-splash-screen/-/expo-splash-screen-0.18.2.tgz"

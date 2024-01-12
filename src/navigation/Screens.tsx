@@ -1,7 +1,7 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 
-import {Scanner, Articles, Components, Home, Profile, Register, Pro, MyReceipts, ReceiptDetails, ReceiptGroup} from '../screens';
+import {Scanner, Articles, Components, Home, Profile, Register, Pro, MyReceipts, ReceiptDetails, ReceiptGroup, AddMember} from '../screens';
 import {useScreenOptions, useTranslation} from '../hooks';
 
 const Stack = createStackNavigator();
@@ -26,6 +26,11 @@ export default () => {
         name="ReceiptGroup"
         component={ReceiptGroup}
         options={{title: t('navigation.receiptgroup')}}
+      />
+      <Stack.Screen
+        name="AddMember"
+        component={AddMember}
+        options={{title: t('navigation.addmember')}}
       />
       <Stack.Screen
         name="ReceiptDetails"

@@ -49,7 +49,7 @@ const ReceiptGroup = () => {
                     marginVertical={sizes.s}
                     marginHorizontal={sizes.sm}
                     row
-                    onPress={() => navigation.navigate('')}>
+                    onPress={() => navigation.navigate('AddMember')}>
                     <Text bold transform="uppercase">
                         {t('groups.add')}
                     </Text>

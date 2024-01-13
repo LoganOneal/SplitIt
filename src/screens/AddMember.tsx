@@ -11,34 +11,34 @@ const AddMember = () => {
 
     return (
         <Block>
-            <Block card margin={sizes.sm}>
-                <Text h4 align="center">
+            <Block card margin={sizes.sm} flex={0}>
+                <Text h4 align="center" marginTop={sizes.m}>
                     {t('groups.add')}
                 </Text>
 
-                <Block paddingHorizontal={sizes.sm}>
-                    <Input
+                <Input
                     autoCapitalize="none"
-                    marginBottom={sizes.m}
+                    marginVertical={sizes.m}
+                    marginHorizontal={sizes.sm}
                     keyboardType="default"
                     label={t('common.name')}
                     placeholder={t('common.name')}
-                    //   onChangeText={(value) => handleChange({email: value})}
-                    />
-                    <Input
-                    secureTextEntry
+                //   onChangeText={(value) => handleChange({email: value})}
+                />
+                <Input
                     autoCapitalize="none"
-                    marginBottom={sizes.m}
-                    keyboardType="number-pad"
+                    marginVertical={sizes.m}
+                    marginHorizontal={sizes.sm}
+                    keyboardType="default"
                     label={t('common.phoneNumber')}
                     placeholder={t('common.phoneNumberPlaceholder')}
-                    //   onChangeText={(value) => handleChange({password: value})}
-                    />
-                </Block>
+                //   onChangeText={(value) => handleChange({password: value})}
+                />
 
                 <Button
                     black
-                    marginVertical={sizes.s}
+                    marginTop={sizes.xl}
+                    marginBottom={sizes.l}
                     marginHorizontal={sizes.sm}
                     row
                     // onPress={handleCreate}>

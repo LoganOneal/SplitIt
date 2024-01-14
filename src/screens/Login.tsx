@@ -56,7 +56,7 @@ const Login = () => {
       ...state,
       email: regex.email.test(login.email),
       password: regex.password.test(login.password),
-    }));flx
+    }));
   }, [login, setIsValid]);
 
   return (

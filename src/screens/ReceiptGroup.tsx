@@ -1,17 +1,19 @@
 import React from "react";
-import {FlatList, Linking, Platform} from 'react-native';
+import {FlatList, Platform} from 'react-native';
 import {useNavigation} from '@react-navigation/core';
 import {Ionicons} from '@expo/vector-icons';
 
-import {Block, Button, Input, Image, Text} from '../components/';
+import {Block, Button, Text} from '../components/';
 import { useTranslation, useTheme } from "../hooks";
 import { MEMBERS } from "../constants/mocks";
 import MemberItem from "../components/MemberItem";
 
+const isAndroid = Platform.OS === 'android';
+
 const ReceiptGroup = () => {
     const navigation = useNavigation();
     const {t} = useTranslation();
-    const {colors, icons, sizes, gradients} = useTheme();
+    const {colors, sizes} = useTheme();
     const members = MEMBERS
 
     const handleCreate = () => {
@@ -49,6 +51,7 @@ const ReceiptGroup = () => {
                     marginVertical={sizes.s}
                     marginHorizontal={sizes.sm}
                     row
+                    shadow={!isAndroid}
                     onPress={() => navigation.navigate('AddMember')}>
                     <Text bold transform="uppercase">
                         {t('groups.add')}
@@ -63,6 +66,7 @@ const ReceiptGroup = () => {
                     marginVertical={sizes.s}
                     marginHorizontal={sizes.sm}
                     row
+                    shadow={!isAndroid}
                     onPress={handleCreate}>
                     <Text white bold transform="uppercase">
                         {t('groups.create')}

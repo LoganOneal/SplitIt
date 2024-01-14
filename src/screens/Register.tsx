@@ -5,7 +5,15 @@ import {createUserWithEmailAndPassword} from 'firebase/auth';
 
 import {useData, useTheme, useTranslation, useFirebase} from '../hooks/';
 import * as regex from '../constants/regex';
-import {Block, Button, Input, Image, Text, Checkbox} from '../components/';
+import {
+  Block,
+  Button,
+  Input,
+  Image,
+  Text,
+  Checkbox,
+  PasswordRequirements,
+} from '../components/';
 
 const isAndroid = Platform.OS === 'android';
 
@@ -37,6 +45,7 @@ const Register = () => {
 
   const [errorState, setErrorState] = useState('');
   const [emailExists, setEmailExists] = useState(false);
+  const [validPassword, setValidPassword] = useState(false);
   const [registration, setRegistration] = useState<IRegistration>({
     name: '',
     email: '',
@@ -49,8 +58,13 @@ const Register = () => {
     (value: any) => {
       setRegistration((state) => ({...state, ...value}));
       setEmailExists(false);
+      if (!isValid.password && value.password) {
+        setValidPassword(true);
+      } else {
+        setValidPassword(false);
+      }
     },
-    [setEmailExists, setRegistration],
+    [setEmailExists, setRegistration, isValid.password],
   );
 
   const handleSignUp = useCallback(() => {
@@ -194,7 +208,7 @@ const Register = () => {
                   gradient={gradients.divider}
                 />
               </Block>
-              {/* form inputs */}
+              {/* form inputs (includes validation errors) */}
               <Block paddingHorizontal={sizes.sm}>
                 <Input
                   autoCapitalize="none"
@@ -205,6 +219,14 @@ const Register = () => {
                   danger={Boolean(registration.name && !isValid.name)}
                   onChangeText={(value) => handleChange({name: value})}
                 />
+                {!isValid.name && registration.name && (
+                  <Block marginTop={sizes.xs}>
+                    <Text color={colors.danger}>
+                      Name must be between 3 and 30 characters long.
+                      {'\n'}
+                    </Text>
+                  </Block>
+                )}
                 <Input
                   autoCapitalize="none"
                   marginBottom={sizes.m}
@@ -215,6 +237,14 @@ const Register = () => {
                   danger={Boolean(registration.email && !isValid.email)}
                   onChangeText={(value) => handleChange({email: value})}
                 />
+                {!isValid.email && registration.email && (
+                  <Block marginTop={sizes.xs}>
+                    <Text color={colors.danger}>
+                      Please enter a valid email address.
+                      {'\n'}
+                    </Text>
+                  </Block>
+                )}
                 <Input
                   secureTextEntry
                   autoCapitalize="none"
@@ -225,6 +255,20 @@ const Register = () => {
                   success={Boolean(registration.password && isValid.password)}
                   danger={Boolean(registration.password && !isValid.password)}
                 />
+                {validPassword && !isValid.password && (
+                  <Block marginTop={sizes.xs}>
+                    <PasswordRequirements password={registration.password} />
+                  </Block>
+                )}
+              </Block>
+              {/* email already registered validation error */}
+              <Block paddingHorizontal={sizes.sm} marginTop={sizes.xs}>
+                {emailExists && (
+                  <Text color={colors.danger}>
+                    Email is already registered.
+                    {'\n'}
+                  </Text>
+                )}
               </Block>
               {/* checkbox terms */}
               <Block row flex={0} align="center" paddingHorizontal={sizes.sm}>
@@ -244,12 +288,6 @@ const Register = () => {
                   </Text>
                 </Text>
               </Block>
-              {/* Display error messages */}
-              {emailExists && (
-                <Text color={colors.danger} marginVertical={sizes.s}>
-                  The email has already been registered to an account.
-                </Text>
-              )}
               <Button
                 onPress={handleSignUp}
                 marginVertical={sizes.s}

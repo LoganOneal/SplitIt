@@ -11,34 +11,35 @@ const PasswordRequirements: React.FC<PasswordRequirementsProps> = ({
 }) => {
   const {colors} = useTheme();
 
+  const renderRequirement = (condition: boolean, requirement: string) => {
+    const icon = condition ? '✓' : '✗';
+    const color = condition ? colors.success : colors.danger;
+    return (
+      <Text key={requirement} color={color}>
+        [{icon}] {requirement}
+        {'\n'}
+      </Text>
+    );
+  };
+
   return (
     <Text>
       Password must include:
-      {'\n'}- At least 8 characters{' '}
-      <Text color={password.length >= 8 ? colors.success : colors.danger}>
-        {password.length >= 8 ? '✓' : '✗'}
-      </Text>
-      {'\n'}- At least one uppercase letter{' '}
-      <Text color={password.match(/[A-Z]/) ? colors.success : colors.danger}>
-        {password.match(/[A-Z]/) ? '✓' : '✗'}
-      </Text>
-      {'\n'}- At least one lowercase letter{' '}
-      <Text color={password.match(/[a-z]/) ? colors.success : colors.danger}>
-        {password.match(/[a-z]/) ? '✓' : '✗'}
-      </Text>
-      {'\n'}- At least one number{' '}
-      <Text color={password.match(/[0-9]/) ? colors.success : colors.danger}>
-        {password.match(/[0-9]/) ? '✓' : '✗'}
-      </Text>
-      {'\n'}- At least one special character{' '}
-      <Text
-        color={
-          password.match(/[`!@#$%^&*()_\-+=\[\]{};':"\\|,.<>\/?~ ]/)
-            ? colors.success
-            : colors.danger
-        }>
-        {password.match(/[`!@#$%^&*()_\-+=\[\]{};':"\\|,.<>\/?~ ]/) ? '✓' : '✗'}
-      </Text>
+      {'\n'}
+      {renderRequirement(password.length >= 8, 'At least 8 characters')}
+      {renderRequirement(
+        !!password.match(/[A-Z]/),
+        'At least one uppercase character',
+      )}
+      {renderRequirement(
+        !!password.match(/[a-z]/),
+        'At least one lowercase character',
+      )}
+      {renderRequirement(
+        !!password.match(/[`!@#$%^&*()_\-+=\[\]{};':"\\|,.<>\/?~ ]/),
+        'At least one special character',
+      )}
+      {renderRequirement(!!password.match(/[0-9]/), 'At least one number')}
     </Text>
   );
 };

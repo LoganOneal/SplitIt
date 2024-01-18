@@ -18,7 +18,7 @@ import { useAuth } from "../hooks/useAuth";
 import { IAuthState } from "../interfaces/IAuthentication";
 import { userRegistered } from "../store/authSlice";
 import { useValidation } from "../hooks/useValidation";
-import PasswordRequirements from "../components/PasswordRequirments";
+import PasswordRequirements from "../components/PasswordRequirements";
 
 type SignUpFormData = {
   firstName: string;

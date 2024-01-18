@@ -18,6 +18,7 @@ import { useAuth } from "../hooks/useAuth";
 import { IAuthState } from "../interfaces/IAuthentication";
 import { userRegistered } from "../store/authSlice";
 import { useValidation } from "../hooks/useValidation";
+import PasswordRequirements from "../components/PasswordRequirments";
 
 type SignUpFormData = {
   firstName: string;
@@ -31,10 +32,11 @@ export default function SignUpScreen({ navigation }) {
   const theme = useTheme();
   const [showSnack, setShowSnack] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [password, setPassword] = useState('');
   const [snackMessage, setSnackMessage] = useState("");
   const dispatch = useAppDispatch();
   const { signupUser, getProfile } = useAuth();
-  const { validateEmail } = useValidation();
+  const { validateEmail, validatePassword } = useValidation();
   const {
     control,
     handleSubmit,
@@ -63,8 +65,11 @@ export default function SignUpScreen({ navigation }) {
     let firebaseToken = null;
     const fullName = fname + lname;
     setLoading(true);
+
     await signupUser(fullName, email, password).then((fbResponse) => {
+
       parsedResponse = JSON.parse(fbResponse);
+
       // error response
       if (parsedResponse.error.code) {
         setSnackMessage(parsedResponse.error.message);
@@ -72,6 +77,7 @@ export default function SignUpScreen({ navigation }) {
         setLoading(false);
         return;
       }
+
       // response
       if (parsedResponse.result) {
         firebaseToken = parsedResponse.result.user.stsTokenManager.accessToken;
@@ -97,7 +103,8 @@ export default function SignUpScreen({ navigation }) {
       }
     });
   };
-
+// TODO: Add back the email error if it is already registered
+// Also, fix the ui for this page
   return (
     <ImageOverlay
       style={styles.container}
@@ -220,28 +227,42 @@ export default function SignUpScreen({ navigation }) {
             rules={{
               maxLength: 16,
               required: true,
+              validate: (val) => {
+                if (!validatePassword(val)) {
+                  return AppConstants.ERROR_InvalidPassword;
+                }
+              },
             }}
             render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
+              <><TextInput
                 label={AppConstants.LABEL_Password}
                 mode="outlined"
                 placeholder="Password"
                 onBlur={onBlur}
-                onChangeText={onChange}
+                onChangeText={(text) => {
+                  onChange(text);
+                  setPassword(text);
+                }}
                 value={value}
                 secureTextEntry
                 textContentType="password"
-                style={styles.textInput}
-              />
+                style={styles.textInput} />
+                <PasswordRequirements password={password} successColor="green" dangerColor="red"/></>
             )}
             name="password"
           />
-          {errors.password && (
-            <Text style={{ color: theme.colors.error }}>
-              {AppConstants.ERROR_PasswordIsRequired}
-            </Text>
-          )}
-
+          {errors.password &&
+            errors.password.type === "required" && (
+              <Text style={{ color: theme.colors.error }}>
+                {AppConstants.ERROR_PasswordIsRequired}
+              </Text>
+            )}
+          {errors.password &&
+            errors.password.type === "validate" && (
+              <Text style={{ color: theme.colors.error }}>
+                {AppConstants.ERROR_InvalidPassword}
+              </Text>
+            )}
           <Controller
             control={control}
             rules={{

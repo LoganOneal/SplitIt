@@ -56,9 +56,9 @@ export const PLACEHOLDER_Service =
   "Enter details on what services you require.";
 export const PLACEHOLDER_Password = "Password";
 export const PLACEHOLDER_ConfirmPassword = "Confirm Password";
-export const PLACEHOLDER_FullName = "John Doe";
-export const PLACEHOLDER_FirstName = "John";
-export const PLACEHOLDER_LastName = "Doe";
+export const PLACEHOLDER_FullName = "Enter your full name";
+export const PLACEHOLDER_FirstName = "Enter your first name";
+export const PLACEHOLDER_LastName = "Enter your last name";
 
 export const SPLASH_TEXT1 = "Feature 1";
 export const SPLASH_TEXT2 = "Feature 2";
@@ -68,7 +68,9 @@ export const SPLASH_GET_STARTED = "Get Started";
 // error messages
 export const ERROR_EmailIsRequired = "Email is required";
 export const ERROR_InvalidEmail = "Email is invalid.";
+export const ERROR_EmailIsAlreadyRegistered = "Email is already registered.";
 export const ERROR_PasswordIsRequired = "Password is required";
+export const ERROR_InvalidPassword = "Password is invalid.";
 export const ERROR_ConfirmPassword = "Confirm password does NOT match password";
 export const ERROR_FirstNameIsRequired = "First name is required";
 export const ERROR_LastNameIsRequired = "Last name is required";

@@ -1,20 +1,26 @@
 import React from 'react';
-import { Text } from 'react-native-paper';
+import { Text, useTheme } from 'react-native-paper';
 
 interface PasswordRequirementsProps {
     password: string;
-    successColor: string;
-    dangerColor: string;
+    show: boolean;
   }
+  
   
   const PasswordRequirements: React.FC<PasswordRequirementsProps> = ({
     password,
-    successColor,
-    dangerColor,
+    show
   }) => {
+
+    const theme = useTheme();
+
+    if (show) {
+      return null;
+    }
+
     const renderRequirement = (condition: boolean, requirement: string) => {
       const icon = condition ? '✓' : '✗';
-      const color = condition ? successColor : dangerColor;
+      const color = condition ? "green" : theme.colors.error;
       return (
         <Text key={requirement} style={{ color }}>
           [{icon}] {requirement}
@@ -25,7 +31,7 @@ interface PasswordRequirementsProps {
   
     return (
       <>
-        <Text>Password must include:</Text>
+        <Text style={{marginTop: 8, marginBottom: 10}}>Password must include:</Text>
         {renderRequirement(password.length >= 8, 'At least 8 characters')}
         {renderRequirement(
           !!password.match(/[A-Z]/),

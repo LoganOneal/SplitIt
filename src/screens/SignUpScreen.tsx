@@ -8,7 +8,7 @@ import {
   Text,
   ActivityIndicator,
 } from "react-native-paper";
-import { StyleSheet, Dimensions, StatusBar } from "react-native";
+import { StyleSheet, Dimensions, StatusBar, SafeAreaView, ScrollView } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import * as Animatable from "react-native-animatable";
 import { useAppDispatch } from "../store/hook";
@@ -19,6 +19,7 @@ import { IAuthState } from "../interfaces/IAuthentication";
 import { userRegistered } from "../store/authSlice";
 import { useValidation } from "../hooks/useValidation";
 import PasswordRequirements from "../components/PasswordRequirements";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 type SignUpFormData = {
   firstName: string;
@@ -33,10 +34,12 @@ export default function SignUpScreen({ navigation }) {
   const [showSnack, setShowSnack] = useState(false);
   const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState('');
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [snackMessage, setSnackMessage] = useState("");
   const dispatch = useAppDispatch();
   const { signupUser, getProfile } = useAuth();
   const { validateEmail, validatePassword } = useValidation();
+  const [emailRegistered, setEmailRegistered] = useState(false);
   const {
     control,
     handleSubmit,
@@ -55,6 +58,16 @@ export default function SignUpScreen({ navigation }) {
 
   const onDismissSnackBar = () => setShowSnack(false);
 
+  const handlePasswordChange = (text) => {
+    const isValid = validatePassword(text);
+    setPassword(text);
+    setIsPasswordValid(isValid);
+  };
+
+  const dynamicContainerHeightMultiplier = isPasswordValid ? 0.7 : 0.85;
+  const dynamicContainerHeight = height * dynamicContainerHeightMultiplier;
+
+
   const handleSignUp = async (
     fname: string,
     lname: string,
@@ -72,6 +85,9 @@ export default function SignUpScreen({ navigation }) {
 
       // error response
       if (parsedResponse.error.code) {
+        if (parsedResponse.error.code === "auth/email-already-in-use") {
+          setEmailRegistered(true);
+        }
         setSnackMessage(parsedResponse.error.message);
         setShowSnack(true);
         setLoading(false);
@@ -103,16 +119,22 @@ export default function SignUpScreen({ navigation }) {
       }
     });
   };
-// TODO: Add back the email error if it is already registered
-// Also, fix the ui for this page
+
   return (
+    <SafeAreaView style={{ flex: 1 }}>
+      <KeyboardAwareScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        enableOnAndroid
+        enableAutomaticScroll
+        keyboardOpeningTime={0}
+      >
     <ImageOverlay
       style={styles.container}
       source={require("../../assets/images/splash-pool.jpg")}
     >
       <StatusBar barStyle="light-content" />
       <Animatable.View
-        style={[styles.contentContainer]}
+        style={[styles.contentContainer, { height: dynamicContainerHeight }]}
         animation="fadeInUpBig"
       >
         <Surface style={styles.surface} elevation={1}>
@@ -205,22 +227,36 @@ export default function SignUpScreen({ navigation }) {
                 mode="outlined"
                 placeholder="Email Address"
                 textContentType="emailAddress"
+                right={
+                  watch("emailAddress") &&
+                  (validateEmail(value) ? (
+                    <TextInput.Icon icon="check" color="green" />
+                  ) : (
+                    <TextInput.Icon icon="close" color={theme.colors.error} />
+                  ))
+                }
                 style={styles.textInput}
               />
             )}
             name="emailAddress"
           />
-          {errors.emailAddress && errors.emailAddress.type === "required" && (
-            <Text style={{ color: theme.colors.error }}>
-              {AppConstants.ERROR_EmailIsRequired}
-            </Text>
-          )}
+          {errors.emailAddress && 
+            errors.emailAddress.type === "required" && (
+              <Text style={{ color: theme.colors.error }}>
+                {AppConstants.ERROR_EmailIsRequired}
+              </Text>
+            )}
           {errors.emailAddress &&
             errors.emailAddress.type === "invalidEmail" && (
               <Text style={{ color: theme.colors.error }}>
                 {AppConstants.ERROR_InvalidEmail}
               </Text>
             )}
+          {emailRegistered && (
+            <Text style={{ color: theme.colors.error, marginTop: 8}}>
+              {AppConstants.ERROR_EmailIsAlreadyRegistered}
+            </Text>
+          )}
 
           <Controller
             control={control}
@@ -228,9 +264,9 @@ export default function SignUpScreen({ navigation }) {
               maxLength: 16,
               required: true,
               validate: (val) => {
-                if (!validatePassword(val)) {
-                  return AppConstants.ERROR_InvalidPassword;
-                }
+                const isValid = validatePassword(val);
+                setIsPasswordValid(isValid);
+                return isValid || AppConstants.ERROR_InvalidPassword;
               },
             }}
             render={({ field: { onChange, onBlur, value } }) => (
@@ -241,13 +277,26 @@ export default function SignUpScreen({ navigation }) {
                 onBlur={onBlur}
                 onChangeText={(text) => {
                   onChange(text);
-                  setPassword(text);
+                  handlePasswordChange(text);
                 }}
                 value={value}
                 secureTextEntry
                 textContentType="password"
-                style={styles.textInput} />
-                <PasswordRequirements password={password} successColor="green" dangerColor="red"/></>
+                right={
+                  watch("password") && watch("password").length > 0 && 
+                  (isPasswordValid ? (
+                    <TextInput.Icon icon="check" color="green" />
+                  ) : (
+                    <TextInput.Icon icon="close" color={theme.colors.error} />
+                  ))
+                }
+                style={styles.textInput}
+              />
+                <PasswordRequirements 
+                  password={password}
+                  show={isPasswordValid}
+                />
+              </>
             )}
             name="password"
           />
@@ -263,6 +312,7 @@ export default function SignUpScreen({ navigation }) {
                 {AppConstants.ERROR_InvalidPassword}
               </Text>
             )}
+
           <Controller
             control={control}
             rules={{
@@ -284,6 +334,14 @@ export default function SignUpScreen({ navigation }) {
                 value={value}
                 secureTextEntry
                 textContentType="password"
+                right={
+                  watch("password") && watch("password").length > 0 &&
+                  (watch("password") === value ? (
+                    <TextInput.Icon icon="check" color="green" />
+                  ) : (
+                    <TextInput.Icon icon="close" color={theme.colors.error} />
+                  ))
+                }
                 style={styles.textInput}
               />
             )}
@@ -340,11 +398,12 @@ export default function SignUpScreen({ navigation }) {
         {snackMessage}
       </Snackbar>
     </ImageOverlay>
+    </KeyboardAwareScrollView>
+    </SafeAreaView>
   );
 }
 
 const { height } = Dimensions.get("screen");
-const container_height = height * 0.7;
 
 const styles = StyleSheet.create({
   container: {
@@ -354,17 +413,17 @@ const styles = StyleSheet.create({
   contentContainer: {
     marginHorizontal: 10,
     marginVertical: 20,
-    height: container_height,
+    marginTop: StatusBar.currentHeight,
   },
   surface: {
-    paddingTop: 30,
+    paddingTop: 25,
     justifyContent: "flex-start",
     paddingHorizontal: 20,
     borderRadius: 35,
-    height: container_height,
   },
   button: {
-    marginVertical: 20,
+    marginVertical: 10,
+    marginTop: 10,
   },
   textInput: {
     marginVertical: 10,

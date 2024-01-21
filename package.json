@@ -20,7 +20,7 @@
     "@reduxjs/toolkit": "^1.9.7",
     "deepmerge": "^4.3.1",
     "expo": "~49.0.15",
-    "expo-camera": "^13.6.0",
+    "expo-camera": "~13.4.4",
     "expo-media-library": "^15.6.0",
     "expo-sharing": "^11.7.0",
     "expo-status-bar": "~1.6.0",

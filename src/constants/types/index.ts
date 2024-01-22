@@ -39,3 +39,8 @@ export interface IReceipt {
   timestamp?: number;
   onPress?: (event?: any) => void;
 }
+
+export interface IGroupMember {
+  id?: number;
+  name?: string;
+}

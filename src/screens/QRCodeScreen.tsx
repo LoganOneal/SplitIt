@@ -1,14 +1,13 @@
-import React from 'react';
+import React from "react";
 import { Dimensions, StyleSheet, View } from "react-native";
 import {
   Button,
   Surface,
-  TextInput,
   useTheme,
-  Snackbar,
-  Text,
-  ActivityIndicator,
+  Text
 } from "react-native-paper";
+
+import * as AppConstants from "../constants/constants";
 
 export default function QRCodeScreen({ navigation }) {
   const theme = useTheme();
@@ -26,11 +25,11 @@ export default function QRCodeScreen({ navigation }) {
         <Button
           mode="contained"
           buttonColor="white"
-          textColor='black'
+          textColor="black"
           contentStyle={styles.button}
           style={styles.buttonContainer}
-          onPress={() => navigation.navigate("Add Member")}>
-          Add Member Manually +
+          onPress={() => navigation.navigate("Group Members")}>
+          {AppConstants.LABEL_AddMemberManually}
         </Button>
         <Button
           mode="contained"
@@ -38,7 +37,7 @@ export default function QRCodeScreen({ navigation }) {
           contentStyle={styles.button}
           style={styles.buttonContainer}
           onPress={() => {}}>
-          Create Group
+          {AppConstants.LABEL_CreateGroup}
         </Button>
       </View>
     </View>

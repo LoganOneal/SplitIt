@@ -1,17 +1,13 @@
-import React from 'react';
+import React from "react";
 import { Dimensions, FlatList, StyleSheet, View } from "react-native";
 import {
   Button,
-  Surface,
-  TextInput,
-  useTheme,
-  Snackbar,
-  Text,
-  ActivityIndicator,
+  useTheme
 } from "react-native-paper";
 
 import { MEMBERS } from "../constants/mocks";
 import GroupMember from '../components/GroupMember';
+import * as AppConstants from "../constants/constants";
 
 export default function GroupMembersScreen({ navigation }) {
   const theme = useTheme();
@@ -35,11 +31,11 @@ export default function GroupMembersScreen({ navigation }) {
         <Button
           mode="contained"
           buttonColor="white"
-          textColor='black'
+          textColor="black"
           contentStyle={styles.button}
           style={styles.buttonContainer}
           onPress={() => navigation.navigate("Add Member")}>
-          Add Member +
+          {AppConstants.LABEL_AddMember}
         </Button>
         <Button
           mode="contained"
@@ -47,7 +43,7 @@ export default function GroupMembersScreen({ navigation }) {
           contentStyle={styles.button}
           style={styles.buttonContainer}
           onPress={() => {}}>
-          Create Group
+          {AppConstants.LABEL_CreateGroup}
         </Button>
       </View>
     </View>
@@ -55,7 +51,6 @@ export default function GroupMembersScreen({ navigation }) {
 }
 
 const { width } = Dimensions.get("screen");
-const qrcode_side_length = width * 0.85;
 
 const styles = StyleSheet.create({
   button: {

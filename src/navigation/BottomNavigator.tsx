@@ -7,10 +7,12 @@ import { useIsFocused } from '@react-navigation/native';
 
 const Tab = createBottomTabNavigator();
 
-export default function BottomNavigator(props) {
+export default function BottomNavigator({navigation}:any) {
     const isFocused = useIsFocused();
     let icon = 'camera';
-
+    const navigateToScanner = () => {
+      navigation.navigate("Scanner");
+    };
     return (
         <React.Fragment>
             <Tab.Navigator
@@ -29,6 +31,7 @@ export default function BottomNavigator(props) {
             right: 16,
           }}
           color="white"
+          onPress={navigateToScanner}
         />
       </Portal>
         </React.Fragment>

@@ -25,7 +25,7 @@ export interface IReceiptItem {
 
 export interface IReceipt {
   id?: number;
-  title?: string;
+  vendor?: string;
   image?: string;
   location?: ILocation;
   host?: IFirebaseUser;

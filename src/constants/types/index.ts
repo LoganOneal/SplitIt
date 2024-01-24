@@ -18,7 +18,7 @@ export interface IReceiptCategory {
 
 export interface IReceiptItem {
   id?: number;
-  title?: string;
+  name?: string;
   price?: number;
   paid?: boolean;
 }

@@ -1,3 +1,6 @@
+import { IFirebaseUser } from "./IAuthentication";
+import { ILocation } from "./IShared";
+
 export interface IReceiptCategory {
     id?: number;
     name?: string;
@@ -5,7 +8,7 @@ export interface IReceiptCategory {
   
   export interface IReceiptItem {
     id?: number;
-    title?: string;
+    name?: string;
     price?: number;
     paid?: boolean;
   }

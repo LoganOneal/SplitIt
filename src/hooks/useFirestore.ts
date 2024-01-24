@@ -23,22 +23,27 @@ import { useAuth } from "./useAuth";
 import { User, UserCredential, UserInfo } from "firebase/auth";
 
 export const useFirestore = () => {
-  const {getProfile} = useAuth()
+
+  const userRef = (uid: string) => doc(db, "users", uid);
 
   const createReceipt = async (receipt: IReceipt) => {
     const receiptsColRef = collection(db, 'receipts')
-    return addDoc(receiptsColRef, {
+
+    const receiptRef = await addDoc(receiptsColRef, {
       created: serverTimestamp(),
       host: auth.currentUser?.uid,
       receipt: receipt,
     });
+
+    await updateDoc(userRef(auth.currentUser?.uid!), {
+      hostReceipts: arrayUnion(receiptRef.id)
+    })
+
+    console.log(receiptRef.id)
   }
   
   const getReceipts = async () => {
-    const receiptsColRef = collection(db, 'receipts')
-    const receiptsSnapshot = await getDocs(receiptsColRef)
-    const receipts = receiptsSnapshot.docs.map(doc => doc.data())
-    return receipts
+    return
   }
 
 

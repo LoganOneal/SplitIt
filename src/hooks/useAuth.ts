@@ -11,6 +11,22 @@ import {
   IFirebaseResponse,
 } from "../interfaces/IAuthentication";
 import { auth } from '../services/firebase'
+import { useFirestore } from './useFirestore'
+import {
+  getFirestore,
+  query,
+  orderBy,
+  onSnapshot,
+  collection,
+  getDoc,
+  setDoc,
+  addDoc,
+  updateDoc,
+  doc,
+  serverTimestamp,
+  arrayUnion
+} from "firebase/firestore";
+import { db } from '../services/firebase'
 
 export const useAuth = () => {
 
@@ -48,6 +64,18 @@ export const useAuth = () => {
     await createUserWithEmailAndPassword(auth, userEmail, userPassword)
       .then((userCredential) => {
         fbResponse.result = userCredential;
+        
+        // create user in firestore
+        const userRef = doc(db, 'users', userCredential.user.uid)
+        const userDoc = getDoc(userRef)
+        setDoc(userRef, {
+          name: userFullName,
+          email: userEmail,
+          created: serverTimestamp(),
+          hostReceipts: [],
+          memberReceipts: []
+        })
+
         // Update profile
         if (auth.currentUser) {
           updateProfile(auth.currentUser, {
@@ -57,6 +85,7 @@ export const useAuth = () => {
         console.log("SignUp success");
       })
       .catch((error) => {
+        console.log(error);
         fbResponse.error.code = error.code;
         fbResponse.error.message = error.message;
         console.log("SignUp ERROR");

@@ -1,18 +1,39 @@
-import React from "react";
-import { Dimensions, FlatList, StyleSheet, View } from "react-native";
+import React, { useEffect, useState } from 'react';
+import { Dimensions, FlatList, StyleSheet, View } from 'react-native';
 import {
   Button,
   useTheme
-} from "react-native-paper";
+} from 'react-native-paper';
 
-import { MEMBERS } from "../constants/mocks";
 import GroupMember from '../components/GroupMember';
-import * as AppConstants from "../constants/constants";
+import * as AppConstants from '../constants/constants';
+import { useReceipts } from '../hooks/useReceipts';
+import { MEMBERS } from '../constants/mocks';
+import { IGroupMember } from '../constants/types';
+import { onSnapshot } from 'firebase/firestore';
 
-export default function GroupMembersScreen({ navigation }) {
+type AddMemberFormData = {
+  name: string;
+  phoneNumber: string;
+};
+
+export default function GroupMembersScreen({ route, navigation }) {
   const theme = useTheme();
-  const members = MEMBERS
+  const { receipt } = route.params;
+  const {  } = useReceipts();
+  const [users, setUsers] = useState([]);
 
+  useEffect(() => {
+    onSnapshot(receipt, (doc) => {
+      if (doc.data()) {
+        const users = doc.data().users.map((user: any, index: any) => ({
+          id: index,
+          ...user
+        }));
+        setUsers(users);
+      }
+    })
+  }, []);
 
   return (
     <View
@@ -21,7 +42,7 @@ export default function GroupMembersScreen({ navigation }) {
         { backgroundColor: theme.colors.primaryContainer },
       ]}>
       <FlatList
-        data={members}
+        data={users}
         showsVerticalScrollIndicator={false}
         keyExtractor={(item) => `${item?.id}`}
         renderItem={({ item }) => <GroupMember  {...item} />}
@@ -34,7 +55,7 @@ export default function GroupMembersScreen({ navigation }) {
           textColor="black"
           contentStyle={styles.button}
           style={styles.buttonContainer}
-          onPress={() => navigation.navigate("Add Member")}>
+          onPress={() => navigation.navigate("Add Member", {receipt: receipt})}>
           {AppConstants.LABEL_AddMember}
         </Button>
         <Button
@@ -73,7 +94,6 @@ const styles = StyleSheet.create({
   flatList: {
     width: width * 0.85,
     marginTop: width * 0.075,
-    height: "fit-content"
   },
   surface: {
     width: width * 0.85,

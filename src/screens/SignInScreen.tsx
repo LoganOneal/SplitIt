@@ -33,15 +33,16 @@ export default function SignInScreen({ navigation }) {
   const {
     control,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<SignInFormData>();
 
-  const onSubmit = (data: SignInFormData) => {
+  const onSubmit = (data: SignInFormData, numAttempts: ) => {
     handleSignIn(data.emailAddress, data.password);
   };
 
   const onDismissSnackBar = () => setShowSnack(false);
-
+  
   const handleSignIn = async (email: string, password: string) => {
     let parsedResponse = null;
     let firebaseToken = null;
@@ -80,6 +81,12 @@ export default function SignInScreen({ navigation }) {
     });
   };
 
+  const validateEmail = async (email: string) => {
+    if (email.includes("@") && email.includes(".")) {
+      return true;
+    }
+  }
+
   return (
     <ImageOverlay
       style={styles.container}
@@ -100,25 +107,24 @@ export default function SignInScreen({ navigation }) {
               required: true,
             }}
             render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                label={AppConstants.LABEL_EmailAddress}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                mode="outlined"
-                placeholder="Email Address"
-                textContentType="emailAddress"
-                style={styles.textInput}
-              />
+            <TextInput
+              label={AppConstants.LABEL_EmailAddress}
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+              mode="outlined"
+              placeholder="Email Address"
+              textContentType="emailAddress"
+              style={styles.textInput}
+            />
             )}
             name="emailAddress"
           />
-          {errors.emailAddress && (
+          {(errors.emailAddress || !validateEmail(watch('emailAddress'))) && (
             <Text style={{ color: theme.colors.error }}>
               {AppConstants.ERROR_EmailIsRequired}
             </Text>
           )}
-
           <Controller
             control={control}
             rules={{

@@ -4,6 +4,9 @@ import HomeScreen from "../screens/HomeScreen";
 import CustomNavBar from "./CustomNavBar";
 import BottomNavigator from "./BottomNavigator";
 import Scanner from "../screens/Scanner";
+import QRCodeScreen from "../screens/QRCodeScreen";
+import GroupMembersScreen from "../screens/GroupMembersScreen";
+import AddMemberScreen from "../screens/AddMemberScreen";
 import CreateReceipt from "../screens/CreateReceipt";
 
 const Stack = createNativeStackNavigator();
@@ -21,6 +24,9 @@ export default function HomeStack() {
       <Stack.Screen name="Scanner" component={Scanner} />
       <Stack.Screen name="CreateReceipt" component={CreateReceipt} />
 
+      <Stack.Screen name="Share Receipt" component={QRCodeScreen} />
+      <Stack.Screen name="Group Members" component={GroupMembersScreen} />
+      <Stack.Screen name="Add Member" component={AddMemberScreen} />
     </Stack.Navigator>
   );
 }

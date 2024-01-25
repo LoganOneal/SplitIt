@@ -3,6 +3,7 @@ import {
   ILocation,
   IReceipt,
   IReceiptItem,
+  IGroupMember
 } from './types';
 
 
@@ -240,3 +241,30 @@ export const RECEIPTS: IReceipt[] = [
 export default {
   RECEIPTS,
 };
+
+export const MEMBERS: IGroupMember[] = [
+  {
+    id: 1,
+    name: 'Josh'
+  },
+  {
+      id: 2,
+      name: 'Hendon'
+  },
+  {
+      id: 3,
+      name: 'Joe'
+  },
+  {
+      id: 4,
+      name: 'Nico'
+  },
+  {
+      id: 5,
+      name: 'Bru'
+  },
+  {
+      id: 6,
+      name: 'Peyton'
+  }
+];

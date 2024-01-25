@@ -12,7 +12,7 @@ import {
 import {Ionicons} from '@expo/vector-icons';
 import * as MediaLibrary from 'expo-media-library';
 
-const Scanner = () => {
+const Scanner = ({ navigation }) => {
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState<
     boolean | undefined
   >(undefined);
@@ -58,9 +58,10 @@ const Scanner = () => {
 
   if (photo) {
     let sharePic = () => {
-      shareAsync(photo.uri).then(() => {
-        setPhoto(null);
-      });
+      // shareAsync(photo.uri).then(() => {
+      //   setPhoto(null);
+      // });
+      navigation.navigate("Share Receipt")
     };
 
     let savePhoto = () => {

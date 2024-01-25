@@ -18,14 +18,14 @@ export interface IReceiptCategory {
 
 export interface IReceiptItem {
   id?: number;
-  title?: string;
+  name?: string;
   price?: number;
   paid?: boolean;
 }
 
 export interface IReceipt {
   id?: number;
-  title?: string;
+  vendor?: string;
   image?: string;
   location?: ILocation;
   host?: IFirebaseUser;

@@ -7,9 +7,16 @@ import { useIsFocused } from '@react-navigation/native';
 
 const Tab = createBottomTabNavigator();
 
-export default function BottomNavigator(props) {
+export default function BottomNavigator({navigation}:any) {
     const isFocused = useIsFocused();
-    let icon = 'camera';
+
+    const navigateToScanner = () => {
+      navigation.navigate("Scanner");
+    };
+
+    const navigateToCreateReceipt = () => {
+      navigation.navigate("CreateReceipt");
+    };  
 
     return (
         <React.Fragment>
@@ -22,13 +29,25 @@ export default function BottomNavigator(props) {
             <Portal>
         <FAB
           visible={isFocused}
-          icon={icon}
+          icon={'camera'}
           style={{
             position: 'absolute',
             bottom: 100,
             right: 16,
           }}
           color="white"
+          onPress={navigateToScanner}
+        />
+        <FAB
+          visible={isFocused}
+          icon={'plus'}
+          style={{
+            position: 'absolute',
+            bottom: 100,
+            right: 90,
+          }}
+          color="white"
+          onPress={navigateToCreateReceipt}
         />
       </Portal>
         </React.Fragment>

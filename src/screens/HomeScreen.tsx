@@ -1,10 +1,11 @@
 import { StyleSheet, View } from "react-native";
+import { Button } from "react-native-paper";
 import React from "react";
 import { useTheme, Text } from "react-native-paper";
 import { useAppSelector } from "../store/hook";
 import { selectAuthState } from "../store/authSlice";
 
-const HomeScreen = () => {
+const HomeScreen = ({navigation}:any) => {
   const theme = useTheme();
   const authState = useAppSelector(selectAuthState);
   return (
@@ -33,6 +34,12 @@ const HomeScreen = () => {
         >
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae, non?
         </Text>
+        <Button
+          mode="contained"
+          onPress={() => navigation.navigate("BottomNavigator")} 
+        >
+          Continue
+        </Button>
       </View>
     </>
   );

@@ -15,6 +15,7 @@ export interface IReceiptCategory {
   
   export interface IReceipt {
     id?: number;
+    name?: string;
     vendor?: string;
     image?: string;
     location?: ILocation;

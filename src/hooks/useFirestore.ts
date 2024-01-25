@@ -15,9 +15,12 @@ import {
   updateDoc,
   doc,
   serverTimestamp,
-  arrayUnion
+  arrayUnion,
+  where, 
+  QuerySnapshot,
+  DocumentData,
 } from "firebase/firestore";
-import { db, auth} from '../services/firebase'
+import { db, auth } from '../services/firebase'
 import { IReceipt } from "../interfaces/IReceipt";
 import { useAuth } from "./useAuth";
 import { User, UserCredential, UserInfo } from "firebase/auth";
@@ -38,16 +41,41 @@ export const useFirestore = () => {
     await updateDoc(userRef(auth.currentUser?.uid!), {
       hostReceipts: arrayUnion(receiptRef.id)
     })
-
-    console.log(receiptRef.id)
   }
+
+  const getHostReceipts = async (): Promise<IReceipt[]> => {
+    try {
+      // get receipts where receipt id is in user's hostReceipts
+      const receiptsColRef = collection(db, 'receipts');
+      const userDoc = await getDoc(userRef(auth.currentUser?.uid!));
+      const hostReceiptsIds = userDoc.data()?.hostReceipts || [];
   
-  const getReceipts = async () => {
-    return
-  }
-
-
-  return {
-    createReceipt
+      const receipts: IReceipt[] = [];
+  
+      // Fetch each receipt individually based on its ID
+      for (const receiptId of hostReceiptsIds) {
+        const receiptDocRef = doc(receiptsColRef, receiptId);
+        const receiptDocSnapshot: DocumentSnapshot<DocumentData> = await getDoc(receiptDocRef);
+  
+        if (receiptDocSnapshot.exists()) {
+          const receiptData = receiptDocSnapshot.data();
+          // Assuming your receipt data is in a field called 'receipt'
+          if (receiptData?.receipt) {
+            receipts.push(receiptData.receipt);
+          }
+        }
+      }
+  
+      console.log(receipts);
+      return receipts;
+    } catch (error) {
+      console.error('Error fetching host receipts:', error);
+      throw error;
+    }
   };
+
+return {
+  createReceipt,
+  getHostReceipts,
+}
 };

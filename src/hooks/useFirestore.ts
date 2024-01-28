@@ -19,11 +19,14 @@ import {
   where, 
   QuerySnapshot,
   DocumentData,
+  DocumentSnapshot,
 } from "firebase/firestore";
 import { db, auth } from '../services/firebase'
 import { IReceipt } from "../interfaces/IReceipt";
 import { useAuth } from "./useAuth";
 import { User, UserCredential, UserInfo } from "firebase/auth";
+
+import { MEMBERS } from '../constants/mocks';
 
 export const useFirestore = () => {
 
@@ -31,16 +34,27 @@ export const useFirestore = () => {
 
   const createReceipt = async (receipt: IReceipt) => {
     const receiptsColRef = collection(db, 'receipts')
+    // console.log(receiptsColRef)
+    const users = [
+      {
+        name: auth.currentUser?.displayName + " (Host)",
+        phoneNumber: "111-111-1111"
+      },
+      ...MEMBERS
+    ]
 
     const receiptRef = await addDoc(receiptsColRef, {
       created: serverTimestamp(),
       host: auth.currentUser?.uid,
+      users: users,
       receipt: receipt,
     });
+    // console.log(receiptRef)
 
     await updateDoc(userRef(auth.currentUser?.uid!), {
       hostReceipts: arrayUnion(receiptRef.id)
     })
+    return receiptRef.id;
   }
 
   const getHostReceipts = async (): Promise<IReceipt[]> => {
@@ -74,8 +88,25 @@ export const useFirestore = () => {
     }
   };
 
+  const addUserToReceipt = async (receiptId: string, name: string, phoneNumber: string) => {
+    try {
+      const receiptsColRef = collection(db, 'receipts');
+      const receiptDocRef = doc(receiptsColRef, receiptId);
+      await updateDoc(receiptDocRef, {
+        users: arrayUnion({
+          name: name,
+          phoneNumber: phoneNumber
+        })
+      });
+    } catch (error) {
+      console.error('Error adding user to receipt:', error);
+      throw error;
+    }
+  };
+
 return {
   createReceipt,
   getHostReceipts,
+  addUserToReceipt
 }
 };

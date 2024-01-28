@@ -12,8 +12,6 @@ import {
 import {Ionicons} from '@expo/vector-icons';
 import * as MediaLibrary from 'expo-media-library';
 
-import { useReceipts } from '../hooks/useReceipts'
-
 const Scanner = ({ navigation }) => {
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState<
     boolean | undefined
@@ -24,7 +22,6 @@ const Scanner = ({ navigation }) => {
   >(undefined);
   let cameraRef = useRef<Camera | null>(null);
   const [photo, setPhoto] = useState<CameraCapturedPicture | null>(null);
-  const { addReceipt } = useReceipts();
 
   useEffect(() => {
     (async () => {
@@ -64,8 +61,6 @@ const Scanner = ({ navigation }) => {
       // shareAsync(photo.uri).then(() => {
       //   setPhoto(null);
       // });
-      const receipt = await addReceipt();
-      navigation.navigate("Share Receipt", {receipt: receipt});
     };
 
     let savePhoto = () => {

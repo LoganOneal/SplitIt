@@ -1,16 +1,16 @@
-import React, { useState } from "react";
-import { Dimensions, StyleSheet, View } from "react-native";
+import React, { useState } from 'react';
+import { Dimensions, StyleSheet, View } from 'react-native';
 import {
   Button,
   Surface,
   TextInput,
   useTheme,
   Text
-} from "react-native-paper";
-import { Controller, useForm } from "react-hook-form";
+} from 'react-native-paper';
+import { Controller, useForm } from 'react-hook-form';
 
-import * as AppConstants from "../constants/constants";
-import { useReceipts } from '../hooks/useReceipts';
+import * as AppConstants from '../constants/constants';
+import { useFirestore } from '../hooks/useFirestore';
 
 type AddMemberFormData = {
   name: string;
@@ -19,8 +19,8 @@ type AddMemberFormData = {
 
 export default function AddMemberScreen({ route, navigation }) {
   const theme = useTheme();
-  const { receipt } = route.params;
-  const { getReceipt, addUserToReceipt } = useReceipts();
+  const { receiptId } = route.params;
+  const { addUserToReceipt } = useFirestore();
   const [loading, setLoading] = useState(false);
 
   const {
@@ -39,7 +39,7 @@ export default function AddMemberScreen({ route, navigation }) {
     setLoading(true);
     // const receipt = await getReceipt(receipt);
     // console.log(receipt);
-    await addUserToReceipt(receipt, name, phoneNumber).then(() => {
+    await addUserToReceipt(receiptId, name, phoneNumber).then(() => {
       setLoading(false);
       navigation.goBack();
     });

@@ -7,32 +7,33 @@ import {
 
 import GroupMember from '../components/GroupMember';
 import * as AppConstants from '../constants/constants';
-import { useReceipts } from '../hooks/useReceipts';
-import { MEMBERS } from '../constants/mocks';
-import { IGroupMember } from '../constants/types';
-import { onSnapshot } from 'firebase/firestore';
-
-type AddMemberFormData = {
-  name: string;
-  phoneNumber: string;
-};
+import { collection, doc, onSnapshot } from 'firebase/firestore';
+import { db } from '../services/firebase'
 
 export default function GroupMembersScreen({ route, navigation }) {
   const theme = useTheme();
-  const { receipt } = route.params;
-  const {  } = useReceipts();
+  const { receiptId } = route.params;
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    onSnapshot(receipt, (doc) => {
-      if (doc.data()) {
-        const users = doc.data().users.map((user: any, index: any) => ({
-          id: index,
-          ...user
-        }));
-        setUsers(users);
-      }
-    })
+    try {
+      const receiptsColRef = collection(db, 'receipts');
+      const receiptDocRef = doc(receiptsColRef, receiptId);
+
+      onSnapshot(receiptDocRef, (doc) => {
+        if (doc.data()) {
+          const users = doc.data()?.users.map((user: any, index: any) => ({
+            id: index,
+            ...user
+          }));
+          setUsers(users);
+        }
+      })
+
+    } catch (error) {
+      console.error('Error retrieving users in the receipt group:', error);
+      throw error;
+    }
   }, []);
 
   return (
@@ -44,10 +45,10 @@ export default function GroupMembersScreen({ route, navigation }) {
       <FlatList
         data={users}
         showsVerticalScrollIndicator={false}
-        keyExtractor={(item) => `${item?.id}`}
         renderItem={({ item }) => <GroupMember  {...item} />}
         style={styles.flatList}
       />
+
       <View style={styles.bottomButtons}>
         <Button
           mode="contained"
@@ -55,7 +56,7 @@ export default function GroupMembersScreen({ route, navigation }) {
           textColor="black"
           contentStyle={styles.button}
           style={styles.buttonContainer}
-          onPress={() => navigation.navigate("Add Member", {receipt: receipt})}>
+          onPress={() => navigation.navigate("Add Member", {receiptId: receiptId})}>
           {AppConstants.LABEL_AddMember}
         </Button>
         <Button

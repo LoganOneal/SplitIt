@@ -41,7 +41,6 @@ export interface IReceipt {
 }
 
 export interface IGroupMember {
-  id?: number;
   name: string;
   phoneNumber: string;
 }

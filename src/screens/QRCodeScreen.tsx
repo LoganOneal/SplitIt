@@ -11,7 +11,7 @@ import * as AppConstants from "../constants/constants";
 
 export default function QRCodeScreen({ route, navigation }) {
   const theme = useTheme();
-  const { receipt } = route.params;
+  const { receiptId } = route.params;
 
   return (
     <View
@@ -29,7 +29,7 @@ export default function QRCodeScreen({ route, navigation }) {
           textColor="black"
           contentStyle={styles.button}
           style={styles.buttonContainer}
-          onPress={() => navigation.navigate("Group Members", {receipt: receipt})}>
+          onPress={() => navigation.navigate("Group Members", {receiptId: receiptId})}>
           {AppConstants.LABEL_AddMemberManually}
         </Button>
         <Button

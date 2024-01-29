@@ -37,8 +37,8 @@ export default function QRCodeScreen({ route, navigation }) {
           buttonColor="black"
           contentStyle={styles.button}
           style={styles.buttonContainer}
-          onPress={() => {}}>
-          {AppConstants.LABEL_CreateGroup}
+          onPress={() => navigation.pop(2)}>
+          {AppConstants.LABEL_Done}
         </Button>
       </View>
     </View>

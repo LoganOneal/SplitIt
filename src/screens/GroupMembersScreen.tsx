@@ -64,8 +64,8 @@ export default function GroupMembersScreen({ route, navigation }) {
           buttonColor="black"
           contentStyle={styles.button}
           style={styles.buttonContainer}
-          onPress={() => {}}>
-          {AppConstants.LABEL_CreateGroup}
+          onPress={() => navigation.pop(3)}>
+          {AppConstants.LABEL_Done}
         </Button>
       </View>
     </View>

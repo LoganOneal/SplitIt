@@ -37,7 +37,7 @@ export default function SignInScreen({ navigation }) {
     formState: { errors },
   } = useForm<SignInFormData>();
 
-  const onSubmit = (data: SignInFormData, numAttempts: ) => {
+  const onSubmit = (data: SignInFormData) => {
     handleSignIn(data.emailAddress, data.password);
   };
 
@@ -107,16 +107,16 @@ export default function SignInScreen({ navigation }) {
               required: true,
             }}
             render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              label={AppConstants.LABEL_EmailAddress}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              mode="outlined"
-              placeholder="Email Address"
-              textContentType="emailAddress"
-              style={styles.textInput}
-            />
+              <TextInput
+                label={AppConstants.LABEL_EmailAddress}
+                onBlur={onBlur}
+                onChangeText={Text => setSnackMessage(Text)}
+                value={value}
+                mode="outlined"
+                placeholder="Email Address"
+                textContentType="emailAddress"
+                style={styles.textInput}
+              />
             )}
             name="emailAddress"
           />
@@ -199,11 +199,13 @@ const container_height = height * 0.45;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 60,
     flexDirection: "column",
+    justifyContent: "flex-start",
   },
   contentContainer: {
     marginHorizontal: 10,
-    marginVertical: 20,
     height: container_height,
   },
   surface: {

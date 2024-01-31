@@ -83,8 +83,9 @@ export default function SignInScreen({ navigation }) {
 
   const validateEmail = async (email: string) => {
     if (email.includes("@") && email.includes(".")) {
-      return true;
+      return "";
     }
+    return "Please enter a valid email address."
   }
 
   return (
@@ -107,16 +108,19 @@ export default function SignInScreen({ navigation }) {
               required: true,
             }}
             render={({ field: { onChange, onBlur, value } }) => (
+              <>
               <TextInput
                 label={AppConstants.LABEL_EmailAddress}
                 onBlur={onBlur}
-                onChangeText={Text => setSnackMessage(Text)}
+                onChangeText={async Text => setSnackMessage(await validateEmail(Text))}
                 value={value}
                 mode="outlined"
                 placeholder="Email Address"
                 textContentType="emailAddress"
                 style={styles.textInput}
               />
+              <Text style={{ color: theme.colors.error }}>{snackMessage}</Text>
+              </>
             )}
             name="emailAddress"
           />

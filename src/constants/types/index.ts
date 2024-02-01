@@ -18,14 +18,14 @@ export interface IReceiptCategory {
 
 export interface IReceiptItem {
   id?: number;
-  title?: string;
+  name?: string;
   price?: number;
   paid?: boolean;
 }
 
 export interface IReceipt {
   id?: number;
-  title?: string;
+  vendor?: string;
   image?: string;
   location?: ILocation;
   host?: IFirebaseUser;
@@ -38,4 +38,9 @@ export interface IReceipt {
   tip: number;
   timestamp?: number;
   onPress?: (event?: any) => void;
+}
+
+export interface IGroupMember {
+  id?: number;
+  name?: string;
 }

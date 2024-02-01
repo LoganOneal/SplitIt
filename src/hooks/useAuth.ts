@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { initializeApp } from "firebase/app";
 import {
-  getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   updateProfile,
@@ -11,26 +10,25 @@ import {
   IFirebaseUser,
   IFirebaseResponse,
 } from "../interfaces/IAuthentication";
-import {API_KEY, AUTH_DOMAIN, PROJECT_ID, STORAGE_BUCKET, MESSAGING_SENDER_ID, APP_ID, MEASUREMENT_ID, AZURE_API_KEY} from '@env'
+import { auth } from '../services/firebase'
+import { useFirestore } from './useFirestore'
+import {
+  getFirestore,
+  query,
+  orderBy,
+  onSnapshot,
+  collection,
+  getDoc,
+  setDoc,
+  addDoc,
+  updateDoc,
+  doc,
+  serverTimestamp,
+  arrayUnion
+} from "firebase/firestore";
+import { db } from '../services/firebase'
 
-// Firebase config get these details from firebase console
-// TODO: Please replace the details below with that of your Firebase App
 export const useAuth = () => {
-  const firebaseConfig = {
-    apiKey: API_KEY,
-    authDomain: AUTH_DOMAIN,
-    projectId:PROJECT_ID,
-    storageBucket: STORAGE_BUCKET,
-    messagingSenderId: MESSAGING_SENDER_ID,
-    appId: APP_ID,
-  };
-
-  const initFirebase = () => {
-    const serviceApp = initializeApp(firebaseConfig);
-    // Initialize Firebase Authentication and get a reference to the service
-    const auth = getAuth(serviceApp);
-    return auth;
-  };
 
   const initResponse = () => {
     const fbResponse: IFirebaseResponse = {
@@ -47,7 +45,6 @@ export const useAuth = () => {
   const signoutUser = async () => {
     console.log("BEGIN SignOut");
     const fbResponse = initResponse();
-    const auth = initFirebase();
     await signOut(auth).catch((error) => {
       fbResponse.error.code = error.errorCode;
       fbResponse.error.message = error.errorMessage;
@@ -64,10 +61,21 @@ export const useAuth = () => {
   ) => {
     console.log("BEGIN SignUp");
     const fbResponse = initResponse();
-    const auth = initFirebase();
     await createUserWithEmailAndPassword(auth, userEmail, userPassword)
       .then((userCredential) => {
         fbResponse.result = userCredential;
+        
+        // create user in firestore
+        const userRef = doc(db, 'users', userCredential.user.uid)
+        const userDoc = getDoc(userRef)
+        setDoc(userRef, {
+          name: userFullName,
+          email: userEmail,
+          created: serverTimestamp(),
+          hostReceipts: [],
+          memberReceipts: []
+        })
+
         // Update profile
         if (auth.currentUser) {
           updateProfile(auth.currentUser, {
@@ -77,6 +85,7 @@ export const useAuth = () => {
         console.log("SignUp success");
       })
       .catch((error) => {
+        console.log(error);
         fbResponse.error.code = error.code;
         fbResponse.error.message = error.message;
         console.log("SignUp ERROR");
@@ -91,7 +100,6 @@ export const useAuth = () => {
   const signinUser = async (userEmailAddress: string, userPassword: string) => {
     console.log("BEGIN SignIn");
     const fbResponse = initResponse();
-    const auth = initFirebase();
     await signInWithEmailAndPassword(auth, userEmailAddress, userPassword)
       .then((userCredential) => {
         fbResponse.result = userCredential;
@@ -109,7 +117,6 @@ export const useAuth = () => {
 
   // Get firebase user details
   const getProfile = (): IFirebaseUser | void => {
-    const auth = initFirebase();
     const user = auth.currentUser;
     user?.providerData.forEach((profile) => {
       const fbProfile: IFirebaseUser = { ...profile, firebaseUID: user.uid };

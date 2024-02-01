@@ -15,7 +15,7 @@ const PlusIcon = (props): IconElement => (
   />
 );
 
-const MyReceiptsScreen = (): React.ReactElement => {
+const MyReceiptsScreen = ({navigation}): React.ReactElement => {
   const { getHostReceipts } = useFirestore();
   const [receipts, setReceipts] = useState<IReceipt[]>([]);
 
@@ -51,8 +51,10 @@ const MyReceiptsScreen = (): React.ReactElement => {
           status='primary'
           appearance='outline'
           accessoryLeft={PlusIcon}
+          onPress={() => navigation.navigate('JoinReceipt')}
+
         >
-          ADD RECEIPT
+          JOIN RECEIPT
         </Button>
       </View>
     </View>

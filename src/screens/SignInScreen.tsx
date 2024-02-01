@@ -27,9 +27,11 @@ export default function SignInScreen({ navigation }) {
   const theme = useTheme();
   const [showSnack, setShowSnack] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [validEmail, setValidEmail] = useState("");
   const [snackMessage, setSnackMessage] = useState("");
   const dispatch = useAppDispatch();
   const { signinUser, getProfile } = useAuth();
+  let numAttempts = 0;
   const {
     control,
     handleSubmit,
@@ -112,14 +114,17 @@ export default function SignInScreen({ navigation }) {
               <TextInput
                 label={AppConstants.LABEL_EmailAddress}
                 onBlur={onBlur}
-                onChangeText={async Text => setSnackMessage(await validateEmail(Text))}
+                onChangeText={async Text => {
+                  setSnackMessage(Text);
+                  setValidEmail(await validateEmail(Text));
+                }}
                 value={value}
                 mode="outlined"
                 placeholder="Email Address"
                 textContentType="emailAddress"
                 style={styles.textInput}
               />
-              <Text style={{ color: theme.colors.error }}>{snackMessage}</Text>
+              <Text style={{ color: theme.colors.error }}>{validEmail}</Text>
               </>
             )}
             name="emailAddress"
@@ -155,16 +160,21 @@ export default function SignInScreen({ navigation }) {
               {AppConstants.ERROR_PasswordIsRequired}
             </Text>
           )}
-
-          <Button
-            mode="contained"
-            compact
-            onPress={handleSubmit(onSubmit)}
-            style={styles.button}
-            loading={loading}
-          >
-            Submit
-          </Button>
+          <>
+            <Button
+              mode="contained"
+              compact
+              onPress={() => {handleSubmit(onSubmit); numAttempts++;}}
+              disabled={numAttempts > 3}
+              style={styles.button}
+              loading={loading}
+            >
+              Submit
+            </Button>
+            <Text style={{ color: theme.colors.error }}>
+              {numAttempts > 3 ? AppConstants.ERROR_TooManyAttempts : ""}
+            </Text>
+          </>
           <Button
             mode="text"
             compact

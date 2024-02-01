@@ -17,7 +17,7 @@ type AddMemberFormData = {
   phoneNumber: string;
 };
 
-export default function AddMemberScreen({ route, navigation }) {
+export default function JoinOrderScreen({ route, navigation }) {
   const theme = useTheme();
   const { receiptId } = route.params;
   const { addUserToReceipt } = useFirestore();

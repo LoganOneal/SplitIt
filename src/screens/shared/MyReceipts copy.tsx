@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { FlatList } from 'react-native';
-import ReceiptCard from '../components/ReceiptCard';
+import ReceiptCard from '../../components/ReceiptCard';
 import { StyleSheet, View } from "react-native";
 import { useTheme, Text, Button } from "react-native-paper";
-import { useData } from '../hooks/useData';
-import { IReceipt } from '../interfaces/IReceipt';
-import { useFirestore } from '../hooks/useFirestore';
+import { useData } from '../../hooks/useData';
+import { IReceipt } from '../../interfaces/IReceipt';
+import { useFirestore } from '../../hooks/useFirestore';
 
 const MyReceipts = () => {
     const { getHostReceipts } = useFirestore();

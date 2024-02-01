@@ -1,8 +1,39 @@
 import * as React from 'react';
-import { Avatar, Button, Card, Text } from 'react-native-paper';
 import { isRejected } from '@reduxjs/toolkit';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { IReceipt } from '../interfaces/IReceipt';
+import { Button, Card, Layout, Text } from '@ui-kitten/components';
+import { StyleSheet, View, ViewProps } from 'react-native';
+import { Icon, IconElement } from '@ui-kitten/components';
+import { ProgressBar } from '@ui-kitten/components';
+
+const Header = ({
+  location,
+  host,
+  members,
+  items,
+  image,
+  total,
+  received,
+  tax,
+  tip,
+  timestamp,
+  vendor,
+  ...props
+}: IReceipt): React.ReactElement => (
+  <View {...props}>
+    <Text category='h6'>
+      {vendor}
+    </Text>
+    <Text category='s1'>
+      Host: {host}
+    </Text>
+    <Text category='s1'>
+      Location: {location}
+    </Text> 
+ 
+  </View>
+);
 
 const ReceiptCard = ({
   location,
@@ -17,17 +48,49 @@ const ReceiptCard = ({
   timestamp,
   vendor
 }: IReceipt) => (
-    <Card style={{ paddingHorizontal: 20, marginVertical: 30 }}>
-      <Card.Title title={vendor} subtitle={location + ", " + location} />
-      <Card.Content>
-      <Text>Host: not yet implemented</Text>
-        {/*
-        <Text variant="titleLarge">Host: {host.name}</Text>
-        <Text variant="bodyMedium">Members: {members.map(member => member.name).join(', ')}</Text>
-*/}
-      </Card.Content>
-      <Card.Cover source={{ uri: image }} />
+  <>
+    <Card
+      status='basic'
+      style={styles.card}
+      header={<Header vendor={vendor} host={host} location={location} />}
+    >
+      <Text>
+        Members: {members?.map(member => member.name).join(', ')}
+      </Text>
+      <Text>
+        Received: ${received} Total: ${total}
+      </Text>
+      <ProgressBar progress={received / total} />
     </Card>
+  </>
 );
+
+
+
+const styles = StyleSheet.create({
+  topContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  card: {
+    flex: 1,
+    margin: 2,
+    marginBottom: 25,
+    shadowColor: 'black',
+    shadowOffset: { width: 4, height: 2 },
+    shadowRadius: 6,
+  },
+  footerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  footerControl: {
+    marginHorizontal: 2,
+  },
+  icon: {
+    width: 32,
+    height: 32,
+  },
+});
 
 export default ReceiptCard;

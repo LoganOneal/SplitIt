@@ -80,7 +80,6 @@ export const useFirestore = () => {
         }
       }
   
-      console.log(receipts);
       return receipts;
     } catch (error) {
       console.error('Error fetching host receipts:', error);

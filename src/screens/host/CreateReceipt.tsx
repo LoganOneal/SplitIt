@@ -3,8 +3,8 @@ import { View, StyleSheet, ScrollView, Text } from 'react-native';
 import { FormBuilder } from 'react-native-paper-form-builder';
 import { useForm } from 'react-hook-form';
 import { Button } from 'react-native-paper';
-import { useFirestore } from '../hooks/useFirestore';
-import { IReceipt } from '../constants/types';
+import { useFirestore } from '../../hooks/useFirestore';
+import { IReceipt } from '../../constants/types';
 
 function CreateReceipt({ navigation }) {
     const { createReceipt } = useFirestore();

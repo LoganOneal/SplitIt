@@ -2,8 +2,8 @@ import { StyleSheet, View } from "react-native";
 import { Button } from "react-native-paper";
 import React from "react";
 import { useTheme, Text } from "react-native-paper";
-import { useAppSelector } from "../store/hook";
-import { selectAuthState } from "../store/authSlice";
+import { useAppSelector } from "../../store/hook";
+import { selectAuthState } from "../../store/authSlice";
 
 const HomeScreen = ({navigation}:any) => {
   const theme = useTheme();

@@ -6,10 +6,14 @@ import { IReceipt } from '../../interfaces/IReceipt';
 import { useFirestore } from '../../hooks/useFirestore';
 import ReceiptCard from '../../components/ReceiptCard';
 import { FlatList } from 'react-native';
+import { Button, Icon, IconElement, Layout, Spinner } from '@ui-kitten/components';
 
-const data = new Array(8).fill({
-  title: 'Item',
-});
+const PlusIcon = (props): IconElement => (
+  <Icon
+    {...props}
+    name='plus'
+  />
+);
 
 const MyReceiptsScreen = (): React.ReactElement => {
   const { getHostReceipts } = useFirestore();
@@ -29,49 +33,50 @@ const MyReceiptsScreen = (): React.ReactElement => {
     fetchReceipts();
   }, []);
 
-  const renderItem = (props): React.ReactElement => (
-    <Card
-      style={styles.item}
-      status='basic'
-    >
-      <Text>
-        {/* eslint-disable-next-line react/no-unescaped-entities */}
-        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's
-        standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make
-        a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting,
-        remaining essentially unchanged.
-      </Text>
-    </Card>
-  );
-
   return (
-    <View
-      style={[
-        styles.contentContainer,
-      ]}
-    >
-      <FlatList
-        data={receipts}
-        showsVerticalScrollIndicator={false}
-        keyExtractor={(item) => `${item?.id}`}
-        style={{ paddingHorizontal: 12 }}
-        contentContainerStyle={{ paddingBottom: 30 }}
-        renderItem={({ item }) => <ReceiptCard  {...item} />}
-      />
+    <View style={styles.container}>
+      <View style={styles.upperRow}>
+        <FlatList
+          data={receipts}
+          showsVerticalScrollIndicator={false}
+          keyExtractor={(item) => `${item?.id}`}
+          style={{ paddingHorizontal: 12 }}
+          contentContainerStyle={{ paddingBottom: 30 }}
+          renderItem={({ item }) => <ReceiptCard  {...item} />}
+        />
+      </View>
+      <View style={styles.lowerRow}>
+        <Button
+          style={styles.button}
+          status='primary'
+          appearance='outline'
+          accessoryLeft={PlusIcon}
+        >
+          ADD RECEIPT
+        </Button>
+      </View>
     </View>
-
   );
 };
 
 const styles = StyleSheet.create({
-  contentContainer: {
-    alignItems: 'center',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    maxHeight: '80%',
+  container: {
+    flex: 1,
+    flexDirection: 'column',
   },
-  item: {
-    marginVertical: 4,
+  upperRow: {
+    flex: 8,  // Takes up 80% of the screen
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  lowerRow: {
+    flex: 2,  // Takes up 20% of the screen
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  button: {
+    margin: 2,
+    width: 300,
   },
 });
 

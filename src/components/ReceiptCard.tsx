@@ -73,8 +73,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   card: {
+    width: 300,
     flex: 1,
-    margin: 2,
     marginBottom: 25,
     shadowColor: 'black',
     shadowOffset: { width: 4, height: 2 },

@@ -244,27 +244,27 @@ export default {
 
 export const MEMBERS: IGroupMember[] = [
   {
-    id: 1,
-    name: 'Josh'
+    name: 'Josh',
+    phoneNumber: '111-111-1111'
   },
   {
-      id: 2,
-      name: 'Hendon'
+    name: 'Hendon',
+    phoneNumber: '222-222-2222'
   },
   {
-      id: 3,
-      name: 'Joe'
+    name: 'Joe',
+    phoneNumber: '333-333-3333'
   },
   {
-      id: 4,
-      name: 'Nico'
+    name: 'Nico',
+    phoneNumber: '444-444-4444'
   },
   {
-      id: 5,
-      name: 'Bru'
+    name: 'Bru',
+    phoneNumber: '555-555-5555'
   },
   {
-      id: 6,
-      name: 'Peyton'
+    name: 'Peyton',
+    phoneNumber: '616-161-1616'
   }
 ];

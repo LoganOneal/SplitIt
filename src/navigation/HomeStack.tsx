@@ -8,6 +8,7 @@ import QRCodeScreen from "../screens/QRCodeScreen";
 import GroupMembersScreen from "../screens/GroupMembersScreen";
 import AddMemberScreen from "../screens/AddMemberScreen";
 import CreateReceipt from "../screens/CreateReceipt";
+import JoinReceiptScreen from "../screens/JoinReceiptScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -23,6 +24,7 @@ export default function HomeStack() {
       <Stack.Screen name="BottomNavigator" component={BottomNavigator} />
       <Stack.Screen name="Scanner" component={Scanner} />
       <Stack.Screen name="CreateReceipt" component={CreateReceipt} />
+      <Stack.Screen name="Join Receipt" component={JoinReceiptScreen} />
 
       <Stack.Screen name="Share Receipt" component={QRCodeScreen} />
       <Stack.Screen name="Group Members" component={GroupMembersScreen} />

@@ -61,9 +61,6 @@ export default function AddMemberScreen({ route, navigation }) {
       { backgroundColor: theme.colors.primaryContainer },
     ]}>
       <Surface style={styles.surface} elevation={1}>
-        {/* <Text variant="titleMedium" style={styles.inputLabel}>
-          {AppConstants.LABEL_Name}
-        </Text> */}
         <Controller
           control={control}
           rules={{
@@ -87,9 +84,6 @@ export default function AddMemberScreen({ route, navigation }) {
           </Text>
         )}
 
-        {/* <Text variant="titleMedium" style={styles.inputLabel}>
-          {AppConstants.LABEL_Phone}
-        </Text> */}
         <Controller
           control={control}
           rules={{

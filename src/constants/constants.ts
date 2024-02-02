@@ -45,6 +45,7 @@ export const LABEL_Done = "Done";
 export const LABEL_CreateGroup = "Create Group";
 export const LABEL_AddMember = "Add Member +";
 export const LABEL_AddMemberManually = "Add Member Manually +";
+export const LABEL_JoinReceipt = "Join Receipt";
 
 export const REQUEST_TAB_Detail = "Request Details";
 export const REQUEST_TAB_YourInfo = "Your Info";

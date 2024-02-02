@@ -32,7 +32,7 @@ export default function SignInScreen({ navigation }) {
   const [snackMessage, setSnackMessage] = useState("");
   const dispatch = useAppDispatch();
   const { signinUser, getProfile } = useAuth();
-  let numAttempts = 0;
+  const [numAttempts, incNumAttempts] = useState(0);
   const {
     control,
     handleSubmit,
@@ -47,9 +47,11 @@ export default function SignInScreen({ navigation }) {
   const onDismissSnackBar = () => setShowSnack(false);
   
   const handleSignIn = async (email: string, password: string) => {
+    console.log(numAttempts)
     let parsedResponse = null;
     let firebaseToken = null;
     setLoading(true);
+    incNumAttempts(numAttempts + 1);
     await signinUser(email, password).then((fbResponse) => {
       parsedResponse = JSON.parse(fbResponse);
       // error response
@@ -88,7 +90,7 @@ export default function SignInScreen({ navigation }) {
     if (email.includes("@") && email.includes(".")) {
       return "";
     }
-    return "Please enter a valid email address."
+    return AppConstants.ERROR_InvalidEmailEntry;
   }
 
   return (

@@ -63,7 +63,7 @@ const MyReceiptsScreen = ({navigation}): React.ReactElement => {
           onPress={() => navigation.navigate('CreateReceipt')}
 
         >
-          CREATE RECEIPT
+          ADD RECEIPT
         </Button>
       </View>
     </View>

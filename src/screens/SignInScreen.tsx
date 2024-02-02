@@ -168,7 +168,7 @@ export default function SignInScreen({ navigation }) {
               mode="contained"
               compact
               onPress={handleSubmit(onSubmit)}
-              disabled={numAttempts > 3}
+              disabled={numAttempts > 2}
               style={styles.button}
               loading={loading}
             >

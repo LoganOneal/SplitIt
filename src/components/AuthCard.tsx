@@ -17,13 +17,6 @@ export default function AuthCard() {
         <View>
             <List.Item
                 title="name"
-                style={styles.memberItem}
-                right={props =>
-                    <Ionicons
-                        name={'person-outline'}
-                        size={20}
-                    />
-                }
             />
             <Divider />
         </View>

@@ -37,7 +37,7 @@ export const useFirestore = () => {
     // console.log(receiptsColRef)
     const users = [
       {
-        name: auth.currentUser?.displayName + " (Host)",
+        name: auth.currentUser?.displayName + "(Host)",
         phoneNumber: "111-111-1111"
       },
       ...MEMBERS
@@ -49,8 +49,18 @@ export const useFirestore = () => {
       users: users,
       receipt: receipt,
     });
-    // console.log(receiptRef)
+    console.log(receiptRef)
+    console.log("Databaseid", receiptRef.id)
 
+    // create 8 character from receipt id
+    const joinCode = receiptRef.id.substring(0, 8).toUpperCase();
+
+    // add join code to receipt 
+    await updateDoc(receiptRef, {
+      joinCode: joinCode
+    });
+
+    // add receipt to user's hostReceipts
     await updateDoc(userRef(auth.currentUser?.uid!), {
       hostReceipts: arrayUnion(receiptRef.id)
     })

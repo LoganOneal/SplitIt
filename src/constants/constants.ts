@@ -41,9 +41,10 @@ export const LABEL_CancelRequest = "Cancel Request";
 export const LABEL_Request = "Request";
 export const LABEL_SendSMS = "Send me SMS updates";
 export const LABEL_DoNotSendSMS = "Do NOT send me SMS updates";
-export const LABEL_CreateGroup = "Create Group"
-export const LABEL_AddMember = "Add Member +"
-export const LABEL_AddMemberManually = "Add Member Manually +"
+export const LABEL_Done = "Done";
+export const LABEL_CreateGroup = "Create Group";
+export const LABEL_AddMember = "Add Member +";
+export const LABEL_AddMemberManually = "Add Member Manually +";
 
 export const REQUEST_TAB_Detail = "Request Details";
 export const REQUEST_TAB_YourInfo = "Your Info";

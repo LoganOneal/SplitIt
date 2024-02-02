@@ -57,11 +57,10 @@ const Scanner = ({ navigation }) => {
   };
 
   if (photo) {
-    let sharePic = () => {
+    let sharePic = async () => {
       // shareAsync(photo.uri).then(() => {
       //   setPhoto(null);
       // });
-      navigation.navigate("Share Receipt")
     };
 
     let savePhoto = () => {

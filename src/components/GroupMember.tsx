@@ -15,7 +15,7 @@ import {
 
 import { IGroupMember } from '../constants/types';
 
-export default function GroupMember({ id, name }: IGroupMember) {
+export default function GroupMember({ name }: IGroupMember) {
   return (
     <View>
       <List.Item

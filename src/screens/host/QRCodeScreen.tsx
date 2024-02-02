@@ -7,10 +7,11 @@ import {
   Text
 } from "react-native-paper";
 
-import * as AppConstants from "../constants/constants";
+import * as AppConstants from "../../constants/constants";
 
-export default function QRCodeScreen({ navigation }) {
+export default function QRCodeScreen({ route, navigation }) {
   const theme = useTheme();
+  const { receiptId } = route.params;
 
   return (
     <View
@@ -28,7 +29,7 @@ export default function QRCodeScreen({ navigation }) {
           textColor="black"
           contentStyle={styles.button}
           style={styles.buttonContainer}
-          onPress={() => navigation.navigate("Group Members")}>
+          onPress={() => navigation.navigate("Group Members", {receiptId: receiptId})}>
           {AppConstants.LABEL_AddMemberManually}
         </Button>
         <Button
@@ -36,8 +37,8 @@ export default function QRCodeScreen({ navigation }) {
           buttonColor="black"
           contentStyle={styles.button}
           style={styles.buttonContainer}
-          onPress={() => {}}>
-          {AppConstants.LABEL_CreateGroup}
+          onPress={() => navigation.pop(2)}>
+          {AppConstants.LABEL_Done}
         </Button>
       </View>
     </View>

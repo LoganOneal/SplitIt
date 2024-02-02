@@ -3,8 +3,8 @@ import { View, StyleSheet, ScrollView, Text } from 'react-native';
 import { FormBuilder } from 'react-native-paper-form-builder';
 import { useForm } from 'react-hook-form';
 import { Button } from 'react-native-paper';
-import { useFirestore } from '../hooks/useFirestore';
-import { IReceipt } from '../constants/types';
+import { useFirestore } from '../../hooks/useFirestore';
+import { IReceipt } from '../../constants/types';
 
 function CreateReceipt({ navigation }) {
     const { createReceipt } = useFirestore();
@@ -85,14 +85,14 @@ function CreateReceipt({ navigation }) {
                         };
 
                         try {
-                            createReceipt(receipt);
+                            createReceipt(receipt).then(res => {
+                                const receiptId = res;
+                                navigation.navigate("Share Receipt", {receiptId: receiptId});
+                            });
                         } catch (error) {
                             console.log(error)
+                            navigation.navigate("My Receipts");
                         } 
-                        finally {
-                            navigation.navigate("My Receipts")
-                        }
-                        createReceipt(receipt);
                     })}>
                     Submit
                 </Button>

@@ -1,18 +1,40 @@
-import React from "react";
-import { Dimensions, FlatList, StyleSheet, View } from "react-native";
+import React, { useEffect, useState } from 'react';
+import { Dimensions, FlatList, StyleSheet, View } from 'react-native';
 import {
   Button,
   useTheme
-} from "react-native-paper";
+} from 'react-native-paper';
 
-import { MEMBERS } from "../constants/mocks";
-import GroupMember from '../components/GroupMember';
-import * as AppConstants from "../constants/constants";
+import GroupMember from '../../components/GroupMember';
+import * as AppConstants from '../../constants/constants';
+import { collection, doc, onSnapshot } from 'firebase/firestore';
+import { db } from '../../services/firebase'
 
-export default function GroupMembersScreen({ navigation }) {
+export default function GroupMembersScreen({ route, navigation }) {
   const theme = useTheme();
-  const members = MEMBERS
+  const { receiptId } = route.params;
+  const [users, setUsers] = useState([]);
 
+  useEffect(() => {
+    try {
+      const receiptsColRef = collection(db, 'receipts');
+      const receiptDocRef = doc(receiptsColRef, receiptId);
+
+      onSnapshot(receiptDocRef, (doc) => {
+        if (doc.data()) {
+          const users = doc.data()?.users.map((user: any, index: any) => ({
+            id: index,
+            ...user
+          }));
+          setUsers(users);
+        }
+      })
+
+    } catch (error) {
+      console.error('Error retrieving users in the receipt group:', error);
+      throw error;
+    }
+  }, []);
 
   return (
     <View
@@ -21,12 +43,12 @@ export default function GroupMembersScreen({ navigation }) {
         { backgroundColor: theme.colors.primaryContainer },
       ]}>
       <FlatList
-        data={members}
+        data={users}
         showsVerticalScrollIndicator={false}
-        keyExtractor={(item) => `${item?.id}`}
         renderItem={({ item }) => <GroupMember  {...item} />}
         style={styles.flatList}
       />
+
       <View style={styles.bottomButtons}>
         <Button
           mode="contained"
@@ -34,7 +56,7 @@ export default function GroupMembersScreen({ navigation }) {
           textColor="black"
           contentStyle={styles.button}
           style={styles.buttonContainer}
-          onPress={() => navigation.navigate("Add Member")}>
+          onPress={() => navigation.navigate("Add Member", {receiptId: receiptId})}>
           {AppConstants.LABEL_AddMember}
         </Button>
         <Button
@@ -42,8 +64,8 @@ export default function GroupMembersScreen({ navigation }) {
           buttonColor="black"
           contentStyle={styles.button}
           style={styles.buttonContainer}
-          onPress={() => {}}>
-          {AppConstants.LABEL_CreateGroup}
+          onPress={() => navigation.pop(3)}>
+          {AppConstants.LABEL_Done}
         </Button>
       </View>
     </View>
@@ -73,7 +95,6 @@ const styles = StyleSheet.create({
   flatList: {
     width: width * 0.85,
     marginTop: width * 0.075,
-    height: "fit-content"
   },
   surface: {
     width: width * 0.85,

@@ -1,23 +1,28 @@
-import React from "react";
-import { Dimensions, StyleSheet, View } from "react-native";
+import React, { useState } from 'react';
+import { Dimensions, StyleSheet, View } from 'react-native';
 import {
   Button,
   Surface,
   TextInput,
   useTheme,
   Text
-} from "react-native-paper";
-import { Controller, useForm } from "react-hook-form";
+} from 'react-native-paper';
+import { Controller, useForm } from 'react-hook-form';
 
-import * as AppConstants from "../constants/constants";
+import * as AppConstants from '../../constants/constants';
+import { useFirestore } from '../../hooks/useFirestore';
 
 type AddMemberFormData = {
   name: string;
   phoneNumber: string;
 };
 
-export default function AddMemberScreen({ navigation }) {
+export default function AddMemberScreen({ route, navigation }) {
   const theme = useTheme();
+  const { receiptId } = route.params;
+  const { addUserToReceipt } = useFirestore();
+  const [loading, setLoading] = useState(false);
+
   const {
     control,
     handleSubmit,
@@ -29,9 +34,15 @@ export default function AddMemberScreen({ navigation }) {
   };
 
   const handleAddMember = async (name: string, phoneNumber: string) => {
-    console.log(name)
-    console.log(phoneNumber)
-    navigation.goBack()
+    // console.log(name)
+    // console.log(phoneNumber)
+    setLoading(true);
+    // const receipt = await getReceipt(receipt);
+    // console.log(receipt);
+    await addUserToReceipt(receiptId, name, phoneNumber).then(() => {
+      setLoading(false);
+      navigation.goBack();
+    });
   };
 
   const onPhoneNumberChange = (phoneNumber: string) => {
@@ -83,6 +94,9 @@ export default function AddMemberScreen({ navigation }) {
           control={control}
           rules={{
             required: true,
+            minLength: 12,
+            maxLength: 12,
+            pattern: /[0-9]{3}-[0-9]{3}-[0-9]{4}/
           }}
           render={({ field: { onChange, onBlur, value }}) => (
           <TextInput
@@ -107,6 +121,7 @@ export default function AddMemberScreen({ navigation }) {
           mode="contained"
           buttonColor="black"
           textColor="white"
+          loading={loading}
           contentStyle={styles.button}
           style={styles.buttonContainer}
           onPress={handleSubmit(onSubmit)}>

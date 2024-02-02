@@ -1,5 +1,5 @@
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import HomeScreen from "../screens/HomeScreen";
+import HomeScreen from "../screens/shared/HomeScreen";
 import RequestScreen from "../screens/RequestScreen";
 import DrawerContent from "./DrawerContent";
 

@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Portal, FAB } from 'react-native-paper';
 import RequestScreen from "../screens/RequestScreen";
-import MyReceipts from '../screens/MyReceipts';
+import MyReceiptsScreen from '../screens/shared/MyReceiptsScreen';
 import React from 'react';
 import { useIsFocused } from '@react-navigation/native';
 
@@ -23,7 +23,7 @@ export default function BottomNavigator({navigation}:any) {
             <Tab.Navigator
                 initialRouteName="Home"
             >
-                <Tab.Screen name="My Receipts" component={MyReceipts} />
+                <Tab.Screen name="My Receipts" component={MyReceiptsScreen} />
                 <Tab.Screen name="Request" component={RequestScreen} />
             </Tab.Navigator>
             <Portal>

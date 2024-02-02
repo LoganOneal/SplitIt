@@ -47,7 +47,7 @@ export const useFirestore = () => {
       created: serverTimestamp(),
       host: auth.currentUser?.uid,
       users: users,
-      receipt: receipt,
+      ...receipt
     });
     console.log(receiptRef)
     console.log("Databaseid", receiptRef.id)

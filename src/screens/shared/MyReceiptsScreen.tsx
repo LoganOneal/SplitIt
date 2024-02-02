@@ -56,6 +56,15 @@ const MyReceiptsScreen = ({navigation}): React.ReactElement => {
         >
           JOIN RECEIPT
         </Button>
+        <Button
+          style={styles.button}
+          status='primary'
+          accessoryLeft={PlusIcon}
+          onPress={() => navigation.navigate('CreateReceipt')}
+
+        >
+          CREATE RECEIPT
+        </Button>
       </View>
     </View>
   );
@@ -67,17 +76,18 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   upperRow: {
-    flex: 8,  // Takes up 80% of the screen
+    flex: 7,  // Takes up 80% of the screen
     justifyContent: 'center',
     alignItems: 'center',
   },
   lowerRow: {
-    flex: 2,  // Takes up 20% of the screen
+    flex: 3,  // Takes up 20% of the screen
     justifyContent: 'center',
     alignItems: 'center',
   },
   button: {
-    margin: 2,
+    martinTop: 10,
+    margin: 15,
     width: 300,
   },
 });

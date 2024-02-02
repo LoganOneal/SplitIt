@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, ViewProps } from 'react-native';
 import { Button, Card, Input, Text, Icon } from '@ui-kitten/components';
+import { useFirestore } from '../../hooks/useFirestore';
 
 const CameraIcon = (props): IconElement => (
   <Icon
@@ -18,12 +19,27 @@ const Header = (props: ViewProps): React.ReactElement => (
 );
 
 const JoinReceiptScreen = ({ navigation }): React.ReactElement => {
-  const [value, setValue] = React.useState('');
+  const { joinReceipt } = useFirestore();
+
+  const [joinCode, setJoinCode] = React.useState('');
 
   const handleInputChange = (nextValue: string) => {
-    const formattedValue = nextValue.replace(/\D/g, '').slice(0, 8).replace(/(\d{4})(\d{0,4})/, '$1-$2');
-    setValue(formattedValue);
+    const formattedValue = nextValue
+      .toUpperCase()
+      .replace(/[^A-Z0-9]/g, '')
+      .slice(0, 8)
+      .replace(/([A-Z0-9]{4})([A-Z0-9]{0,4})/, '$1-$2');
+    setJoinCode(formattedValue);
   };
+
+  const handleJoinReceipt = () => {
+    // remove dash from join code 
+    const formattedJoinCode = joinCode.replace(/-/g, '');
+
+    console.log('Joining receipt with code:', formattedJoinCode);
+
+    joinReceipt(formattedJoinCode);
+  }
 
   return (
     <View style={styles.container}>
@@ -35,15 +51,13 @@ const JoinReceiptScreen = ({ navigation }): React.ReactElement => {
           label='Invite Code'
           style={styles.input}
           placeholder='####-####'
-          value={value}
+          value={joinCode}
           onChangeText={handleInputChange}
-          keyboardType='numeric'
         />
         <Button
           style={styles.joinButton}
-          status='primary'
           appearance='outline'
-          onPress={() => navigation.navigate('JoinReceipt')}
+          onPress={handleJoinReceipt}
         >
           JOIN RECEIPT
         </Button>

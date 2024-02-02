@@ -31,7 +31,7 @@ export default function SignInScreen({ navigation }) {
   const [snackMessage, setSnackMessage] = useState("");
   const dispatch = useAppDispatch();
   const { signinUser, getProfile } = useAuth();
-  let numAttempts = 0;
+  const [numAttempts, incNumAttempts] = useState(0);
   const {
     control,
     handleSubmit,
@@ -46,9 +46,11 @@ export default function SignInScreen({ navigation }) {
   const onDismissSnackBar = () => setShowSnack(false);
   
   const handleSignIn = async (email: string, password: string) => {
+    console.log(numAttempts)
     let parsedResponse = null;
     let firebaseToken = null;
     setLoading(true);
+    incNumAttempts(numAttempts + 1);
     await signinUser(email, password).then((fbResponse) => {
       parsedResponse = JSON.parse(fbResponse);
       // error response
@@ -87,7 +89,7 @@ export default function SignInScreen({ navigation }) {
     if (email.includes("@") && email.includes(".")) {
       return "";
     }
-    return "Please enter a valid email address."
+    return AppConstants.ERROR_InvalidEmailEntry;
   }
 
   return (
@@ -115,6 +117,7 @@ export default function SignInScreen({ navigation }) {
                 label={AppConstants.LABEL_EmailAddress}
                 onBlur={onBlur}
                 onChangeText={async Text => {
+                  onChange(Text);
                   setSnackMessage(Text);
                   setValidEmail(await validateEmail(Text));
                 }}
@@ -129,7 +132,7 @@ export default function SignInScreen({ navigation }) {
             )}
             name="emailAddress"
           />
-          {(errors.emailAddress || !validateEmail(watch('emailAddress'))) && (
+          {errors.emailAddress && (errors.emailAddress || !validateEmail(watch('emailAddress'))) && (
             <Text style={{ color: theme.colors.error }}>
               {AppConstants.ERROR_EmailIsRequired}
             </Text>
@@ -164,7 +167,7 @@ export default function SignInScreen({ navigation }) {
             <Button
               mode="contained"
               compact
-              onPress={() => {handleSubmit(onSubmit); numAttempts++;}}
+              onPress={handleSubmit(onSubmit)}
               disabled={numAttempts > 3}
               style={styles.button}
               loading={loading}
@@ -172,7 +175,7 @@ export default function SignInScreen({ navigation }) {
               Submit
             </Button>
             <Text style={{ color: theme.colors.error }}>
-              {numAttempts > 3 ? AppConstants.ERROR_TooManyAttempts : ""}
+              {numAttempts > 2 ? AppConstants.ERROR_TooManyAttempts : ""}
             </Text>
           </>
           <Button

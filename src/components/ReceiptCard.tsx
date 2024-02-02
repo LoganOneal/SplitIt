@@ -57,7 +57,7 @@ const ReceiptCard = ({
       <Text>
         Members: {members?.map(member => member.name).join(', ')}
       </Text>
-      <Text>
+      <Text style={styles.info}>
         Received: ${received} Total: ${total}
       </Text>
       <ProgressBar progress={received / total} />
@@ -68,6 +68,9 @@ const ReceiptCard = ({
 
 
 const styles = StyleSheet.create({
+  info: {
+    marginTop: 10,
+  }, 
   topContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',

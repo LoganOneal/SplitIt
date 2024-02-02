@@ -17,6 +17,9 @@ import { PreferencesContext } from "./src/context/PreferencesContext";
 import { appStore } from "./src/store/appStore";
 import AppNavigator from "./src/navigation/AppNavigator";
 import {DataProvider} from './src/hooks/useData';
+import { ApplicationProvider, IconRegistry, Layout, Text } from '@ui-kitten/components';
+import * as eva from '@eva-design/eva';
+import { EvaIconsPack } from '@ui-kitten/eva-icons';
 
 const setData = async (appState: object) => {
   try {
@@ -58,9 +61,12 @@ export default function App() {
     <Provider store={appStore}>
       <DataProvider>
       <PreferencesContext.Provider value={preferences}>
+      <IconRegistry icons={EvaIconsPack} />
+      <ApplicationProvider {...eva} theme={eva.light}>
         <PaperProvider theme={appTheme}>
           <AppNavigator theme={appTheme} />
         </PaperProvider>
+      </ApplicationProvider>
       </PreferencesContext.Provider>
       </DataProvider>
     </Provider>

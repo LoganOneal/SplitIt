@@ -5,10 +5,10 @@ import {
   useTheme
 } from 'react-native-paper';
 
-import GroupMember from '../components/GroupMember';
-import * as AppConstants from '../constants/constants';
+import GroupMember from '../../components/GroupMember';
+import * as AppConstants from '../../constants/constants';
 import { collection, doc, onSnapshot } from 'firebase/firestore';
-import { db } from '../services/firebase'
+import { db } from '../../services/firebase'
 
 export default function GroupMembersScreen({ route, navigation }) {
   const theme = useTheme();

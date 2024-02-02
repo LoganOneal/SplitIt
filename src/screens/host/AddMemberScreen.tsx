@@ -9,8 +9,8 @@ import {
 } from 'react-native-paper';
 import { Controller, useForm } from 'react-hook-form';
 
-import * as AppConstants from '../constants/constants';
-import { useFirestore } from '../hooks/useFirestore';
+import * as AppConstants from '../../constants/constants';
+import { useFirestore } from '../../hooks/useFirestore';
 
 type AddMemberFormData = {
   name: string;

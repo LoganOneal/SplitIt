@@ -1,13 +1,14 @@
 import * as React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import HomeScreen from "../screens/HomeScreen";
+import HomeScreen from "../screens/shared/HomeScreen";
 import CustomNavBar from "./CustomNavBar";
 import BottomNavigator from "./BottomNavigator";
-import Scanner from "../screens/Scanner";
-import QRCodeScreen from "../screens/QRCodeScreen";
-import GroupMembersScreen from "../screens/GroupMembersScreen";
-import AddMemberScreen from "../screens/AddMemberScreen";
-import CreateReceipt from "../screens/CreateReceipt";
+import Scanner from "../screens/shared/Scanner";
+import QRCodeScreen from "../screens/host/QRCodeScreen";
+import GroupMembersScreen from "../screens/host/GroupMembersScreen";
+import AddMemberScreen from "../screens/host/AddMemberScreen";
+import CreateReceipt from "../screens/host/CreateReceipt";
+import JoinReceiptScreen from "../screens/guest/JoinReceiptScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -23,6 +24,7 @@ export default function HomeStack() {
       <Stack.Screen name="BottomNavigator" component={BottomNavigator} />
       <Stack.Screen name="Scanner" component={Scanner} />
       <Stack.Screen name="CreateReceipt" component={CreateReceipt} />
+      <Stack.Screen name="JoinReceipt" component={JoinReceiptScreen} />
 
       <Stack.Screen name="Share Receipt" component={QRCodeScreen} />
       <Stack.Screen name="Group Members" component={GroupMembersScreen} />

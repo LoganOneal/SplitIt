@@ -7,7 +7,7 @@ import {
   Text
 } from "react-native-paper";
 
-import * as AppConstants from "../constants/constants";
+import * as AppConstants from "../../constants/constants";
 
 export default function QRCodeScreen({ route, navigation }) {
   const theme = useTheme();

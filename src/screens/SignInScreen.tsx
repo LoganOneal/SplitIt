@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
 } from "react-native-paper";
 import { StyleSheet, Dimensions, StatusBar } from "react-native";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, Form } from "react-hook-form";
 import * as Animatable from "react-native-animatable";
 import { useAppDispatch } from "../store/hook";
 import * as AppConstants from "../constants/constants";
@@ -17,6 +17,7 @@ import { ImageOverlay } from "../components/image-overlay";
 import { useAuth } from "../hooks/useAuth";
 import { IAuthState } from "../interfaces/IAuthentication";
 import { userLoggedIn } from "../store/authSlice";
+import FormCard from "../components/FormCard";
 
 type SignInFormData = {
   emailAddress: string;
@@ -100,96 +101,7 @@ export default function SignInScreen({ navigation }) {
         style={[styles.contentContainer]}
         animation="fadeInUpBig"
       >
-        <Surface style={styles.surface} elevation={1}>
-          <Text variant="headlineSmall" style={{ textAlign: "center" }}>
-            {AppConstants.TITLE_Login}
-          </Text>
-          <Controller
-            control={control}
-            rules={{
-              required: true,
-            }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <>
-              <TextInput
-                label={AppConstants.LABEL_EmailAddress}
-                onBlur={onBlur}
-                onChangeText={async Text => {
-                  setSnackMessage(Text);
-                  setValidEmail(await validateEmail(Text));
-                }}
-                value={value}
-                mode="outlined"
-                placeholder="Email Address"
-                textContentType="emailAddress"
-                style={styles.textInput}
-              />
-              <Text style={{ color: theme.colors.error }}>{validEmail}</Text>
-              </>
-            )}
-            name="emailAddress"
-          />
-          {(errors.emailAddress || !validateEmail(watch('emailAddress'))) && (
-            <Text style={{ color: theme.colors.error }}>
-              {AppConstants.ERROR_EmailIsRequired}
-            </Text>
-          )}
-          <Controller
-            control={control}
-            rules={{
-              maxLength: 100,
-              required: true,
-            }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                label={AppConstants.LABEL_Password}
-                mode="outlined"
-                placeholder="Password"
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                secureTextEntry
-                textContentType="password"
-                style={styles.textInput}
-              />
-            )}
-            name="password"
-          />
-          {errors.password && (
-            <Text style={{ color: theme.colors.error }}>
-              {AppConstants.ERROR_PasswordIsRequired}
-            </Text>
-          )}
-          <>
-            <Button
-              mode="contained"
-              compact
-              onPress={() => {handleSubmit(onSubmit); numAttempts++;}}
-              disabled={numAttempts > 3}
-              style={styles.button}
-              loading={loading}
-            >
-              Submit
-            </Button>
-            <Text style={{ color: theme.colors.error }}>
-              {numAttempts > 3 ? AppConstants.ERROR_TooManyAttempts : ""}
-            </Text>
-          </>
-          <Button
-            mode="text"
-            compact
-            onPress={() => navigation.navigate("SignUp")}
-            style={styles.button}
-            loading={loading}
-          >
-            {AppConstants.LABEL_NotAUser}
-          </Button>
-          <ActivityIndicator
-            animating={loading}
-            color={theme.colors.onPrimaryContainer}
-            size="large"
-          />
-        </Surface>
+      <FormCard/>
       </Animatable.View>
       <Snackbar
         visible={showSnack}

@@ -78,6 +78,7 @@ export const ERROR_InvalidEmail = "Email is invalid.";
 export const ERROR_EmailIsAlreadyRegistered = "Email is already registered.";
 export const ERROR_PasswordIsRequired = "Password is required";
 export const ERROR_InvalidPassword = "Password is invalid.";
+export const ERROR_InvalidEmailEntry = "Please enter a valid email address";
 export const ERROR_ConfirmPassword = "Confirm password does NOT match password";
 export const ERROR_FirstNameIsRequired = "First name is required";
 export const ERROR_LastNameIsRequired = "Last name is required";
@@ -86,6 +87,7 @@ export const ERROR_CategoryNameIsRequired = "Category name is required";
 export const ERROR_CategoryTypeIsRequired = "Category type is required";
 export const ERROR_NameIsRequired = "Name is required";
 export const ERROR_InvalidPhoneNumber = "Phone number is invalid"
+export const ERROR_TooManyAttempts = "Too many attempts. Try again later.";
 
 // Form related
 export const FORM_Mode_Add = "Add";

@@ -27,12 +27,15 @@ export default function SignInScreen({ navigation }) {
   const theme = useTheme();
   const [showSnack, setShowSnack] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [validEmail, setValidEmail] = useState("");
   const [snackMessage, setSnackMessage] = useState("");
   const dispatch = useAppDispatch();
   const { signinUser, getProfile } = useAuth();
+  let numAttempts = 0;
   const {
     control,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<SignInFormData>();
 
@@ -41,7 +44,7 @@ export default function SignInScreen({ navigation }) {
   };
 
   const onDismissSnackBar = () => setShowSnack(false);
-
+  
   const handleSignIn = async (email: string, password: string) => {
     let parsedResponse = null;
     let firebaseToken = null;
@@ -80,6 +83,13 @@ export default function SignInScreen({ navigation }) {
     });
   };
 
+  const validateEmail = async (email: string) => {
+    if (email.includes("@") && email.includes(".")) {
+      return "";
+    }
+    return "Please enter a valid email address."
+  }
+
   return (
     <ImageOverlay
       style={styles.container}
@@ -100,25 +110,30 @@ export default function SignInScreen({ navigation }) {
               required: true,
             }}
             render={({ field: { onChange, onBlur, value } }) => (
+              <>
               <TextInput
                 label={AppConstants.LABEL_EmailAddress}
                 onBlur={onBlur}
-                onChangeText={onChange}
+                onChangeText={async Text => {
+                  setSnackMessage(Text);
+                  setValidEmail(await validateEmail(Text));
+                }}
                 value={value}
                 mode="outlined"
                 placeholder="Email Address"
                 textContentType="emailAddress"
                 style={styles.textInput}
               />
+              <Text style={{ color: theme.colors.error }}>{validEmail}</Text>
+              </>
             )}
             name="emailAddress"
           />
-          {errors.emailAddress && (
+          {(errors.emailAddress || !validateEmail(watch('emailAddress'))) && (
             <Text style={{ color: theme.colors.error }}>
               {AppConstants.ERROR_EmailIsRequired}
             </Text>
           )}
-
           <Controller
             control={control}
             rules={{
@@ -145,16 +160,21 @@ export default function SignInScreen({ navigation }) {
               {AppConstants.ERROR_PasswordIsRequired}
             </Text>
           )}
-
-          <Button
-            mode="contained"
-            compact
-            onPress={handleSubmit(onSubmit)}
-            style={styles.button}
-            loading={loading}
-          >
-            Submit
-          </Button>
+          <>
+            <Button
+              mode="contained"
+              compact
+              onPress={() => {handleSubmit(onSubmit); numAttempts++;}}
+              disabled={numAttempts > 3}
+              style={styles.button}
+              loading={loading}
+            >
+              Submit
+            </Button>
+            <Text style={{ color: theme.colors.error }}>
+              {numAttempts > 3 ? AppConstants.ERROR_TooManyAttempts : ""}
+            </Text>
+          </>
           <Button
             mode="text"
             compact
@@ -193,11 +213,13 @@ const container_height = height * 0.45;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 60,
     flexDirection: "column",
+    justifyContent: "flex-start",
   },
   contentContainer: {
     marginHorizontal: 10,
-    marginVertical: 20,
     height: container_height,
   },
   surface: {

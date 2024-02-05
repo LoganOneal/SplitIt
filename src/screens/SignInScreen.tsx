@@ -103,7 +103,33 @@ export default function SignInScreen({ navigation }) {
         style={[styles.contentContainer]}
         animation="fadeInUpBig"
       >
-      <FormCard/>
+      {/* if signin */}
+      <FormCard formName="Sign In" formInputs={[
+        <>
+          <TextInput 
+          style={styles.FormInput} 
+          label="email"
+          onChangeText={async Text => {
+            setValidEmail(await validateEmail(Text));
+          }}/>
+          <Text style={{ color: theme.colors.error }}>
+            {validEmail}
+          </Text>
+        </>,
+        <TextInput 
+          style={styles.FormInput} 
+          label="password"/> ,
+        <Button 
+          mode="contained"
+          onPress={handleSubmit(onSubmit)}>
+            Sign In
+        </Button>,
+        <Button 
+          onPress={() => navigation.navigate("SignUp")}>
+          Don't have an account? Sign Up
+        </Button>
+      ]}/>
+
       </Animatable.View>
       <Snackbar
         visible={showSnack}
@@ -125,6 +151,14 @@ const { height } = Dimensions.get("screen");
 const container_height = height * 0.45;
 
 const styles = StyleSheet.create({
+  FormInput: {
+    marginTop: 10,
+    height: 40,
+    borderWidth: 1,
+    borderRadius: 10,
+    backgroundColor: 'white',
+    borderColor: 'lightgrey',
+  },
   container: {
     flex: 1,
     paddingHorizontal: 10,

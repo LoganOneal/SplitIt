@@ -1,9 +1,8 @@
 import React from "react";
-import { Dimensions, StyleSheet, View } from "react-native";
+import { Dimensions, StyleSheet, View, TextInput } from "react-native";
 import {
     Button,
     Surface,
-    TextInput,
     useTheme,
     Snackbar,
     Text,
@@ -13,18 +12,20 @@ import {
     Card
 } from "react-native-paper";
 import * as AppConstants from "../constants/constants";
+interface AuthCardProps {
+    formName: string;
+    formInputs: JSX.Element[];
+}
 
-
-export default function AuthCard() {
+export default function AuthCard({ formName,formInputs }: AuthCardProps) {
     return (
         <Card style={styles.FormCard}>
-            <View>
-                    <TextInput/>
-                    <TextInput/>
-                    <TextInput/>
-            </View>
+            <Card.Title title={formName}/>
+            <Card.Content style={styles.FormContainer}>
+                {formInputs}
+            </Card.Content>
         </Card>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
@@ -32,7 +33,15 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'transparent',
-        height: 
-    }
+        opacity: 0.85,
+        alightText: 'center',
+        overflow: 'hidden',
+    },
+    FormContainer: {
+        width: 300,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+
+    }, 
 });

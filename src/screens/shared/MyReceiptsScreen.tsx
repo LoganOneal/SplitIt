@@ -7,6 +7,8 @@ import { useFirestore } from '../../hooks/useFirestore';
 import ReceiptCard from '../../components/ReceiptCard';
 import { FlatList } from 'react-native';
 import { Button, Icon, IconElement, Layout, Spinner } from '@ui-kitten/components';
+import { useAppDispatch } from "../../store/hook";
+import { userLoggedOut } from "../../store/authSlice";
 
 const PlusIcon = (props): IconElement => (
   <Icon
@@ -18,6 +20,7 @@ const PlusIcon = (props): IconElement => (
 const MyReceiptsScreen = ({navigation}): React.ReactElement => {
   const { getHostReceipts } = useFirestore();
   const [receipts, setReceipts] = useState<IReceipt[]>([]);
+  const dispatch = useAppDispatch();
 
   // fetch receipts
   useEffect(() => {
@@ -64,6 +67,18 @@ const MyReceiptsScreen = ({navigation}): React.ReactElement => {
 
         >
           ADD RECEIPT
+        </Button>
+        <Button
+          style={styles.button}
+          status='primary'
+          accessoryLeft={PlusIcon}
+          onPress={() => {
+            dispatch(userLoggedOut());
+            navigation.navigate('SignIn');
+          }
+          }
+        >
+          logout
         </Button>
       </View>
     </View>

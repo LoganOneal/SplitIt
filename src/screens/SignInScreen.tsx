@@ -164,6 +164,14 @@ export default function SignInScreen({ navigation }) {
             </Text>
           )}
           <>
+          <Button
+              mode="text"
+              compact
+              onPress={() => navigation.navigate("ResetPassword")}
+              style={{alignSelf: 'flex-end'}}
+            >
+              Forgot Password?
+            </Button>
             <Button
               mode="contained"
               compact
@@ -233,7 +241,7 @@ const styles = StyleSheet.create({
     height: container_height,
   },
   button: {
-    marginVertical: 20,
+    marginVertical: 10,
   },
   textInput: {
     marginVertical: 10,

@@ -9,7 +9,9 @@ import {
   Image,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import { IconButton } from "react-native-paper";
 import * as MediaLibrary from "expo-media-library";
+import { AZURE_API_KEY } from '@env';
 
 
 const Scanner = () => {
@@ -77,7 +79,7 @@ const Scanner = () => {
   const UploadImage = async () => {
     if (photo) {
       const endPoint = "https://splitit.cognitiveservices.azure.com/";
-      const apiKey = "8e675bb292f44e14b9a386abb3198d4b";
+      const apiKey = AZURE_API_KEY;
       const modelId = "prebuilt-receipt"; 
       const apiVersion = "2023-07-31";
       const url = `${endPoint}formrecognizer/documentModels/${modelId}:analyze?api-version=${apiVersion}`;
@@ -177,14 +179,16 @@ const Scanner = () => {
           </View>
         </>
       ) : (
-        <View style={styles.cameraContainer}>
-          <TouchableOpacity style={styles.button} onPress={takePicture}>
-            <Text style={styles.buttonText}>Take Picture</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={choosePicture}>
-            <Text style={styles.buttonText}>Choose Picture</Text>
-          </TouchableOpacity>
+        <View style={styles.optionContainer}>
+        <View style={styles.iconContainer}>
+          <IconButton icon="camera" size={150} style={styles.iconButton} onPress={takePicture} />
+          <Text style={styles.iconText}>Take Picture</Text>
         </View>
+        <View style={styles.iconContainer}>
+          <IconButton icon="folder" size={150} style={styles.iconButton} onPress={choosePicture} />
+          <Text style={styles.iconText}>Choose Picture</Text>
+        </View>
+      </View>
       )}
     </SafeAreaView>
   );
@@ -246,6 +250,24 @@ const styles = StyleSheet.create({
   },
   flex1: {
     flex: 1,
+  },
+  optionContainer: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  iconContainer: {
+    marginVertical: 10,
+  },
+  iconButton: {
+    borderWidth: 2,
+    borderRadius: 10,
+    borderColor: 'white',
+  },
+  iconText: {
+    textAlign: 'center',
+    color: 'white',
+    marginTop: 10, 
   },
 });
 

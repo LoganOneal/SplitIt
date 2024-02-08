@@ -12,8 +12,7 @@ const AppNavigator = (theme: Theme) => {
   return (
     // TODO - Pass theme prop into NavigationContainer
     <NavigationContainer>
-      {/* Conditional stack navigator rendering based on login state */}
-      {authState?.isLoggedIn ? <HomeStack /> : <PublicStack />}
+      <PublicStack />
     </NavigationContainer>
   );
 };

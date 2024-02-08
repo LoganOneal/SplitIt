@@ -19,7 +19,7 @@ export default function JoinReceiptScreen({ navigation }) {
     if (authState?.isLoggedIn) {
       /* go to receipt page */
     } else {
-      navigation.navigate("Home");
+      navigation.navigate("SignIn");
     }
   };
 

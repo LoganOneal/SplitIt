@@ -9,11 +9,17 @@ import GroupMember from '../components/GroupMember';
 import * as AppConstants from '../constants/constants';
 import { collection, doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../services/firebase'
+import { IGroupMember } from '../constants/types';
+import { useAppSelector } from '../store/hook';
+import { selectAuthState } from '../store/authSlice';
 
 export default function GroupMembersScreen({ route, navigation }) {
   const theme = useTheme();
   const { receiptId } = route.params;
-  const [users, setUsers] = useState([]);
+  const usersInit: IGroupMember[] = []
+  const [users, setUsers] = useState(usersInit);
+  const [hostId, setHostId] = useState("");
+  const authState = useAppSelector(selectAuthState);
 
   useEffect(() => {
     try {
@@ -22,13 +28,20 @@ export default function GroupMembersScreen({ route, navigation }) {
 
       onSnapshot(receiptDocRef, (doc) => {
         if (doc.data()) {
-          const users = doc.data()?.users.map((user: any, index: any) => ({
-            id: index,
+          const nonHostUsers = doc.data()?.users.map((user: any, index: any) => ({
+            id: index + 1,
             ...user
           }));
-          setUsers(users);
+          setUsers([
+            {
+              name: authState?.userName + " (Host)",
+              phoneNumber: "111-111-1111",
+            },
+            ...nonHostUsers
+          ]);
+          setHostId(doc.data()?.host)
         }
-      })
+      });
 
     } catch (error) {
       console.error('Error retrieving users in the receipt group:', error);

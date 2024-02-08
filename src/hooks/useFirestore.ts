@@ -35,13 +35,7 @@ export const useFirestore = () => {
   const createReceipt = async (receipt: IReceipt) => {
     const receiptsColRef = collection(db, 'receipts')
     // console.log(receiptsColRef)
-    const users = [
-      {
-        name: auth.currentUser?.displayName + " (Host)",
-        phoneNumber: "111-111-1111"
-      },
-      ...MEMBERS
-    ]
+    const users = MEMBERS
 
     const receiptRef = await addDoc(receiptsColRef, {
       created: serverTimestamp(),

@@ -1,6 +1,8 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import authReducer from "./authSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import receiptSlicerReducer from "./receiptSlice";
+
 
 let localState: string | undefined;
 
@@ -25,6 +27,7 @@ if (localState !== undefined) {
 export const appStore = configureStore({
   reducer: {
     auth: authReducer,
+    receipt: receiptSlicerReducer,
   },
   preloadedState: localStateJSON || {},
 });
@@ -37,3 +40,11 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   unknown,
   Action<string>
 >;
+
+// export const receiptStore = configureStore({
+//   reducer: {
+//     receipt: receiptSlicerReducer,
+//   },
+// });
+// export type ReceiptDispatch = typeof receiptStore.dispatch;
+// export type ReceiptState = ReturnType<typeof receiptStore.getState>;

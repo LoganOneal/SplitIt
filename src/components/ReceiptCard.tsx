@@ -8,7 +8,7 @@ import { Icon, IconElement } from '@ui-kitten/components';
 import { ProgressBar } from '@ui-kitten/components';
 
 const Header = ({
-  location,
+  location:{ city, state, country, street },
   host,
   members,
   items,
@@ -29,7 +29,7 @@ const Header = ({
       Host: {host}
     </Text>
     <Text category='s1'>
-      Location: {location}
+      Location: {`${street}, ${city}, ${state}, ${country}`}
     </Text> 
  
   </View>

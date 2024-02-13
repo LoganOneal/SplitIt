@@ -33,14 +33,6 @@ export const useFirestore = () => {
 
   const createReceipt = async (receipt: IReceipt) => {
     const receiptsColRef = collection(db, 'receipts')
-    // console.log(receiptsColRef)
-    const users = [
-      {
-        name: auth.currentUser?.displayName + "(Host)",
-        phoneNumber: "111-111-1111"
-      },
-      ...MEMBERS
-    ]
 
     const receiptRef = await addDoc(receiptsColRef, {
       created: serverTimestamp(),
@@ -94,6 +86,34 @@ export const useFirestore = () => {
       throw error;
     }
   };
+  
+  const getReceiptById = async (receiptId: string): Promise<IReceipt> => {
+    try {
+      const receiptsColRef = collection(db, 'receipts');
+      const receiptDocRef = doc(receiptsColRef, receiptId);
+      const receiptDocSnapshot: DocumentSnapshot<DocumentData> = await getDoc(receiptDocRef);
+
+      if (receiptDocSnapshot.exists()) {
+        const receiptData = receiptDocSnapshot.data() as IReceipt;
+        console.log("Receipt Data:", receiptData)
+
+        // set receipt item ids to be the same as the receipt item index
+        receiptData.items = receiptData?.items?.map((item, index) => {
+          return {
+            ...item,
+            id: index
+          }
+        })
+
+        return receiptData;
+      } else {
+        throw new Error('Receipt not found');
+      }
+    } catch (error) {
+      console.error('Error fetching receipt:', error);
+      throw error;
+    }
+  };
 
   const joinReceipt = async (joinCode: string) => {
     try {
@@ -101,7 +121,7 @@ export const useFirestore = () => {
 
       // get receipt by join code 
       const receipts = await getDocs(query(receiptsColRef, where("joinCode", "==", joinCode)));
-      console.log("REceipt id", receipts.docs[0].id)
+      console.log("Receipt id", receipts.docs[0].id)
 
       // add receipt to user's memberReceipts
       await updateDoc(userRef(auth.currentUser?.uid!), {
@@ -112,7 +132,8 @@ export const useFirestore = () => {
       await updateDoc(doc(receiptsColRef, receipts.docs[0].id), {
         guests: arrayUnion(auth.currentUser?.uid)
       });
-
+      
+      return receipts.docs[0].id;
     } catch (error) {
       console.error('Error joining receipt:', error);
       throw error;
@@ -139,6 +160,7 @@ export const useFirestore = () => {
     createReceipt,
     getHostReceipts,
     addUserToReceipt, 
-    joinReceipt
+    joinReceipt, 
+    getReceiptById
   }
 };

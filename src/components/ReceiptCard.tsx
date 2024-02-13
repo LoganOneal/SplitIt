@@ -31,7 +31,6 @@ const Header = ({
     <Text category='s1'>
       Location: {`${street}, ${city}, ${state}, ${country}`}
     </Text> 
- 
   </View>
 );
 
@@ -71,10 +70,6 @@ const styles = StyleSheet.create({
   info: {
     marginTop: 10,
   }, 
-  topContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
   card: {
     width: 300,
     flex: 1,

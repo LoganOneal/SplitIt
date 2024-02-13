@@ -32,7 +32,6 @@ export const useFirestore = () => {
   const userRef = (uid: string) => doc(db, "users", uid);
 
   const createReceipt = async (receipt: IReceipt) => {
-    console.log(JSON.stringify(receipt));
     const receiptsColRef = collection(db, 'receipts')
     // console.log(receiptsColRef)
     const users = [

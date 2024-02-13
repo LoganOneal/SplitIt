@@ -20,7 +20,7 @@ const initialState: IReceipt = {
     tax: 0, 
     tip: 0,
     timestamp: 0,
-    onPress: void 0,
+    // onPress: void 0,
 }
 
 const receiptSlice = createSlice({

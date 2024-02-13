@@ -26,8 +26,6 @@ import { IReceipt } from "../interfaces/IReceipt";
 import { useAuth } from "./useAuth";
 import { User, UserCredential, UserInfo } from "firebase/auth";
 
-import { MEMBERS } from '../constants/mocks';
-
 export const useFirestore = () => {
 
   const userRef = (uid: string) => doc(db, "users", uid);
@@ -35,12 +33,11 @@ export const useFirestore = () => {
   const createReceipt = async (receipt: IReceipt) => {
     const receiptsColRef = collection(db, 'receipts')
     // console.log(receiptsColRef)
-    const users = MEMBERS
 
     const receiptRef = await addDoc(receiptsColRef, {
       created: serverTimestamp(),
       host: auth.currentUser?.uid,
-      users: users,
+      users: [],
       receipt: receipt,
     });
     // console.log(receiptRef)
@@ -84,18 +81,39 @@ export const useFirestore = () => {
 
   const addUserToReceipt = async (receiptId: string, name: string, phoneNumber: string) => {
     try {
+      const usersColRef = collection(db, 'users');
+      const userRef = await addDoc(usersColRef, {
+        name: name,
+        email: "",
+        created: serverTimestamp(),
+        hostReceipts: [],
+        memberReceipts: [],
+        hasAccount: false,
+        phoneNumber: phoneNumber
+      });
+
       const receiptsColRef = collection(db, 'receipts');
       const receiptDocRef = doc(receiptsColRef, receiptId);
       await updateDoc(receiptDocRef, {
-        users: arrayUnion({
-          name: name,
-          phoneNumber: phoneNumber
-        })
+        users: arrayUnion(userRef.id)
       });
     } catch (error) {
-      console.error('Error adding user to receipt:', error);
+      console.error('Error creating and adding new user to receipt:', error);
       throw error;
     }
+    // try {
+    //   const receiptsColRef = collection(db, 'receipts');
+    //   const receiptDocRef = doc(receiptsColRef, receiptId);
+    //   await updateDoc(receiptDocRef, {
+    //     users: arrayUnion({
+    //       name: name,
+    //       phoneNumber: phoneNumber
+    //     })
+    //   });
+    // } catch (error) {
+    //   console.error('Error adding user to receipt:', error);
+    //   throw error;
+    // }
   };
 
 return {

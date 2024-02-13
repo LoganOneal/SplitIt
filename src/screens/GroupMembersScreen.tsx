@@ -7,7 +7,7 @@ import {
 
 import GroupMember from '../components/GroupMember';
 import * as AppConstants from '../constants/constants';
-import { collection, doc, onSnapshot } from 'firebase/firestore';
+import { collection, doc, getDoc, onSnapshot } from 'firebase/firestore';
 import { db } from '../services/firebase'
 import { IGroupMember } from '../constants/types';
 import { useAppSelector } from '../store/hook';
@@ -18,28 +18,35 @@ export default function GroupMembersScreen({ route, navigation }) {
   const { receiptId } = route.params;
   const usersInit: IGroupMember[] = []
   const [users, setUsers] = useState(usersInit);
-  const [hostId, setHostId] = useState("");
   const authState = useAppSelector(selectAuthState);
+  const userRef = (userId: string) => doc(db, "users", userId);
 
   useEffect(() => {
     try {
       const receiptsColRef = collection(db, 'receipts');
       const receiptDocRef = doc(receiptsColRef, receiptId);
 
-      onSnapshot(receiptDocRef, (doc) => {
+      /* Fetch each users name in the receipt group */
+      onSnapshot(receiptDocRef, async (doc) => {
         if (doc.data()) {
-          const nonHostUsers = doc.data()?.users.map((user: any, index: any) => ({
-            id: index + 1,
-            ...user
-          }));
+          const userIds = doc.data()?.users;
+          const nonHostUsers: IGroupMember[] = [];
+
+          for (const userId of userIds) {
+            const userDoc = await getDoc(userRef(userId));
+            if (userDoc.data()) {
+              nonHostUsers.push({
+                name: userDoc.data()?.name
+              })
+            }
+          }
+
           setUsers([
             {
-              name: authState?.userName + " (Host)",
-              phoneNumber: "111-111-1111",
+              name: authState?.userName + " (Host)"
             },
             ...nonHostUsers
-          ]);
-          setHostId(doc.data()?.host)
+          ])
         }
       });
 

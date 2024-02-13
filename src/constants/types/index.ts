@@ -21,6 +21,7 @@ export interface IReceiptItem {
   name?: string;
   price?: number;
   paid?: boolean;
+  buyer?: IFirebaseUser;
 }
 
 export interface IReceipt {
@@ -40,6 +41,7 @@ export interface IReceipt {
   onPress?: (event?: any) => void;
 }
 
+// use guests instead of members / users
 export interface IGroupMember {
   name: string;
   phoneNumber: string;

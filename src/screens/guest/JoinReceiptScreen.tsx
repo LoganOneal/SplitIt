@@ -32,13 +32,20 @@ const JoinReceiptScreen = ({ navigation }): React.ReactElement => {
     setJoinCode(formattedValue);
   };
 
-  const handleJoinReceipt = () => {
+  const handleJoinReceipt = async () => {
     // remove dash from join code 
     const formattedJoinCode = joinCode.replace(/-/g, '');
 
     console.log('Joining receipt with code:', formattedJoinCode);
 
-    joinReceipt(formattedJoinCode);
+    try {
+      const receiptId = await joinReceipt(formattedJoinCode);
+      navigation.navigate('SelectItems', {
+        receiptId: receiptId,
+      });
+    } catch (error) {
+      console.error('Error joining receipt:', error);
+    }
   }
 
   return (

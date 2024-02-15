@@ -8,20 +8,24 @@ import {
   Text
 } from 'react-native-paper';
 import { Controller, useForm } from 'react-hook-form';
+import * as SMS from 'expo-sms';
 
 import * as AppConstants from '../constants/constants';
 import { useFirestore } from '../hooks/useFirestore';
+import { useAppSelector } from '../store/hook';
+import { selectAuthState } from '../store/authSlice';
 
 type AddMemberFormData = {
   name: string;
   phoneNumber: string;
 };
 
-export default function AddMemberScreen({ route, navigation }) {
+export default function AddUserByTextScreen({ route, navigation }) {
   const theme = useTheme();
   const { receiptId } = route.params;
-  const { addUserToReceipt } = useFirestore();
+  const { addNewUserToReceipt } = useFirestore();
   const [loading, setLoading] = useState(false);
+  const authState = useAppSelector(selectAuthState);
 
   const {
     control,
@@ -34,12 +38,13 @@ export default function AddMemberScreen({ route, navigation }) {
   };
 
   const handleAddMember = async (name: string, phoneNumber: string) => {
-    // console.log(name)
-    // console.log(phoneNumber)
     setLoading(true);
-    // const receipt = await getReceipt(receipt);
-    // console.log(receipt);
-    await addUserToReceipt(receiptId, name, phoneNumber).then(() => {
+    await addNewUserToReceipt(receiptId, name, phoneNumber).then(async () => {
+      phoneNumber = phoneNumber.replace("-", "");
+      await SMS.sendSMSAsync(
+        [phoneNumber],
+        `Join ${authState?.userName}'s receipt on SplitIt: {insert link}`
+      );
       setLoading(false);
       navigation.goBack();
     });

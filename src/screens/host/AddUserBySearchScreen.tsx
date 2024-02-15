@@ -117,31 +117,11 @@ export default function AddUserBySearchScreen({ route, navigation }) {
 const { width } = Dimensions.get("screen");
 
 const styles = StyleSheet.create({
-  button: {
-    width: width * 0.85,
-    height: 50,
-  },
-  bottomButtons: {
-    marginBottom: 50
-  },
-  buttonContainer: {
-    borderRadius: 0,
-    marginTop: 20
-  },
-  container: {
-    flex: 1,
-    alignItems: "center",
-    padding: 1,
-  },
   flatList: {
     width: width * 0.85,
     marginTop: width * 0.075,
   },
   searchTextInput: {
-    width: width * 0.85,
-    marginTop: width * 0.075
-  },
-  surface: {
     width: width * 0.85,
     marginTop: width * 0.075
   },

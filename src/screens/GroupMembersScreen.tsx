@@ -4,10 +4,10 @@ import {
   Button,
   useTheme
 } from 'react-native-paper';
+import { collection, doc, getDoc, onSnapshot } from 'firebase/firestore';
 
 import GroupMember from '../components/GroupMember';
 import * as AppConstants from '../constants/constants';
-import { collection, doc, getDoc, onSnapshot } from 'firebase/firestore';
 import { db } from '../services/firebase'
 import { IGroupMember } from '../constants/types';
 import { useAppSelector } from '../store/hook';
@@ -76,8 +76,17 @@ export default function GroupMembersScreen({ route, navigation }) {
           textColor="black"
           contentStyle={styles.button}
           style={styles.buttonContainer}
+          onPress={() => navigation.navigate("Search Member", {receiptId: receiptId})}>
+          {AppConstants.LABEL_AddMemberViaSearch}
+        </Button>
+        <Button
+          mode="contained"
+          buttonColor="white"
+          textColor="black"
+          contentStyle={styles.button}
+          style={styles.buttonContainer}
           onPress={() => navigation.navigate("Add Member", {receiptId: receiptId})}>
-          {AppConstants.LABEL_AddMember}
+          {AppConstants.LABEL_AddMemberViaText}
         </Button>
         <Button
           mode="contained"

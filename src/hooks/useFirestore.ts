@@ -79,7 +79,7 @@ export const useFirestore = () => {
     }
   };
 
-  const addUserToReceipt = async (receiptId: string, name: string, phoneNumber: string) => {
+  const addNewUserToReceipt = async (receiptId: string, name: string, phoneNumber: string) => {
     try {
       const usersColRef = collection(db, 'users');
       const userRef = await addDoc(usersColRef, {
@@ -87,7 +87,7 @@ export const useFirestore = () => {
         email: "",
         created: serverTimestamp(),
         hostReceipts: [],
-        memberReceipts: [],
+        memberReceipts: [receiptId],
         hasAccount: false,
         phoneNumber: phoneNumber
       });
@@ -101,24 +101,30 @@ export const useFirestore = () => {
       console.error('Error creating and adding new user to receipt:', error);
       throw error;
     }
-    // try {
-    //   const receiptsColRef = collection(db, 'receipts');
-    //   const receiptDocRef = doc(receiptsColRef, receiptId);
-    //   await updateDoc(receiptDocRef, {
-    //     users: arrayUnion({
-    //       name: name,
-    //       phoneNumber: phoneNumber
-    //     })
-    //   });
-    // } catch (error) {
-    //   console.error('Error adding user to receipt:', error);
-    //   throw error;
-    // }
   };
+
+  const addExistingUserToReceipt = async (receiptId: string, uid: string) => {
+    try {
+      const receiptsColRef = collection(db, 'receipts');
+      const receiptDocRef = doc(receiptsColRef, receiptId);
+      await updateDoc(receiptDocRef, {
+        users: arrayUnion(uid)
+      });
+
+      const userRef = doc(db, "users", uid);
+      await updateDoc(userRef, {
+        memberReceipts: arrayUnion(receiptId)
+      })
+    } catch (error) {
+      console.error('Error adding existing user to receipt:', error);
+      throw error;
+    }
+  }
 
 return {
   createReceipt,
   getHostReceipts,
-  addUserToReceipt
+  addNewUserToReceipt,
+  addExistingUserToReceipt
 }
 };

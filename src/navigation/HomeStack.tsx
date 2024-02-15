@@ -6,7 +6,8 @@ import BottomNavigator from "./BottomNavigator";
 import Scanner from "../screens/Scanner";
 import QRCodeScreen from "../screens/QRCodeScreen";
 import GroupMembersScreen from "../screens/GroupMembersScreen";
-import AddMemberScreen from "../screens/AddMemberScreen";
+import AddUserBySMSScreen from "../screens/AddUserBySMSScreen";
+import AddUserBySearchScreen from "../screens/AddUserBySearchScreen";
 import CreateReceipt from "../screens/CreateReceipt";
 import JoinReceiptScreen from "../screens/JoinReceiptScreen";
 
@@ -28,7 +29,8 @@ export default function HomeStack() {
 
       <Stack.Screen name="Share Receipt" component={QRCodeScreen} />
       <Stack.Screen name="Group Members" component={GroupMembersScreen} />
-      <Stack.Screen name="Add Member" component={AddMemberScreen} />
+      <Stack.Screen name="Add Member" component={AddUserBySMSScreen} />
+      <Stack.Screen name="Search Member" component={AddUserBySearchScreen} />
     </Stack.Navigator>
   );
 }

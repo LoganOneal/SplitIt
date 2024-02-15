@@ -23,7 +23,7 @@ export default function QRCodeScreen({ route, navigation }) {
         <Text>*Insert QR Code*</Text>
       </Surface>
       <View style={styles.bottomButtons}>
-        <Button
+        {/* <Button
           mode="contained"
           buttonColor="white"
           textColor="black"
@@ -31,7 +31,7 @@ export default function QRCodeScreen({ route, navigation }) {
           style={styles.buttonContainer}
           onPress={() => navigation.navigate("Join Receipt")}>
           Testing: Join Receipt Screen
-        </Button>
+        </Button> */}
         <Button
           mode="contained"
           buttonColor="white"

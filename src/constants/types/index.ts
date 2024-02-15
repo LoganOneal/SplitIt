@@ -43,3 +43,9 @@ export interface IReceipt {
 export interface IGroupMember {
   name: string;
 }
+
+export interface ISearchedUser {
+  name: string;
+  uid: string;
+  onReceipt: boolean;
+}

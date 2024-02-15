@@ -127,5 +127,11 @@ const styles = StyleSheet.create({
   },
   noMatchText: {
     marginTop: 20
-  }
+  },  
+  container: {
+    flex: 1,
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 1,
+  },
 });

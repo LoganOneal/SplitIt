@@ -10,10 +10,10 @@ import {
 import { Controller, useForm } from 'react-hook-form';
 import * as SMS from 'expo-sms';
 
-import * as AppConstants from '../constants/constants';
-import { useFirestore } from '../hooks/useFirestore';
-import { useAppSelector } from '../store/hook';
-import { selectAuthState } from '../store/authSlice';
+import * as AppConstants from '../../constants/constants';
+import { useFirestore } from '../../hooks/useFirestore';
+import { useAppSelector } from '../../store/hook';
+import { selectAuthState } from '../../store/authSlice';
 
 type AddMemberFormData = {
   name: string;

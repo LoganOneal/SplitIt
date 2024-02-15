@@ -27,12 +27,15 @@ export default function SignInScreen({ navigation }) {
   const theme = useTheme();
   const [showSnack, setShowSnack] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [validEmail, setValidEmail] = useState("");
   const [snackMessage, setSnackMessage] = useState("");
   const dispatch = useAppDispatch();
   const { signinUser, getProfile } = useAuth();
+  const [numAttempts, incNumAttempts] = useState(0);
   const {
     control,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<SignInFormData>();
 
@@ -41,11 +44,13 @@ export default function SignInScreen({ navigation }) {
   };
 
   const onDismissSnackBar = () => setShowSnack(false);
-
+  
   const handleSignIn = async (email: string, password: string) => {
+    console.log(numAttempts)
     let parsedResponse = null;
     let firebaseToken = null;
     setLoading(true);
+    incNumAttempts(numAttempts + 1);
     await signinUser(email, password).then((fbResponse) => {
       parsedResponse = JSON.parse(fbResponse);
       // error response
@@ -80,6 +85,13 @@ export default function SignInScreen({ navigation }) {
     });
   };
 
+  const validateEmail = async (email: string) => {
+    if (email.includes("@") && email.includes(".")) {
+      return "";
+    }
+    return AppConstants.ERROR_InvalidEmailEntry;
+  }
+
   return (
     <ImageOverlay
       style={styles.container}
@@ -100,25 +112,31 @@ export default function SignInScreen({ navigation }) {
               required: true,
             }}
             render={({ field: { onChange, onBlur, value } }) => (
+              <>
               <TextInput
                 label={AppConstants.LABEL_EmailAddress}
                 onBlur={onBlur}
-                onChangeText={onChange}
+                onChangeText={async Text => {
+                  onChange(Text);
+                  setSnackMessage(Text);
+                  setValidEmail(await validateEmail(Text));
+                }}
                 value={value}
                 mode="outlined"
                 placeholder="Email Address"
                 textContentType="emailAddress"
                 style={styles.textInput}
               />
+              <Text style={{ color: theme.colors.error }}>{validEmail}</Text>
+              </>
             )}
             name="emailAddress"
           />
-          {errors.emailAddress && (
+          {errors.emailAddress && (errors.emailAddress || !validateEmail(watch('emailAddress'))) && (
             <Text style={{ color: theme.colors.error }}>
               {AppConstants.ERROR_EmailIsRequired}
             </Text>
           )}
-
           <Controller
             control={control}
             rules={{
@@ -145,16 +163,29 @@ export default function SignInScreen({ navigation }) {
               {AppConstants.ERROR_PasswordIsRequired}
             </Text>
           )}
-
+          <>
           <Button
-            mode="contained"
-            compact
-            onPress={handleSubmit(onSubmit)}
-            style={styles.button}
-            loading={loading}
-          >
-            Submit
-          </Button>
+              mode="text"
+              compact
+              onPress={() => navigation.navigate("ResetPassword")}
+              style={{alignSelf: 'flex-end'}}
+            >
+              Forgot Password?
+            </Button>
+            <Button
+              mode="contained"
+              compact
+              onPress={handleSubmit(onSubmit)}
+              disabled={numAttempts > 2}
+              style={styles.button}
+              loading={loading}
+            >
+              Submit
+            </Button>
+            <Text style={{ color: theme.colors.error }}>
+              {numAttempts > 2 ? AppConstants.ERROR_TooManyAttempts : ""}
+            </Text>
+          </>
           <Button
             mode="text"
             compact
@@ -193,11 +224,13 @@ const container_height = height * 0.45;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 60,
     flexDirection: "column",
+    justifyContent: "flex-start",
   },
   contentContainer: {
     marginHorizontal: 10,
-    marginVertical: 20,
     height: container_height,
   },
   surface: {
@@ -208,7 +241,7 @@ const styles = StyleSheet.create({
     height: container_height,
   },
   button: {
-    marginVertical: 20,
+    marginVertical: 10,
   },
   textInput: {
     marginVertical: 10,

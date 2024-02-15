@@ -5,9 +5,9 @@ import SplashScreen from "../screens/SplashScreen";
 import * as AppConstants from "../constants/constants";
 import SignUpScreen from "../screens/SignUpScreen";
 import ThemeToggle from "./ThemeToggle";
-import HomeStack from "./HomeStack";
-import { useAppSelector } from "../store/hook";
+import ResetPasswordScreen from "../screens/ResetPasswordScreen";
 import { selectAuthState } from "../store/authSlice";
+import { useAppSelector } from "../store/hook";
 
 const Stack = createNativeStackNavigator();
 
@@ -17,20 +17,15 @@ export default function PublicStack() {
   /* Conditional stack navigator rendering based on login state */
   return (
     <Stack.Navigator
-      initialRouteName={authState?.isLoggedIn ? "HomeStack" : "Splash"}
+      initialRouteName="Splash"
       screenOptions={{
         headerShown: false,
       }}
     >
-      {
-        authState?.isLoggedIn ? 
-        <Stack.Screen name="HomeStack" component={HomeStack} /> : 
-        <>
-          <Stack.Screen name="SignIn" component={SignInScreen} />
-          <Stack.Screen name="SignUp" component={SignUpScreen} />
-          <Stack.Screen name="Splash" component={SplashScreen} />
-        </>
-      }
+      <Stack.Screen name="SignIn" component={SignInScreen} />
+      <Stack.Screen name="SignUp" component={SignUpScreen} />
+      <Stack.Screen name="Splash" component={SplashScreen} />
+      <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
     </Stack.Navigator>
   );
 }

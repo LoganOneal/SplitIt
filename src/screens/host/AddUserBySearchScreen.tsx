@@ -16,11 +16,11 @@ import {
 import { useDebounce } from 'use-debounce';
 import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore';  
 
-import { db } from '../services/firebase'
-import * as AppConstants from '../constants/constants';
-import { ISearchedUser } from '../constants/types';
-import SearchedUser from '../components/SearchedUser';
-import { useFirestore } from '../hooks/useFirestore';
+import { db } from '../../services/firebase'
+import * as AppConstants from '../../constants/constants';
+import { ISearchedUser } from '../../constants/types';
+import SearchedUser from '../../components/SearchedUser';
+import { useFirestore } from '../../hooks/useFirestore';
 
 export default function AddUserBySearchScreen({ route, navigation }) {
   const theme = useTheme();
@@ -53,7 +53,7 @@ export default function AddUserBySearchScreen({ route, navigation }) {
       const receiptsColRef = doc(db, 'receipts', receiptId);
       const receiptDoc = await getDoc(receiptsColRef);
       const host = receiptDoc.data()?.host;
-      const users = receiptDoc.data()?.users;
+      const users = receiptDoc.data()?.guests;
 
       res.forEach((doc) => {
         if (doc.data()) {

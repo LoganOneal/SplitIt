@@ -16,7 +16,7 @@ import {
   doc,
   serverTimestamp,
   arrayUnion,
-  where, 
+  where,
   QuerySnapshot,
   DocumentData,
   DocumentSnapshot,
@@ -32,16 +32,23 @@ export const useFirestore = () => {
 
   const createReceipt = async (receipt: IReceipt) => {
     const receiptsColRef = collection(db, 'receipts')
-    // console.log(receiptsColRef)
 
     const receiptRef = await addDoc(receiptsColRef, {
       created: serverTimestamp(),
       host: auth.currentUser?.uid,
-      users: [],
-      receipt: receipt,
+      guests: [],
+      ...receipt
     });
-    // console.log(receiptRef)
 
+    // create 8 character from receipt id
+    const joinCode = receiptRef.id.substring(0, 8).toUpperCase();
+
+    // add join code to receipt 
+    await updateDoc(receiptRef, {
+      joinCode: joinCode
+    });
+
+    // add receipt to user's hostReceipts
     await updateDoc(userRef(auth.currentUser?.uid!), {
       hostReceipts: arrayUnion(receiptRef.id)
     })
@@ -54,33 +61,87 @@ export const useFirestore = () => {
       const receiptsColRef = collection(db, 'receipts');
       const userDoc = await getDoc(userRef(auth.currentUser?.uid!));
       const hostReceiptsIds = userDoc.data()?.hostReceipts || [];
-  
+
       const receipts: IReceipt[] = [];
-  
+
       // Fetch each receipt individually based on its ID
       for (const receiptId of hostReceiptsIds) {
         const receiptDocRef = doc(receiptsColRef, receiptId);
         const receiptDocSnapshot: DocumentSnapshot<DocumentData> = await getDoc(receiptDocRef);
-  
+
         if (receiptDocSnapshot.exists()) {
-          const receiptData = receiptDocSnapshot.data();
+          const receiptData = receiptDocSnapshot.data() as IReceipt;
+
           // Assuming your receipt data is in a field called 'receipt'
-          if (receiptData?.receipt) {
-            receipts.push(receiptData.receipt);
-          }
+          console.log("Receipts Data:", receiptData)
+          receipts.push(receiptData);
+
         }
       }
-  
-      console.log(receipts);
+
       return receipts;
     } catch (error) {
       console.error('Error fetching host receipts:', error);
       throw error;
     }
   };
+  
+  const getReceiptById = async (receiptId: string): Promise<IReceipt> => {
+    try {
+      const receiptsColRef = collection(db, 'receipts');
+      const receiptDocRef = doc(receiptsColRef, receiptId);
+      const receiptDocSnapshot: DocumentSnapshot<DocumentData> = await getDoc(receiptDocRef);
+
+      if (receiptDocSnapshot.exists()) {
+        const receiptData = receiptDocSnapshot.data() as IReceipt;
+        console.log("Receipt Data:", receiptData)
+
+        // set receipt item ids to be the same as the receipt item index
+        receiptData.items = receiptData?.items?.map((item, index) => {
+          return {
+            ...item,
+            id: index
+          }
+        })
+
+        return receiptData;
+      } else {
+        throw new Error('Receipt not found');
+      }
+    } catch (error) {
+      console.error('Error fetching receipt:', error);
+      throw error;
+    }
+  };
+
+  const joinReceipt = async (joinCode: string) => {
+    try {
+      const receiptsColRef = collection(db, 'receipts');
+
+      // get receipt by join code 
+      const receipts = await getDocs(query(receiptsColRef, where("joinCode", "==", joinCode)));
+      console.log("Receipt id", receipts.docs[0].id)
+
+      // add receipt to user's memberReceipts
+      await updateDoc(userRef(auth.currentUser?.uid!), {
+        memberReceipts: arrayUnion(receipts.docs[0].id)
+      })
+
+      // add user to receipt's guests 
+      await updateDoc(doc(receiptsColRef, receipts.docs[0].id), {
+        guests: arrayUnion(auth.currentUser?.uid)
+      });
+      
+      return receipts.docs[0].id;
+    } catch (error) {
+      console.error('Error joining receipt:', error);
+      throw error;
+    }
+  }
 
   const addNewUserToReceipt = async (receiptId: string, name: string, phoneNumber: string) => {
     try {
+      // create new user and add receipt to the user
       const usersColRef = collection(db, 'users');
       const userRef = await addDoc(usersColRef, {
         name: name,
@@ -92,10 +153,11 @@ export const useFirestore = () => {
         phoneNumber: phoneNumber
       });
 
+      // add user to the receipt
       const receiptsColRef = collection(db, 'receipts');
       const receiptDocRef = doc(receiptsColRef, receiptId);
       await updateDoc(receiptDocRef, {
-        users: arrayUnion(userRef.id)
+        guests: arrayUnion(userRef.id)
       });
     } catch (error) {
       console.error('Error creating and adding new user to receipt:', error);
@@ -105,12 +167,14 @@ export const useFirestore = () => {
 
   const addExistingUserToReceipt = async (receiptId: string, uid: string) => {
     try {
+      // add user to receipt
       const receiptsColRef = collection(db, 'receipts');
       const receiptDocRef = doc(receiptsColRef, receiptId);
       await updateDoc(receiptDocRef, {
-        users: arrayUnion(uid)
+        guests: arrayUnion(uid)
       });
 
+      // add the receipt to the user
       const userRef = doc(db, "users", uid);
       await updateDoc(userRef, {
         memberReceipts: arrayUnion(receiptId)
@@ -125,6 +189,8 @@ return {
   createReceipt,
   getHostReceipts,
   addNewUserToReceipt,
-  addExistingUserToReceipt
+  addExistingUserToReceipt,
+  joinReceipt, 
+  getReceiptById
 }
 };

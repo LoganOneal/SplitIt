@@ -6,12 +6,12 @@ import {
 } from 'react-native-paper';
 import { collection, doc, getDoc, onSnapshot } from 'firebase/firestore';
 
-import GroupMember from '../components/GroupMember';
-import * as AppConstants from '../constants/constants';
-import { db } from '../services/firebase'
-import { IGroupMember } from '../constants/types';
-import { useAppSelector } from '../store/hook';
-import { selectAuthState } from '../store/authSlice';
+import GroupMember from '../../components/GroupMember';
+import * as AppConstants from '../../constants/constants';
+import { db } from '../../services/firebase'
+import { IGroupMember } from '../../constants/types';
+import { useAppSelector } from '../../store/hook';
+import { selectAuthState } from '../../store/authSlice';
 
 export default function GroupMembersScreen({ route, navigation }) {
   const theme = useTheme();
@@ -29,7 +29,7 @@ export default function GroupMembersScreen({ route, navigation }) {
       /* Fetch each users name in the receipt group */
       onSnapshot(receiptDocRef, async (doc) => {
         if (doc.data()) {
-          const userIds = doc.data()?.users;
+          const userIds = doc.data()?.guests;
           const nonHostUsers: IGroupMember[] = [];
 
           for (const userId of userIds) {
@@ -40,7 +40,6 @@ export default function GroupMembersScreen({ route, navigation }) {
               })
             }
           }
-
           setUsers([
             {
               name: authState?.userName + " (Host)"

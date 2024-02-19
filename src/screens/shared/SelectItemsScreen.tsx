@@ -7,6 +7,8 @@ import { Button, Icon, IconElement, Layout, Card } from '@ui-kitten/components';
 import { useAppDispatch } from "../../store/hook";
 import { IReceipt, IReceiptItem } from '../../constants/types';
 import ItemCard from '../../components/ItemCard';
+import { useAppSelector } from "../../store/hook";
+import { selectAuthState } from "../../store/authSlice";
 import { set } from 'react-hook-form';
 
 const PlusIcon = (props): IconElement => (
@@ -15,10 +17,11 @@ const PlusIcon = (props): IconElement => (
         name='plus'
     />
 );
+
 const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }): React.ReactElement => {
     const { receiptId } = route.params;
-
-    const { getReceiptById } = useFirestore();
+    const authState = useAppSelector(selectAuthState);
+    const { getReceiptById, updateItemsPaidStatus } = useFirestore();
     const [items, setItems] = useState<IReceiptItem[] | undefined>([]);
     const [receipt, setReceipt] = useState<IReceipt | undefined>(undefined);
     const [selectedItems, setSelectedItems] = useState<IReceiptItem[]>([]);
@@ -52,6 +55,30 @@ const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }
             setSelectedItems([...selectedItems, item]);
         }
     }
+    const handleCheckout = async () => {
+        if (authState.userName && selectedItems.length > 0) {
+            const itemIds = selectedItems.map(item => item.id); 
+            try {
+                const filteredItemIds = itemIds.filter(id => typeof id === 'number') as number[];
+                await updateItemsPaidStatus(receiptId, filteredItemIds, true); 
+                
+                const updatedItems = items?.map(item => {
+                    if (filteredItemIds.includes(item.id as number)) {
+                        return { ...item, paid: true };
+                    }
+                    return item;
+                });
+                setItems(updatedItems);
+                setSelectedItems([]); 
+
+                console.log('Checkout successful');
+            } catch (error) {
+                console.error('Checkout failed:', error);
+            }
+        } else {
+            console.log('No items selected or user not authenticated');
+        }
+    };
 
     return (
         <View style={styles.container}>
@@ -102,7 +129,7 @@ const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }
                         </View>
                         <Button
                             style={styles.button}
-                            onPress={() => console.log('Checkout', selectedItems)}
+                            onPress={handleCheckout}
                         >
                             Checkout
                         </Button>

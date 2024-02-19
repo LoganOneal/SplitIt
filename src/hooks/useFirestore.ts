@@ -155,12 +155,38 @@ export const useFirestore = () => {
       throw error;
     }
   };
+  const updateItemsPaidStatus = async (receiptId: string, itemIds: number[], isPaid: boolean) => {
+    try {
+        const receiptRef = doc(db, 'receipts', receiptId);
+        const receiptSnapshot = await getDoc(receiptRef);
+
+        if (receiptSnapshot.exists()) {
+          const receiptData = receiptSnapshot.data() as IReceipt;
+          const updatedItems = receiptData.items?.map(item => {
+            if (itemIds.includes(item.id as number)) {
+              return { ...item, paid: isPaid };
+            }
+            return item;
+          }) || [];
+
+          await updateDoc(receiptRef, {
+            items: updatedItems
+          });
+        } else {
+          console.error('Receipt not found');
+        }
+    } catch (error) {
+        console.error('Error updating items paid status:', error);
+        throw error;
+    }
+};
 
   return {
     createReceipt,
     getHostReceipts,
     addUserToReceipt, 
     joinReceipt, 
-    getReceiptById
+    getReceiptById,
+    updateItemsPaidStatus
   }
 };

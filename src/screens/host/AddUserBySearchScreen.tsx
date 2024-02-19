@@ -59,6 +59,7 @@ export default function AddUserBySearchScreen({ route, navigation }) {
         if (doc.data()) {
           usersFromSearch.push({
             name: doc.data()?.name,
+            email: (doc.data()?.email.length > 0 ? doc.data()?.email : "No Email"),
             uid: doc.id,
             onReceipt: (doc.id == host || users.includes(doc.id) ? true : false)
           });

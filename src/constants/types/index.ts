@@ -41,13 +41,13 @@ export interface IReceipt {
   onPress?: (event?: any) => void;
 }
 
-// use guests instead of members / users
 export interface IGroupMember {
   name: string;
 }
 
 export interface ISearchedUser {
   name: string;
+  email: string;
   uid: string;
   onReceipt: boolean;
 }

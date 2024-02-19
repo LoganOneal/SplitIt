@@ -13,8 +13,9 @@ import { IconButton } from "react-native-paper";
 import * as MediaLibrary from "expo-media-library";
 import { AZURE_API_KEY } from "@env";
 import { receiptAnalyzedUpload } from "../../hooks/receiptAnalyzedUpload";
+import { useFirestore } from "../../hooks/useFirestore";
 
-const Scanner = () => {
+const Scanner = ({navigation}:any) => {
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState<
     boolean | undefined
   >(undefined);
@@ -22,7 +23,7 @@ const Scanner = () => {
     boolean | undefined
   >(undefined);
   const [photo, setPhoto] = useState<ImagePicker.ImagePickerAsset | null>(null);
-
+  const { getReceiptById } = useFirestore();
   useEffect(() => {
     (async () => {
       const cameraPermission =
@@ -62,7 +63,14 @@ const Scanner = () => {
 
       if (status === "succeeded") {
         console.log("Analysis succeeded:", JSON.parse(JSON.stringify(result)));
-        extractDetails(result);
+        try {
+          const receiptId = await extractDetails(result);
+          navigation.navigate("SelectItems", {
+            receiptId: receiptId,
+          });
+        } catch (error) {
+          console.error("Error:", error);
+        }
         break;
       } else if (status === "failed") {
         console.error("Analysis failed:", JSON.stringify(result));

@@ -9,6 +9,7 @@ import { IReceipt, IReceiptItem } from '../../constants/types';
 import ItemCard from '../../components/ItemCard';
 import { useAppSelector } from "../../store/hook";
 import { selectAuthState } from "../../store/authSlice";
+import {auth} from "../../services/firebase";
 import { set } from 'react-hook-form';
 
 const PlusIcon = (props): IconElement => (
@@ -31,7 +32,8 @@ const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }
         const fetchReceipts = async () => {
             try {
                 const receipt = await getReceiptById(receiptId);
-
+                console.log("Host:", receipt.host)
+                console.log("Guess:", auth.currentUser?.uid!);
                 // setItems(receipt.items);
                 setReceipt(receipt);
                 console.log("Receipt Items:", receipt.items)
@@ -56,27 +58,32 @@ const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }
         }
     }
     const handleCheckout = async () => {
-        if (authState.userName && selectedItems.length > 0) {
-            const itemIds = selectedItems.map(item => item.id); 
-            try {
-                const filteredItemIds = itemIds.filter(id => typeof id === 'number') as number[];
-                await updateItemsPaidStatus(receiptId, filteredItemIds, true); 
-                
-                const updatedItems = items?.map(item => {
-                    if (filteredItemIds.includes(item.id as number)) {
-                        return { ...item, paid: true };
-                    }
-                    return item;
-                });
-                setItems(updatedItems);
-                setSelectedItems([]); 
+        //if host is selecting items
+        if(receipt && receipt.host === auth.currentUser?.uid){
+            if (authState.userName && selectedItems.length > 0) {
+                const itemIds = selectedItems.map(item => item.id); 
+                try {
+                    const filteredItemIds = itemIds.filter(id => typeof id === 'number') as number[];
+                    await updateItemsPaidStatus(receiptId, filteredItemIds, true); 
+                    
+                    const updatedItems = items?.map(item => {
+                        if (filteredItemIds.includes(item.id as number)) {
+                            return { ...item, paid: true };
+                        }
+                        return item;
+                    });
+                    setItems(updatedItems);
+                    setSelectedItems([]); 
 
-                console.log('Checkout successful');
-            } catch (error) {
-                console.error('Checkout failed:', error);
+                    console.log('Checkout successful');
+                } catch (error) {
+                    console.error('Checkout failed:', error);
+                }
+            } else {
+                console.log('No items selected or user not authenticated');
             }
-        } else {
-            console.log('No items selected or user not authenticated');
+        }else{
+            //checking payment for guest then mark paid
         }
     };
 
@@ -96,7 +103,7 @@ const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }
                     </View>
                 </Card>
                 <FlatList
-                    data={receipt?.items}
+                    data={receipt?.items?.filter(item => !item.paid) ?? []}
                     showsVerticalScrollIndicator={false}
                     keyExtractor={(item) => `${item?.id}`}
                     style={{ paddingHorizontal: 12 }}

@@ -20,7 +20,7 @@ type AddMemberFormData = {
   phoneNumber: string;
 };
 
-export default function AddUserByTextScreen({ route, navigation }) {
+export default function AddGuestByTextScreen({ route, navigation }) {
   const theme = useTheme();
   const { receiptId } = route.params;
   const { addNewUserToReceipt } = useFirestore();

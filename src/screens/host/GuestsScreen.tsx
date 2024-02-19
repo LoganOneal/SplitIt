@@ -9,14 +9,14 @@ import { collection, doc, getDoc, onSnapshot } from 'firebase/firestore';
 import GroupMember from '../../components/GroupMember';
 import * as AppConstants from '../../constants/constants';
 import { db } from '../../services/firebase'
-import { IGroupMember } from '../../constants/types';
+import { IGuest } from '../../constants/types';
 import { useAppSelector } from '../../store/hook';
 import { selectAuthState } from '../../store/authSlice';
 
-export default function GroupMembersScreen({ route, navigation }) {
+export default function GuestsScreen({ route, navigation }) {
   const theme = useTheme();
   const { receiptId } = route.params;
-  const usersInit: IGroupMember[] = []
+  const usersInit: IGuest[] = []
   const [users, setUsers] = useState(usersInit);
   const authState = useAppSelector(selectAuthState);
   const userRef = (userId: string) => doc(db, "users", userId);
@@ -30,7 +30,7 @@ export default function GroupMembersScreen({ route, navigation }) {
       onSnapshot(receiptDocRef, async (doc) => {
         if (doc.data()) {
           const userIds = doc.data()?.guests;
-          const nonHostUsers: IGroupMember[] = [];
+          const nonHostUsers: IGuest[] = [];
 
           for (const userId of userIds) {
             const userDoc = await getDoc(userRef(userId));
@@ -75,8 +75,8 @@ export default function GroupMembersScreen({ route, navigation }) {
           textColor="black"
           contentStyle={styles.button}
           style={styles.buttonContainer}
-          onPress={() => navigation.navigate("Search Member", {receiptId: receiptId})}>
-          {AppConstants.LABEL_AddMemberViaSearch}
+          onPress={() => navigation.navigate("Search Guest", {receiptId: receiptId})}>
+          {AppConstants.LABEL_AddGuestViaSearch}
         </Button>
         <Button
           mode="contained"
@@ -84,8 +84,8 @@ export default function GroupMembersScreen({ route, navigation }) {
           textColor="black"
           contentStyle={styles.button}
           style={styles.buttonContainer}
-          onPress={() => navigation.navigate("Add Member", {receiptId: receiptId})}>
-          {AppConstants.LABEL_AddMemberViaText}
+          onPress={() => navigation.navigate("Add Guest", {receiptId: receiptId})}>
+          {AppConstants.LABEL_AddGuestViaText}
         </Button>
         <Button
           mode="contained"

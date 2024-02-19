@@ -38,8 +38,8 @@ export default function QRCodeScreen({ route, navigation }) {
           textColor="black"
           contentStyle={styles.button}
           style={styles.buttonContainer}
-          onPress={() => navigation.navigate("Group Members", {receiptId: receiptId})}>
-          {AppConstants.LABEL_AddMemberManually}
+          onPress={() => navigation.navigate("Guests", {receiptId: receiptId})}>
+          {AppConstants.LABEL_AddGuestManually}
         </Button>
         <Button
           mode="contained"

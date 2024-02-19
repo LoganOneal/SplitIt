@@ -43,9 +43,9 @@ export const LABEL_SendSMS = "Send me SMS updates";
 export const LABEL_DoNotSendSMS = "Do NOT send me SMS updates";
 export const LABEL_Done = "Done";
 export const LABEL_CreateGroup = "Create Group";
-export const LABEL_AddMemberViaSearch = "Add Member via Search +";
-export const LABEL_AddMemberViaText = "Add Member via Text +";
-export const LABEL_AddMemberManually = "Add Member Manually +";
+export const LABEL_AddGuestViaSearch = "Add Guest via Search +";
+export const LABEL_AddGuestViaText = "Add Guest via Text +";
+export const LABEL_AddGuestManually = "Add Guest Manually +";
 export const LABEL_JoinReceipt = "Join Receipt";
 export const LABEL_SearchName = "Search Name"
 

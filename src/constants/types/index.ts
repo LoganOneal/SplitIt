@@ -41,11 +41,11 @@ export interface IReceipt {
   onPress?: (event?: any) => void;
 }
 
-export interface IGroupMember {
+export interface IGuest {
   name: string;
 }
 
-export interface ISearchedUser {
+export interface ISearchedGuest {
   name: string;
   email: string;
   uid: string;

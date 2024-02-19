@@ -6,9 +6,9 @@ import {
   Divider,
 } from "react-native-paper";
 
-import { ISearchedUser } from '../constants/types';
+import { ISearchedGuest } from '../constants/types';
 
-export default function SearchedUser({ name, email, uid, onReceipt }: ISearchedUser) {
+export default function SearchedUser({ name, email, uid, onReceipt }: ISearchedGuest) {
   return (
     <View>
       <List.Item

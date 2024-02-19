@@ -5,12 +5,13 @@ import CustomNavBar from "./CustomNavBar";
 import BottomNavigator from "./BottomNavigator";
 import Scanner from "../screens/shared/Scanner";
 import QRCodeScreen from "../screens/host/QRCodeScreen";
-import GroupMembersScreen from "../screens/host/GroupMembersScreen";
-import AddUserBySMSScreen from "../screens/host/AddUserBySMSScreen";
-import AddUserBySearchScreen from "../screens/host/AddUserBySearchScreen";
+import GuestsScreen from "../screens/host/GuestsScreen";
+import AddGuestBySMSScreen from "../screens/host/AddGuestBySMSScreen";
+import AddGuestBySearchScreen from "../screens/host/AddGuestBySearchScreen";
 import CreateReceipt from "../screens/host/CreateReceipt";
 import JoinReceiptScreen from "../screens/guest/JoinReceiptScreen";
 import SelectItemsScreen from "../screens/shared/SelectItemsScreen";
+
 
 const Stack = createNativeStackNavigator();
 
@@ -29,9 +30,9 @@ export default function HomeStack() {
       <Stack.Screen name="JoinReceipt" component={JoinReceiptScreen} />
       <Stack.Screen name="SelectItems" component={SelectItemsScreen} />
       <Stack.Screen name="Share Receipt" component={QRCodeScreen} />
-      <Stack.Screen name="Group Members" component={GroupMembersScreen} />
-      <Stack.Screen name="Add Member" component={AddUserBySMSScreen} />
-      <Stack.Screen name="Search Member" component={AddUserBySearchScreen} />
+      <Stack.Screen name="Guests" component={GuestsScreen} />
+      <Stack.Screen name="Add Guest" component={AddGuestBySMSScreen} />
+      <Stack.Screen name="Search Guest" component={AddGuestBySearchScreen} />
     </Stack.Navigator>
   );
 }

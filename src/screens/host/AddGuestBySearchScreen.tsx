@@ -18,15 +18,15 @@ import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firesto
 
 import { db } from '../../services/firebase'
 import * as AppConstants from '../../constants/constants';
-import { ISearchedUser } from '../../constants/types';
+import { ISearchedGuest } from '../../constants/types';
 import SearchedUser from '../../components/SearchedUser';
 import { useFirestore } from '../../hooks/useFirestore';
 
-export default function AddUserBySearchScreen({ route, navigation }) {
+export default function AddGuestBySearchScreen({ route, navigation }) {
   const theme = useTheme();
   const [search, setSearch] = useState("")
   const [searchQuery] = useDebounce(search, 1000)
-  const usersInit: ISearchedUser[] = []
+  const usersInit: ISearchedGuest[] = []
   const [users, setUsers] = useState(usersInit);
   const [loading, setLoading] = useState(false);
   const { receiptId } = route.params;
@@ -49,7 +49,7 @@ export default function AddUserBySearchScreen({ route, navigation }) {
     );
     
     getDocs(q).then(async (res) => {
-      const usersFromSearch: ISearchedUser[] = [];
+      const usersFromSearch: ISearchedGuest[] = [];
       const receiptsColRef = doc(db, 'receipts', receiptId);
       const receiptDoc = await getDoc(receiptsColRef);
       const host = receiptDoc.data()?.host;

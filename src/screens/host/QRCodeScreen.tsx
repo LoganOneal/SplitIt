@@ -23,14 +23,23 @@ export default function QRCodeScreen({ route, navigation }) {
         <Text>*Insert QR Code*</Text>
       </Surface>
       <View style={styles.bottomButtons}>
+        {/* <Button
+          mode="contained"
+          buttonColor="white"
+          textColor="black"
+          contentStyle={styles.button}
+          style={styles.buttonContainer}
+          onPress={() => navigation.navigate("Join Receipt")}>
+          Testing: Join Receipt Screen
+        </Button> */}
         <Button
           mode="contained"
           buttonColor="white"
           textColor="black"
           contentStyle={styles.button}
           style={styles.buttonContainer}
-          onPress={() => navigation.navigate("Group Members", {receiptId: receiptId})}>
-          {AppConstants.LABEL_AddMemberManually}
+          onPress={() => navigation.navigate("Guests", {receiptId: receiptId})}>
+          {AppConstants.LABEL_AddGuestManually}
         </Button>
         <Button
           mode="contained"

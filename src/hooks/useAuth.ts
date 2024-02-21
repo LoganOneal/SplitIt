@@ -76,7 +76,9 @@ export const useAuth = () => {
           created: serverTimestamp(),
           hostReceipts: [],
           memberReceipts: [],
-        });
+          hasAccount: true,
+          phoneNumber: ""
+        })
 
         // Update profile
         if (auth.currentUser) {

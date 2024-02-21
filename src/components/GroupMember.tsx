@@ -34,7 +34,6 @@ export default function GroupMember({ name }: IGroupMember) {
 }
 
 const { width } = Dimensions.get("screen");
-const qrcode_side_length = width * 0.85;
 
 const styles = StyleSheet.create({
   memberItem: {

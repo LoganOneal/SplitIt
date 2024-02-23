@@ -23,7 +23,7 @@ export const receiptAnalyzedUpload = () => {
   };
   const { createReceipt } = useFirestore();
 
-  const extractDetails = (result: any) => {
+  const extractDetails = async (result: any): Promise<string> => {
     result.analyzeResult.documents.forEach((document: any, index: any) => {
       console.log(`--------Recognizing receipt #${index + 1}--------`);
       const merchantName: any = document.fields["MerchantName"];
@@ -115,7 +115,7 @@ export const receiptAnalyzedUpload = () => {
       }
       console.log("--------------------------------------");
     });
-    createReceipt(receipt);
+    return await createReceipt(receipt);
   };
   return {extractDetails};
 };

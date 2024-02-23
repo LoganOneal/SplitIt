@@ -4,8 +4,6 @@ import HomeStack from "./HomeStack";
 import PublicStack from "./PublicStack";
 import { useAppSelector } from "../store/hook";
 import { selectAuthState } from "../store/authSlice";
-import DrawerNavigator from "./DrawerNavigator";
-import BottomNavigator from "./BottomNavigator"
 import * as Linking from 'expo-linking';
 
 /* Deep Linking Configuration

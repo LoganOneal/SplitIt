@@ -6,10 +6,15 @@ import * as AppConstants from "../constants/constants";
 import SignUpScreen from "../screens/SignUpScreen";
 import ThemeToggle from "./ThemeToggle";
 import ResetPasswordScreen from "../screens/ResetPasswordScreen";
+import { selectAuthState } from "../store/authSlice";
+import { useAppSelector } from "../store/hook";
 
 const Stack = createNativeStackNavigator();
 
 export default function PublicStack() {
+  const authState = useAppSelector(selectAuthState);
+
+  /* Conditional stack navigator rendering based on login state */
   return (
     <Stack.Navigator
       initialRouteName="Splash"

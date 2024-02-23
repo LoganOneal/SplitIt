@@ -25,7 +25,6 @@ import { db, auth } from '../services/firebase'
 import { IReceipt } from "../interfaces/IReceipt";
 import { useAuth } from "./useAuth";
 import { User, UserCredential, UserInfo } from "firebase/auth";
-import { MEMBERS } from '../constants/mocks';
 
 export const useFirestore = () => {
 
@@ -140,27 +139,58 @@ export const useFirestore = () => {
     }
   }
 
-  const addUserToReceipt = async (receiptId: string, name: string, phoneNumber: string) => {
+  const addNewUserToReceipt = async (receiptId: string, name: string, phoneNumber: string) => {
     try {
+      // create new user and add receipt to the user
+      const usersColRef = collection(db, 'users');
+      const userRef = await addDoc(usersColRef, {
+        name: name,
+        email: "",
+        created: serverTimestamp(),
+        hostReceipts: [],
+        memberReceipts: [receiptId],
+        hasAccount: false,
+        phoneNumber: phoneNumber
+      });
+
+      // add user to the receipt
       const receiptsColRef = collection(db, 'receipts');
       const receiptDocRef = doc(receiptsColRef, receiptId);
       await updateDoc(receiptDocRef, {
-        users: arrayUnion({
-          name: name,
-          phoneNumber: phoneNumber
-        })
+        guests: arrayUnion(userRef.id)
       });
     } catch (error) {
-      console.error('Error adding user to receipt:', error);
+      console.error('Error creating and adding new user to receipt:', error);
       throw error;
     }
   };
 
-  return {
-    createReceipt,
-    getHostReceipts,
-    addUserToReceipt, 
-    joinReceipt, 
-    getReceiptById
+  const addExistingUserToReceipt = async (receiptId: string, uid: string) => {
+    try {
+      // add user to receipt
+      const receiptsColRef = collection(db, 'receipts');
+      const receiptDocRef = doc(receiptsColRef, receiptId);
+      await updateDoc(receiptDocRef, {
+        guests: arrayUnion(uid)
+      });
+
+      // add the receipt to the user
+      const userRef = doc(db, "users", uid);
+      await updateDoc(userRef, {
+        memberReceipts: arrayUnion(receiptId)
+      })
+    } catch (error) {
+      console.error('Error adding existing user to receipt:', error);
+      throw error;
+    }
   }
+
+return {
+  createReceipt,
+  getHostReceipts,
+  addNewUserToReceipt,
+  addExistingUserToReceipt,
+  joinReceipt, 
+  getReceiptById
+}
 };

@@ -4,31 +4,50 @@ import {
   Button,
   useTheme
 } from 'react-native-paper';
+import { collection, doc, getDoc, onSnapshot } from 'firebase/firestore';
 
 import GroupMember from '../../components/GroupMember';
 import * as AppConstants from '../../constants/constants';
-import { collection, doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../../services/firebase'
+import { IGuest } from '../../constants/types';
+import { useAppSelector } from '../../store/hook';
+import { selectAuthState } from '../../store/authSlice';
 
-export default function GroupMembersScreen({ route, navigation }) {
+export default function GuestsScreen({ route, navigation }) {
   const theme = useTheme();
   const { receiptId } = route.params;
-  const [users, setUsers] = useState([]);
+  const usersInit: IGuest[] = []
+  const [users, setUsers] = useState(usersInit);
+  const authState = useAppSelector(selectAuthState);
+  const userRef = (userId: string) => doc(db, "users", userId);
 
   useEffect(() => {
     try {
       const receiptsColRef = collection(db, 'receipts');
       const receiptDocRef = doc(receiptsColRef, receiptId);
 
-      onSnapshot(receiptDocRef, (doc) => {
+      /* Fetch each users name in the receipt group */
+      onSnapshot(receiptDocRef, async (doc) => {
         if (doc.data()) {
-          const users = doc.data()?.users.map((user: any, index: any) => ({
-            id: index,
-            ...user
-          }));
-          setUsers(users);
+          const userIds = doc.data()?.guests;
+          const nonHostUsers: IGuest[] = [];
+
+          for (const userId of userIds) {
+            const userDoc = await getDoc(userRef(userId));
+            if (userDoc.data()) {
+              nonHostUsers.push({
+                name: userDoc.data()?.name
+              })
+            }
+          }
+          setUsers([
+            {
+              name: authState?.userName + " (Host)"
+            },
+            ...nonHostUsers
+          ])
         }
-      })
+      });
 
     } catch (error) {
       console.error('Error retrieving users in the receipt group:', error);
@@ -56,8 +75,17 @@ export default function GroupMembersScreen({ route, navigation }) {
           textColor="black"
           contentStyle={styles.button}
           style={styles.buttonContainer}
-          onPress={() => navigation.navigate("Add Member", {receiptId: receiptId})}>
-          {AppConstants.LABEL_AddMember}
+          onPress={() => navigation.navigate("Search Guest", {receiptId: receiptId})}>
+          {AppConstants.LABEL_AddGuestViaSearch}
+        </Button>
+        <Button
+          mode="contained"
+          buttonColor="white"
+          textColor="black"
+          contentStyle={styles.button}
+          style={styles.buttonContainer}
+          onPress={() => navigation.navigate("Add Guest", {receiptId: receiptId})}>
+          {AppConstants.LABEL_AddGuestViaText}
         </Button>
         <Button
           mode="contained"

@@ -25,6 +25,7 @@ import { db, auth } from '../services/firebase'
 import { IReceipt } from "../interfaces/IReceipt";
 import { useAuth } from "./useAuth";
 import { User, UserCredential, UserInfo } from "firebase/auth";
+import { FirebaseFirestore } from "firebase/firestore";
 
 export const useFirestore = () => {
 
@@ -59,6 +60,7 @@ export const useFirestore = () => {
     try {
       // get receipts where receipt id is in user's hostReceipts
       const receiptsColRef = collection(db, 'receipts');
+      console.log("#######", receiptsColRef)
       const userDoc = await getDoc(userRef(auth.currentUser?.uid!));
       const hostReceiptsIds = userDoc.data()?.hostReceipts || [];
 
@@ -85,6 +87,37 @@ export const useFirestore = () => {
       throw error;
     }
   };
+
+  const getRequestedReceipts = async (): Promise<IReceipt[]> => {
+    try{
+      // get receipts where receipt id is in user's memberReceipts
+      const receiptsColRef = collection(db, 'receipts');
+      const userDoc = await getDoc(userRef(auth.currentUser?.uid!));
+      const memberReceiptsIds = userDoc.data()?.memberReceipts || [];
+
+      const receipts: IReceipt[] = [];
+
+      // Fetch each receipt individually based on its ID
+      for (const receiptId of memberReceiptsIds) {
+        const receiptDocRef = doc(receiptsColRef, receiptId);
+        const receiptDocSnapshot: DocumentSnapshot<DocumentData> = await getDoc(receiptDocRef);
+
+        if (receiptDocSnapshot.exists()) {
+          const receiptData = receiptDocSnapshot.data() as IReceipt;
+
+          // Assuming your receipt data is in a field called 'receipt'
+          console.log("Receipts Data:", receiptData)
+          receipts.push(receiptData);
+
+        }
+      }
+      return receipts;
+    }catch (error) {
+      console.error('Error fetching requested receipts:', error);
+      throw error;
+    }
+  }
+
   
   const getReceiptById = async (receiptId: string): Promise<IReceipt> => {
     try {
@@ -217,6 +250,7 @@ return {
   addExistingUserToReceipt,
   joinReceipt, 
   getReceiptById,
-    updateItemsPaidStatus
+  updateItemsPaidStatus,
+  getRequestedReceipts
 }
 }

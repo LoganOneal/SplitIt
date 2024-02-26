@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ListRenderItemInfo, StyleSheet, View } from 'react-native';
+import { ListRenderItemInfo, StyleSheet, View, TouchableOpacity} from 'react-native';
 import { Card, List, Text } from '@ui-kitten/components';
 import { useData } from '../../hooks/useData';
 import { IReceipt } from '../../interfaces/IReceipt';
@@ -18,17 +18,22 @@ const PlusIcon = (props): IconElement => (
 );
 
 const MyReceiptsScreen = ({navigation}): React.ReactElement => {
-  const { getHostReceipts } = useFirestore();
-  const [receipts, setReceipts] = useState<IReceipt[]>([]);
+  const { getHostReceipts, getRequestedReceipts } = useFirestore();
+  const [hostReceipts, setHostReceipts] = useState<IReceipt[]>([]);
+  const [requestedReceipts, setRequestedReceipts] = useState<IReceipt[]>([]);
+  const [activeButton, setActiveButton] = useState('My Receipts');
   const dispatch = useAppDispatch();
-
   // fetch receipts
   useEffect(() => {
     const fetchReceipts = async () => {
       try {
-        const receipts = await getHostReceipts();
-        setReceipts(receipts);
-        console.log(receipts)
+        const hostReceipts = await getHostReceipts();
+        setHostReceipts(hostReceipts);
+        const requestedReceipts = await getRequestedReceipts();
+        setRequestedReceipts(requestedReceipts);
+  
+        console.log(hostReceipts)
+        console.log(requestedReceipts)
       } catch (error) {
         console.error('Error fetching host receipts:', error);
       }
@@ -36,50 +41,53 @@ const MyReceiptsScreen = ({navigation}): React.ReactElement => {
     fetchReceipts();
   }, []);
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.upperRow}>
-        <FlatList
-          data={receipts}
-          showsVerticalScrollIndicator={false}
-          keyExtractor={(item) => `${item?.id}`}
-          style={{ paddingHorizontal: 12 }}
-          contentContainerStyle={{ paddingBottom: 30 }}
+  const renderContent = () => {
+    switch (activeButton) {
+      case 'My Receipts':
+        return (
+          <FlatList
+          data={hostReceipts}
+          showsVerticalScrollIndicator={true}
+          keyExtractor={(item, index) => String(item?.id || index)}
+          style={{ width: '100%'}}
+          contentContainerStyle={{ paddingBottom: 10, paddingHorizontal: 45 }}
           renderItem={({ item }) => <ReceiptCard  {...item} />}
-        />
+          />
+        );
+      case 'Requested Receipts':
+        return (
+          <FlatList
+            data={requestedReceipts}
+            showsVerticalScrollIndicator={true}
+            keyExtractor={(item, index) => String(item?.id || index)}
+            style={{ width: '100%'}}
+            contentContainerStyle={{ paddingBottom: 10, paddingHorizontal: 45 }}
+            renderItem={({ item }) => <ReceiptCard  {...item} />}
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
+ return (
+    <View style={styles.container}>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={[styles.button, activeButton === 'My Receipts' && styles.activeButton]}
+          onPress={() => setActiveButton('My Receipts')}
+        >
+          <Text style={[styles.buttonText, activeButton === 'My Receipts' && styles.activeButtonText]}>My Receipts</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.button, activeButton === 'Requested Receipts' && styles.activeButton]}
+          onPress={() => setActiveButton('Requested Receipts')}
+        >
+          <Text style={[styles.buttonText, activeButton === 'Requested Receipts' && styles.activeButtonText]}>Requested Receipts</Text>
+        </TouchableOpacity>
       </View>
-      <View style={styles.lowerRow}>
-        <Button
-          style={styles.button}
-          status='primary'
-          appearance='outline'
-          accessoryLeft={PlusIcon}
-          onPress={() => navigation.navigate('JoinReceipt')}
-
-        >
-          JOIN RECEIPT
-        </Button>
-        <Button
-          style={styles.button}
-          status='primary'
-          accessoryLeft={PlusIcon}
-          onPress={() => navigation.navigate('CreateReceipt')}
-
-        >
-          ADD RECEIPT
-        </Button>
-        <Button
-          style={styles.button}
-          status='primary'
-          accessoryLeft={PlusIcon}
-          onPress={() => {
-            dispatch(userLoggedOut());
-            navigation.navigate('SignIn');
-          }
-          }
-        >
-          logout
-        </Button>
+      <View style={styles.content}>
+        {renderContent()}
       </View>
     </View>
   );
@@ -88,22 +96,32 @@ const MyReceiptsScreen = ({navigation}): React.ReactElement => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'column',
   },
-  upperRow: {
-    flex: 7,  // Takes up 80% of the screen
+  buttonContainer: {
+    flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center',
-  },
-  lowerRow: {
-    flex: 3,  // Takes up 20% of the screen
-    justifyContent: 'center',
-    alignItems: 'center',
+    padding: 10,
   },
   button: {
-    martinTop: 10,
-    margin: 15,
-    width: 300,
+    flex: 1,
+    backgroundColor: '#e0e0e0',
+    padding: 10,
+    margin: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+  },
+  activeButton: {
+    backgroundColor: '#5E4DAA',
+  },
+  buttonText: {
+    color: '#000',
+  },
+  activeButtonText: {
+    color: '#FFF', 
+  },
+  content: {
+    flex: 1,
   },
 });
 

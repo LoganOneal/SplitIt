@@ -18,7 +18,7 @@ const PlusIcon = (props): IconElement => (
 );
 
 const MyReceiptsScreen = ({navigation}): React.ReactElement => {
-  const { getHostReceipts, getRequestedReceipts } = useFirestore();
+  const { getUserReceipts } = useFirestore();
   const [hostReceipts, setHostReceipts] = useState<IReceipt[]>([]);
   const [requestedReceipts, setRequestedReceipts] = useState<IReceipt[]>([]);
   const [activeButton, setActiveButton] = useState('My Receipts');
@@ -27,9 +27,8 @@ const MyReceiptsScreen = ({navigation}): React.ReactElement => {
   useEffect(() => {
     const fetchReceipts = async () => {
       try {
-        const hostReceipts = await getHostReceipts();
+        const { hostReceipts, requestedReceipts } = await getUserReceipts();
         setHostReceipts(hostReceipts);
-        const requestedReceipts = await getRequestedReceipts();
         setRequestedReceipts(requestedReceipts);
   
         console.log(hostReceipts)

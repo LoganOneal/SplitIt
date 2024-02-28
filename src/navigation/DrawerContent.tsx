@@ -24,7 +24,10 @@ const DrawerContent = (props) => {
         </View>
         <Divider style={{ alignSelf: "stretch" }} />
         <View style={styles.drawerItem}>
-          <DrawerItemList {...props} />
+          {/*ADD OTHER DRAWER ITEMS HERE */}
+          <DrawerItem label="Home" onPress={() => props.navigation.navigate("Home")} />
+          <DrawerItem label="Settings" onPress={() => props.navigation.navigate("Settings")} />
+          {/* <DrawerItemList {...props} /> */}
         </View>
         <Divider style={{ alignSelf: "stretch" }} />
         <View style={styles.drawerFooter}>

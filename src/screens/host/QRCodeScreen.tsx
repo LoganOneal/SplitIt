@@ -1,53 +1,32 @@
 import React from "react";
 import { Dimensions, StyleSheet, View } from "react-native";
-import {
-  Button,
-  Surface,
-  useTheme,
-  Text
-} from "react-native-paper";
+import { Button, Card, Text } from '@ui-kitten/components';
 
 import * as AppConstants from "../../constants/constants";
 
 export default function QRCodeScreen({ route, navigation }) {
-  const theme = useTheme();
   const { receiptId } = route.params;
 
   return (
     <View
-      style={[
-        styles.container,
-        { backgroundColor: theme.colors.primaryContainer },
-      ]}>
-      <Surface style={styles.surface} elevation={1}>
+      style={styles.container}>
+      <Text category='h4'>
+        Share Receipt
+      </Text>
+      <Card style={styles.card}>
         <Text>*Insert QR Code*</Text>
-      </Surface>
+      </Card>
       <View style={styles.bottomButtons}>
-        {/* <Button
-          mode="contained"
-          buttonColor="white"
-          textColor="black"
-          contentStyle={styles.button}
-          style={styles.buttonContainer}
-          onPress={() => navigation.navigate("Join Receipt")}>
-          Testing: Join Receipt Screen
-        </Button> */}
         <Button
-          mode="contained"
-          buttonColor="white"
-          textColor="black"
-          contentStyle={styles.button}
-          style={styles.buttonContainer}
+          appearance="outline"
+          style={styles.button}
           onPress={() => navigation.navigate("Guests", {receiptId: receiptId})}>
-          {AppConstants.LABEL_AddGuestManually}
+          ADD GUEST MAUNALLY +
         </Button>
         <Button
-          mode="contained"
-          buttonColor="black"
-          contentStyle={styles.button}
-          style={styles.buttonContainer}
+          style={styles.button}
           onPress={() => navigation.pop(2)}>
-          {AppConstants.LABEL_Done}
+          DONE
         </Button>
       </View>
     </View>
@@ -61,23 +40,19 @@ const styles = StyleSheet.create({
   button: {
     width: width * 0.85,
     height: 50,
+    marginTop: 20
   },
   bottomButtons: {
     marginBottom: 50
-  },
-  buttonContainer: {
-    borderRadius: 0,
-    marginTop: 20
   },
   container: {
     flex: 1,
     justifyContent: "space-between",
     alignItems: "center",
-    padding: 1,
+    padding: 40,
   },
-  surface: {
+  card: {
     width: qrcode_side_length,
     height: qrcode_side_length,
-    marginTop: width * 0.075
-  },
+  }
 });

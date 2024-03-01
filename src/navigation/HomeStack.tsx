@@ -15,10 +15,11 @@ import RequestScreen from "../screens/RequestScreen";
 import { Portal, FAB } from 'react-native-paper';
 import { useIsFocused } from '@react-navigation/native';
 import { useState } from 'react';
-
+import {useNavigation} from '@react-navigation/native';
 const Stack = createNativeStackNavigator();
 
-export default function HomeStack({navigation}) {
+export default function HomeStack() {
+  const navigation = useNavigation();
   const isFocused = useIsFocused();
   const [open, setOpen] = useState(false);
   const onStateChange = ({ open }: { open: boolean }) => setOpen(open);
@@ -28,7 +29,7 @@ export default function HomeStack({navigation}) {
 
   const navigateToCreateReceipt = () => {
     navigation.navigate("CreateReceipt");
-  };  
+  };
   const navigateToJoinReceipt = () => {
     navigation.navigate("JoinReceipt");
   }
@@ -36,26 +37,26 @@ export default function HomeStack({navigation}) {
   return (
     <React.Fragment>
 
-    <Stack.Navigator
-      initialRouteName="Home"
-      screenOptions={{
-        header: (props) => <CustomNavBar {...props} />,
-      }}
-    >
-      <Stack.Screen name="Home" component={HomeScreen} />
-      <Stack.Screen name="My Receipts" component={MyReceiptsScreen} />
-      <Stack.Screen name="Request" component={RequestScreen} />
-      <Stack.Screen name="Scanner" component={Scanner} />
-      <Stack.Screen name="CreateReceipt" component={CreateReceipt} />
-      <Stack.Screen name="JoinReceipt" component={JoinReceiptScreen} />
-      <Stack.Screen name="SelectItems" component={SelectItemsScreen} />
-      <Stack.Screen name="Share Receipt" component={QRCodeScreen} />
-      <Stack.Screen name="Guests" component={GuestsScreen} />
-      <Stack.Screen name="Add Guest" component={AddGuestBySMSScreen} />
-      <Stack.Screen name="Search Guest" component={AddGuestBySearchScreen} />
-    </Stack.Navigator>
-    <Portal>
-            <FAB.Group
+      <Stack.Navigator
+        initialRouteName="Home"
+        screenOptions={{
+          header: (props) => <CustomNavBar {...props} />,
+        }}
+      >
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="My Receipts" component={MyReceiptsScreen} />
+        <Stack.Screen name="Request" component={RequestScreen} />
+        <Stack.Screen name="Scanner" component={Scanner} />
+        <Stack.Screen name="CreateReceipt" component={CreateReceipt} />
+        <Stack.Screen name="JoinReceipt" component={JoinReceiptScreen} />
+        <Stack.Screen name="SelectItems" component={SelectItemsScreen} />
+        <Stack.Screen name="Share Receipt" component={QRCodeScreen} />
+        <Stack.Screen name="Guests" component={GuestsScreen} />
+        <Stack.Screen name="Add Guest" component={AddGuestBySMSScreen} />
+        <Stack.Screen name="Search Guest" component={AddGuestBySearchScreen} />
+      </Stack.Navigator>
+      <Portal>
+        <FAB.Group
           open={open}
           icon={open ? 'close' : 'plus'}
           actions={[
@@ -79,7 +80,6 @@ export default function HomeStack({navigation}) {
           visible={isFocused}
           style={{
             position: 'absolute',
-            bottom: 40,
             right: 16,
           }}
         />

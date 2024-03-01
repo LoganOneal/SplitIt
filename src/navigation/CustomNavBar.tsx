@@ -6,10 +6,10 @@ export default function CustomNavBar({ navigation, route, options, back }) {
   const title = getHeaderTitle(options, route.name);
 
   return (
-    <Appbar.Header>
+    <Appbar.Header style={[{ backgroundColor: "#ffffff" }]}>
       {back ? <Appbar.BackAction onPress={navigation.goBack} /> : null}
       <Appbar.Content title={title} />
-      <ThemeToggle />
+      {/* <ThemeToggle /> */}
     </Appbar.Header>
   );
 }

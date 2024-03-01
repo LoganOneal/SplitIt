@@ -1,25 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { Dimensions, FlatList, StyleSheet, View } from 'react-native';
-import {
-  Button,
-  useTheme
-} from 'react-native-paper';
 import { collection, doc, getDoc, onSnapshot } from 'firebase/firestore';
+import { Button, Icon, IconElement, Text } from '@ui-kitten/components';
 
-import GroupMember from '../../components/GroupMember';
-import * as AppConstants from '../../constants/constants';
+import Guest from '../../components/Guest';
 import { db } from '../../services/firebase'
 import { IGuest } from '../../constants/types';
 import { useAppSelector } from '../../store/hook';
 import { selectAuthState } from '../../store/authSlice';
 
 export default function GuestsScreen({ route, navigation }) {
-  const theme = useTheme();
   const { receiptId } = route.params;
   const usersInit: IGuest[] = []
   const [users, setUsers] = useState(usersInit);
   const authState = useAppSelector(selectAuthState);
   const userRef = (userId: string) => doc(db, "users", userId);
+
+  const PlusIcon = (props): IconElement => (
+    <Icon
+      {...props}
+      name='plus'
+    />
+  );
 
   useEffect(() => {
     try {
@@ -57,43 +59,35 @@ export default function GuestsScreen({ route, navigation }) {
 
   return (
     <View
-      style={[
-        styles.container,
-        { backgroundColor: theme.colors.primaryContainer },
-      ]}>
+      style={styles.container}>
+      <Text category='h4'>
+        Guests
+      </Text>
       <FlatList
         data={users}
         showsVerticalScrollIndicator={false}
-        renderItem={({ item }) => <GroupMember  {...item} />}
+        renderItem={({ item }) => <Guest  {...item} />}
         style={styles.flatList}
       />
-
       <View style={styles.bottomButtons}>
         <Button
-          mode="contained"
-          buttonColor="white"
-          textColor="black"
-          contentStyle={styles.button}
-          style={styles.buttonContainer}
+          appearance="outline"
+          style={styles.button}
+          accessoryLeft={PlusIcon}
           onPress={() => navigation.navigate("Search Guest", {receiptId: receiptId})}>
-          {AppConstants.LABEL_AddGuestViaSearch}
+          ADD GUEST VIA SEARCH
         </Button>
         <Button
-          mode="contained"
-          buttonColor="white"
-          textColor="black"
-          contentStyle={styles.button}
-          style={styles.buttonContainer}
-          onPress={() => navigation.navigate("Add Guest", {receiptId: receiptId})}>
-          {AppConstants.LABEL_AddGuestViaText}
+          appearance="outline"
+          style={styles.button}
+          accessoryLeft={PlusIcon}
+          onPress={() => navigation.navigate("Text Guest", {receiptId: receiptId})}>
+          ADD GUEST VIA TEXT
         </Button>
         <Button
-          mode="contained"
-          buttonColor="black"
-          contentStyle={styles.button}
-          style={styles.buttonContainer}
+          style={styles.button}
           onPress={() => navigation.pop(3)}>
-          {AppConstants.LABEL_Done}
+          DONE
         </Button>
       </View>
     </View>
@@ -106,26 +100,19 @@ const styles = StyleSheet.create({
   button: {
     width: width * 0.85,
     height: 50,
+    marginTop: 20
   },
   bottomButtons: {
     marginBottom: 50
-  },
-  buttonContainer: {
-    borderRadius: 0,
-    marginTop: 20
   },
   container: {
     flex: 1,
     justifyContent: "space-between",
     alignItems: "center",
-    padding: 1,
+    padding: 40,
   },
   flatList: {
     width: width * 0.85,
-    marginTop: width * 0.075,
-  },
-  surface: {
-    width: width * 0.85,
-    marginTop: width * 0.075
-  },
+    marginTop: 35,
+  }
 });

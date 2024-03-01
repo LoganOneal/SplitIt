@@ -1,5 +1,6 @@
 import React from "react";
-import { Text, useTheme } from "react-native-paper";
+import { useTheme } from "react-native-paper";
+import { Text } from "@ui-kitten/components";
 
 interface PasswordRequirementsProps {
   password: string;
@@ -20,7 +21,7 @@ const PasswordRequirements: React.FC<PasswordRequirementsProps> = ({
     const icon = condition ? "✓" : "✗";
     const color = condition ? "green" : theme.colors.error;
     return (
-      <Text key={requirement} style={{ color }}>
+      <Text key={requirement} style={{ color, margin: -5 }}>
         [{icon}] {requirement}
         {"\n"}
       </Text>
@@ -29,7 +30,9 @@ const PasswordRequirements: React.FC<PasswordRequirementsProps> = ({
 
   return (
     <>
-      <Text style={{ marginTop: 8, marginBottom: 10 }}>
+      <Text 
+        category="p1"
+        style={{ marginTop: 8, marginBottom: 10 }}>
         Password must include:
       </Text>
       {renderRequirement(password.length >= 8, "At least 8 characters")}

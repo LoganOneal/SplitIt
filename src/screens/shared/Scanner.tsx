@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Text } from "react-native";
 import { shareAsync } from "expo-sharing";
 import {
   View,
@@ -10,6 +9,7 @@ import {
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { IconButton } from "react-native-paper";
+import { Button, Icon, Text, Card } from "@ui-kitten/components"
 import * as MediaLibrary from "expo-media-library";
 import { AZURE_API_KEY } from "@env";
 import { receiptAnalyzedUpload } from "../../hooks/receiptAnalyzedUpload";
@@ -65,7 +65,7 @@ const Scanner = ({navigation}:any) => {
         console.log("Analysis succeeded:", JSON.parse(JSON.stringify(result)));
         try {
           const receiptId = await extractDetails(result);
-          navigation.navigate("SelectItems", {
+          navigation.navigate("Select Items", {
             receiptId: receiptId,
           });
         } catch (error) {
@@ -184,26 +184,39 @@ const Scanner = ({navigation}:any) => {
             </TouchableOpacity>
           </View>
         </>
-      ) : (
+      ) : (  
         <View style={styles.optionContainer}>
+          <Card>
+          <Text category='h4' style={styles.header}>
+            Upload Receipt
+          </Text>
           <View style={styles.iconContainer}>
-            <IconButton
-              icon="camera"
-              size={150}
+            <Button
               style={styles.iconButton}
+              accessoryLeft={
+                <Icon
+                  name="camera"
+                  fill="#ffffff"
+                />
+              }
               onPress={takePicture}
-            />
-            <Text style={styles.iconText}>Take Picture</Text>
-          </View>
-          <View style={styles.iconContainer}>
-            <IconButton
-              icon="folder"
-              size={150}
+            >
+              TAKE PICTURE
+            </Button>
+            <Button
               style={styles.iconButton}
+              accessoryLeft={
+                 <Icon
+                  name="folder"
+                  fill="#ffffff"
+                />
+              }
               onPress={choosePicture}
-            />
-            <Text style={styles.iconText}>Choose Picture</Text>
+            >
+              CHOOSE PICTURE
+            </Button>
           </View>
+          </Card>
         </View>
       )}
     </SafeAreaView>
@@ -236,14 +249,11 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    alignItems: "stretch",
-    justifyContent: "center",
-    backgroundColor: "black",
+    flexDirection: "column",
   },
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
-    alignItems: "center",
     position: "absolute",
     bottom: 20,
     left: 0,
@@ -268,23 +278,25 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   optionContainer: {
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
+    flex: 1,
+    margin: 40
+  },
+  header: {
+    alignSelf: "center"
   },
   iconContainer: {
     marginVertical: 10,
+    marginTop: 50
   },
   iconButton: {
-    borderWidth: 2,
-    borderRadius: 10,
-    borderColor: "white",
+    width: "100%",
+    marginTop: 20
   },
   iconText: {
     textAlign: "center",
     color: "white",
     marginTop: 10,
-  },
+  }
 });
 
 export default Scanner;

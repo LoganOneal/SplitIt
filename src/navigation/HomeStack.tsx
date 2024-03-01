@@ -25,14 +25,14 @@ export default function HomeStack() {
   const [open, setOpen] = useState(false);
   const onStateChange = ({ open }: { open: boolean }) => setOpen(open);
   const navigateToScanner = () => {
-    navigation.navigate("Scanner");
+    navigation.navigate("Upload Receipt");
   };
 
   const navigateToCreateReceipt = () => {
-    navigation.navigate("CreateReceipt");
+    navigation.navigate("Create Receipt");
   };
   const navigateToJoinReceipt = () => {
-    navigation.navigate("JoinReceipt");
+    navigation.navigate("Join Receipt");
   }
 
   return (
@@ -45,13 +45,13 @@ export default function HomeStack() {
         }}
       >
         <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="My Receipts" component={MyReceiptsScreen} />
+        <Stack.Screen name="Receipts" component={MyReceiptsScreen} />
         <Stack.Screen name="Request" component={RequestScreen} />
-        <Stack.Screen name="Scanner" component={Scanner} />
+        <Stack.Screen name="Upload Receipt" component={Scanner} />
         <Stack.Screen name="GuestCheckout" component={CheckoutScreen} />
-        <Stack.Screen name="CreateReceipt" component={CreateReceipt} />
-        <Stack.Screen name="JoinReceipt" component={JoinReceiptScreen} />
-        <Stack.Screen name="SelectItems" component={SelectItemsScreen} />
+        <Stack.Screen name="Create Receipt" component={CreateReceipt} />
+        <Stack.Screen name="Join Receipt" component={JoinReceiptScreen} />
+        <Stack.Screen name="Select Items" component={SelectItemsScreen} />
         <Stack.Screen name="Share Receipt" component={QRCodeScreen} />
         <Stack.Screen name="Guests" component={GuestsScreen} />
         <Stack.Screen name="Add Guest" component={AddGuestBySMSScreen} />
@@ -59,22 +59,30 @@ export default function HomeStack() {
       </Stack.Navigator>
       <Portal>
         <FAB.Group
+          fabStyle={[{backgroundColor: '#c9d7ff'}]}
+          color='#000'
           open={open}
           icon={open ? 'close' : 'plus'}
           actions={[
             {
               icon: 'camera',
               label: 'Scan',
+              color: '#000',
+              style: {'backgroundColor': '#c9d7ff'},
               onPress: navigateToScanner,
             },
             {
               icon: 'receipt',
               label: 'Join Receipt',
+              color: '#000',
+              style: {'backgroundColor': '#c9d7ff'},
               onPress: navigateToJoinReceipt,
             },
             {
               icon: 'file-plus',
               label: 'Add Receipt',
+              color: '#000',
+              style: {'backgroundColor': '# '},
               onPress: navigateToCreateReceipt,
             },
           ]}

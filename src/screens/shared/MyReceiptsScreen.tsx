@@ -10,13 +10,6 @@ import { Button, Icon, IconElement, Layout, Spinner } from '@ui-kitten/component
 import { useAppDispatch } from "../../store/hook";
 import { userLoggedOut } from "../../store/authSlice";
 
-const PlusIcon = (props): IconElement => (
-  <Icon
-    {...props}
-    name='plus'
-  />
-);
-
 const MyReceiptsScreen = ({navigation}): React.ReactElement => {
   const { getUserReceipts } = useFirestore();
   const [hostReceipts, setHostReceipts] = useState<IReceipt[]>([]);
@@ -72,18 +65,22 @@ const MyReceiptsScreen = ({navigation}): React.ReactElement => {
  return (
     <View style={styles.container}>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={[styles.button, activeButton === 'My Receipts' && styles.activeButton]}
+        <Button
+          style={[styles.button, activeButton === 'My Receipts' ? styles.activeButton : styles.inactiveButton]}
           onPress={() => setActiveButton('My Receipts')}
         >
-          <Text style={[styles.buttonText, activeButton === 'My Receipts' && styles.activeButtonText]}>My Receipts</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.button, activeButton === 'Requested Receipts' && styles.activeButton]}
+          <View>
+          <Text category="s1" style={[styles.buttonText, activeButton === 'My Receipts' && styles.activeButtonText]}>My Receipts</Text>
+          </View>
+        </Button>
+        <Button
+          style={[styles.button, activeButton === 'Requested Receipts' ? styles.activeButton : styles.inactiveButton]}
           onPress={() => setActiveButton('Requested Receipts')}
         >
-          <Text style={[styles.buttonText, activeButton === 'Requested Receipts' && styles.activeButtonText]}>Requested Receipts</Text>
-        </TouchableOpacity>
+          <View>
+          <Text category="s1" style={[styles.buttonText, activeButton === 'Requested Receipts' && styles.activeButtonText]}>Requested Receipts</Text>
+          </View>
+        </Button>
       </View>
       <View style={styles.content}>
         {renderContent()}
@@ -103,18 +100,20 @@ const styles = StyleSheet.create({
   },
   button: {
     flex: 1,
-    backgroundColor: '#e0e0e0',
-    padding: 10,
+    // backgroundColor: '#e0e0e0',
+    padding: 0,
     margin: 5,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 5,
+    textAlign: "center",
+    height: 45
   },
   activeButton: {
-    backgroundColor: '#5E4DAA',
+    // backgroundColor: '#5E4DAA',
   },
   buttonText: {
-    color: '#000',
+    color: '#fff',
+    width: "100%"
   },
   activeButtonText: {
     color: '#FFF', 
@@ -122,6 +121,9 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
   },
+  inactiveButton: {
+    backgroundColor: "#b0b0b0"
+  }
 });
 
 export default MyReceiptsScreen;

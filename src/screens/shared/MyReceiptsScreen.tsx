@@ -68,18 +68,6 @@ const MyReceiptsScreen = ({navigation}): React.ReactElement => {
         >
           ADD RECEIPT
         </Button>
-        <Button
-          style={styles.button}
-          status='primary'
-          accessoryLeft={PlusIcon}
-          onPress={() => {
-            dispatch(userLoggedOut());
-            navigation.navigate('SignIn');
-          }
-          }
-        >
-          logout
-        </Button>
       </View>
     </View>
   );

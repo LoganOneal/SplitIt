@@ -13,14 +13,14 @@ export default function CustomNavBar({ navigation, route, options, back }) {
   const title = getHeaderTitle(options, route.name);
 
   return (
-    <Appbar.Header>
+    <Appbar.Header >
       {back ? <Appbar.BackAction onPress={navigation.goBack} /> : null}
       <Appbar.Action
         icon="menu"
         onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
         style={{ position: "absolute", right: 0 }}
       />
-      <Appbar.Content title={title} />
+      {/* <Appbar.Content title={title} style={{ alignItems: 'center' }}/> */}
     </Appbar.Header>
   );
 }

@@ -46,7 +46,7 @@ const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }
 
     // update total price on item select change 
     useEffect(() => {
-        const total = selectedItems.reduce((acc, item) => acc + item.price, 0);
+        const total = selectedItems.reduce((acc, item) => acc + (item.price ?? 0), 0);
         setIndividualTotal(total);
     }, [selectedItems]);
 
@@ -83,7 +83,9 @@ const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }
                 console.log('No items selected or user not authenticated');
             }
         }else{
+            console.log("go to cehckout guest")
             //checking payment for guest then mark paid
+            navigation.navigate('GuestCheckout', { receiptId: receiptId, total: individualTotal });
         }
     };
 

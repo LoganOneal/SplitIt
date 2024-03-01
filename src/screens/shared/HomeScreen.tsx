@@ -31,7 +31,7 @@ const HomeScreen = ({navigation}:any) => {
           </Text>
           <Button
             style={styles.button}
-            onPress={() => navigation.navigate("Receipts and Requests")} 
+            onPress={() => navigation.navigate("Receipts")} 
           >
             CONTINUE
           </Button>

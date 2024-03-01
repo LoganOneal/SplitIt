@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { ListRenderItemInfo, StyleSheet, View } from 'react-native';
+import { ListRenderItemInfo, StyleSheet, View, TouchableOpacity} from 'react-native';
+import { Card, List, Text } from '@ui-kitten/components';
 import { useData } from '../../hooks/useData';
 import { IReceipt } from '../../interfaces/IReceipt';
 import { useFirestore } from '../../hooks/useFirestore';
@@ -9,32 +10,22 @@ import { Button, Icon, IconElement, Layout, Spinner } from '@ui-kitten/component
 import { useAppDispatch } from "../../store/hook";
 import { userLoggedOut } from "../../store/authSlice";
 
-const PlusIcon = (props): IconElement => (
-  <Icon
-    {...props}
-    name='plus'
-  />
-);
-
-const LogOutIcon = (props): IconElement => (
-  <Icon
-    {...props}
-    name='log-out-outline'
-  />
-);
-
 const MyReceiptsScreen = ({navigation}): React.ReactElement => {
-  const { getHostReceipts } = useFirestore();
-  const [receipts, setReceipts] = useState<IReceipt[]>([]);
+  const { getUserReceipts } = useFirestore();
+  const [hostReceipts, setHostReceipts] = useState<IReceipt[]>([]);
+  const [requestedReceipts, setRequestedReceipts] = useState<IReceipt[]>([]);
+  const [activeButton, setActiveButton] = useState('My Receipts');
   const dispatch = useAppDispatch();
-
   // fetch receipts
   useEffect(() => {
     const fetchReceipts = async () => {
       try {
-        const receipts = await getHostReceipts();
-        setReceipts(receipts);
-        console.log(receipts)
+        const { hostReceipts, requestedReceipts } = await getUserReceipts();
+        setHostReceipts(hostReceipts);
+        setRequestedReceipts(requestedReceipts);
+  
+        console.log(hostReceipts)
+        console.log(requestedReceipts)
       } catch (error) {
         console.error('Error fetching host receipts:', error);
       }
@@ -42,49 +33,57 @@ const MyReceiptsScreen = ({navigation}): React.ReactElement => {
     fetchReceipts();
   }, []);
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.upperRow}>
-        <FlatList
-          data={receipts}
-          showsVerticalScrollIndicator={false}
-          keyExtractor={(item) => `${item?.id}`}
-          style={{ paddingHorizontal: 12 }}
-          contentContainerStyle={{ paddingBottom: 30 }}
+  const renderContent = () => {
+    switch (activeButton) {
+      case 'My Receipts':
+        return (
+          <FlatList
+          data={hostReceipts}
+          showsVerticalScrollIndicator={true}
+          keyExtractor={(item, index) => String(item?.id || index)}
+          style={{ width: '100%'}}
+          contentContainerStyle={{ paddingBottom: 10, paddingHorizontal: 45 }}
           renderItem={({ item }) => <ReceiptCard  {...item} />}
-        />
+          />
+        );
+      case 'Requested Receipts':
+        return (
+          <FlatList
+            data={requestedReceipts}
+            showsVerticalScrollIndicator={true}
+            keyExtractor={(item, index) => String(item?.id || index)}
+            style={{ width: '100%'}}
+            contentContainerStyle={{ paddingBottom: 10, paddingHorizontal: 45 }}
+            renderItem={({ item }) => <ReceiptCard  {...item} />}
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
+ return (
+    <View style={styles.container}>
+      <View style={styles.buttonContainer}>
+        <Button
+          style={[styles.button, activeButton === 'My Receipts' ? styles.activeButton : styles.inactiveButton]}
+          onPress={() => setActiveButton('My Receipts')}
+        >
+          <View>
+          <Text category="s1" style={[styles.buttonText, activeButton === 'My Receipts' && styles.activeButtonText]}>My Receipts</Text>
+          </View>
+        </Button>
+        <Button
+          style={[styles.button, activeButton === 'Requested Receipts' ? styles.activeButton : styles.inactiveButton]}
+          onPress={() => setActiveButton('Requested Receipts')}
+        >
+          <View>
+          <Text category="s1" style={[styles.buttonText, activeButton === 'Requested Receipts' && styles.activeButtonText]}>Requested Receipts</Text>
+          </View>
+        </Button>
       </View>
-      <View style={styles.lowerRow}>
-        <Button
-          style={styles.button}
-          status='primary'
-          accessoryLeft={PlusIcon}
-          onPress={() => navigation.navigate('Join Receipt')}
-
-        >
-          JOIN RECEIPT
-        </Button>
-        <Button
-          style={styles.button}
-          status='primary'
-          accessoryLeft={PlusIcon}
-          onPress={() => navigation.navigate('Create Receipt')}
-
-        >
-          ADD RECEIPT
-        </Button>
-        <Button
-          appearance='outline'
-          style={styles.button}
-          status='primary'
-          accessoryLeft={LogOutIcon}
-          onPress={() => {
-            dispatch(userLoggedOut());
-            navigation.navigate('SignIn');
-          }}
-        >
-          LOG OUT
-        </Button>
+      <View style={styles.content}>
+        {renderContent()}
       </View>
     </View>
   );
@@ -93,23 +92,38 @@ const MyReceiptsScreen = ({navigation}): React.ReactElement => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'column',
   },
-  upperRow: {
-    flex: 6.9,  // Takes up 80% of the screen
+  buttonContainer: {
+    flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center',
-  },
-  lowerRow: {
-    flex: 3.1,  // Takes up 20% of the screen
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 20
+    padding: 10,
   },
   button: {
-    marginTop: 20,
-    width: 300,
+    flex: 1,
+    // backgroundColor: '#e0e0e0',
+    padding: 0,
+    margin: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: "center",
+    height: 45
   },
+  activeButton: {
+    // backgroundColor: '#5E4DAA',
+  },
+  buttonText: {
+    color: '#fff',
+    width: "100%"
+  },
+  activeButtonText: {
+    color: '#FFF', 
+  },
+  content: {
+    flex: 1,
+  },
+  inactiveButton: {
+    backgroundColor: "#b0b0b0"
+  }
 });
 
 export default MyReceiptsScreen;

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { ListRenderItemInfo, StyleSheet, View } from 'react-native';
-import { Card, List, Text } from '@ui-kitten/components';
 import { useData } from '../../hooks/useData';
 import { IReceipt } from '../../interfaces/IReceipt';
 import { useFirestore } from '../../hooks/useFirestore';
@@ -91,18 +90,18 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   upperRow: {
-    flex: 7,  // Takes up 80% of the screen
+    flex: 6.9,  // Takes up 80% of the screen
     justifyContent: 'center',
     alignItems: 'center',
   },
   lowerRow: {
-    flex: 3,  // Takes up 20% of the screen
+    flex: 3.1,  // Takes up 20% of the screen
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 20
   },
   button: {
-    martinTop: 10,
-    margin: 15,
+    marginTop: 20,
     width: 300,
   },
 });

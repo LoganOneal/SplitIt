@@ -25,7 +25,7 @@ export default function HomeStack() {
     >
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="BottomNavigator" component={BottomNavigator} />
-      <Stack.Screen name="Scanner" component={Scanner} />
+      <Stack.Screen name="Upload Receipt" component={Scanner} />
       <Stack.Screen name="CreateReceipt" component={CreateReceipt} />
       <Stack.Screen name="JoinReceipt" component={JoinReceiptScreen} />
       <Stack.Screen name="SelectItems" component={SelectItemsScreen} />

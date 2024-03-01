@@ -11,7 +11,7 @@ export default function BottomNavigator({navigation}:any) {
     const isFocused = useIsFocused();
 
     const navigateToScanner = () => {
-      navigation.navigate("Scanner");
+      navigation.navigate("Upload Receipt");
     };
 
     const navigateToCreateReceipt = () => {
@@ -24,7 +24,7 @@ export default function BottomNavigator({navigation}:any) {
                 initialRouteName="Home"
             >
                 <Tab.Screen name="My Receipts" component={MyReceiptsScreen} />
-                <Tab.Screen name="Request" component={RequestScreen} />
+                <Tab.Screen name="Requests" component={RequestScreen} />
             </Tab.Navigator>
             <Portal>
         <FAB
@@ -37,17 +37,6 @@ export default function BottomNavigator({navigation}:any) {
           }}
           color="white"
           onPress={navigateToScanner}
-        />
-        <FAB
-          visible={isFocused}
-          icon={'plus'}
-          style={{
-            position: 'absolute',
-            bottom: 100,
-            right: 90,
-          }}
-          color="white"
-          onPress={navigateToCreateReceipt}
         />
       </Portal>
         </React.Fragment>

@@ -16,10 +16,10 @@ const HomeScreen = ({navigation}:any) => {
         ]}
       >
         <Card style={styles.card}>
-          <Text category="h1" style={styles.welcome}>
+          <Text category="h3" style={styles.welcome}>
             Welcome,
           </Text>
-          <Text category="h1" style={styles.welcome}>
+          <Text category="h3" style={styles.welcome}>
             {authState?.userName ?? "Guest"}!
           </Text>
           <Text category="p1" style={styles.description}>

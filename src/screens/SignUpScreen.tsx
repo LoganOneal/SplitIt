@@ -378,7 +378,8 @@ export default function SignUpScreen({ navigation }) {
             <ActivityIndicator
               animating={loading}
               color={theme.colors.onPrimaryContainer}
-              size="large"
+              size="small"
+              style={styles.spinner}
             />
           </Card>
         </Animatable.View>
@@ -425,5 +426,8 @@ const styles = StyleSheet.create({
   title: {
     textAlign: "center",
     marginBottom: 35
+  },
+  spinner: {
+    marginTop: 5
   }
 });

@@ -190,8 +190,9 @@ export default function SignInScreen({ navigation }) {
           </Button>
           <ActivityIndicator
             animating={loading}
+            size="small"
+            style={styles.spinner}
             color={theme.colors.onPrimaryContainer}
-            size="large"
           />
         </Card>
       </Animatable.View>
@@ -244,5 +245,8 @@ const styles = StyleSheet.create({
   resetPassword: {
     alignSelf: "flex-end",
     marginBottom: 20
+  },
+  spinner: {
+    marginTop: 10
   }
 });

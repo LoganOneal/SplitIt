@@ -25,6 +25,7 @@ import { db, auth } from '../services/firebase'
 import { IReceipt } from "../interfaces/IReceipt";
 import { useAuth } from "./useAuth";
 import { User, UserCredential, UserInfo } from "firebase/auth";
+import { FirebaseFirestore } from "firebase/firestore";
 
 export const useFirestore = () => {
 
@@ -55,36 +56,47 @@ export const useFirestore = () => {
     return receiptRef.id;
   }
 
-  const getHostReceipts = async (): Promise<IReceipt[]> => {
+  const getUserReceipts = async (): Promise<{hostReceipts: IReceipt[], requestedReceipts: IReceipt[]}> => {
     try {
-      // get receipts where receipt id is in user's hostReceipts
       const receiptsColRef = collection(db, 'receipts');
+
       const userDoc = await getDoc(userRef(auth.currentUser?.uid!));
+      if (!userDoc.exists()) {
+        throw new Error('User document does not exist');
+      }
+  
       const hostReceiptsIds = userDoc.data()?.hostReceipts || [];
+      const requestedReceiptsIds = userDoc.data()?.memberReceipts || [];
+  
+      const hostReceipts: IReceipt[] = [];
+      const requestedReceipts: IReceipt[] = [];
 
-      const receipts: IReceipt[] = [];
-
-      // Fetch each receipt individually based on its ID
       for (const receiptId of hostReceiptsIds) {
         const receiptDocRef = doc(receiptsColRef, receiptId);
-        const receiptDocSnapshot: DocumentSnapshot<DocumentData> = await getDoc(receiptDocRef);
-
+        const receiptDocSnapshot = await getDoc(receiptDocRef);
+  
         if (receiptDocSnapshot.exists()) {
           const receiptData = receiptDocSnapshot.data() as IReceipt;
-
-          // Assuming your receipt data is in a field called 'receipt'
-          console.log("Receipts Data:", receiptData)
-          receipts.push(receiptData);
-
+          hostReceipts.push(receiptData);
         }
       }
 
-      return receipts;
+      for (const receiptId of requestedReceiptsIds) {
+        const receiptDocRef = doc(receiptsColRef, receiptId);
+        const receiptDocSnapshot = await getDoc(receiptDocRef);
+        if (receiptDocSnapshot.exists() && receiptDocSnapshot.data()?.host !== auth.currentUser?.uid){
+          const receiptData = receiptDocSnapshot.data() as IReceipt;
+          requestedReceipts.push(receiptData);
+        }
+      }
+  
+      return { hostReceipts, requestedReceipts };
     } catch (error) {
-      console.error('Error fetching host receipts:', error);
+      console.error('Error fetching receipts:', error);
       throw error;
     }
   };
+
   
   const getReceiptById = async (receiptId: string): Promise<IReceipt> => {
     try {
@@ -122,9 +134,9 @@ export const useFirestore = () => {
       const receipts = await getDocs(query(receiptsColRef, where("joinCode", "==", joinCode)));
       console.log("Receipt id", receipts.docs[0].id)
 
-      // add receipt to user's memberReceipts
+      // add receipt to user's requestedReceipts
       await updateDoc(userRef(auth.currentUser?.uid!), {
-        memberReceipts: arrayUnion(receipts.docs[0].id)
+        requestedReceipts: arrayUnion(receipts.docs[0].id)
       })
 
       // add user to receipt's guests 
@@ -148,7 +160,7 @@ export const useFirestore = () => {
         email: "",
         created: serverTimestamp(),
         hostReceipts: [],
-        memberReceipts: [receiptId],
+        requestedReceipts: [receiptId],
         hasAccount: false,
         phoneNumber: phoneNumber
       });
@@ -202,7 +214,7 @@ export const useFirestore = () => {
       // add the receipt to the user
       const userRef = doc(db, "users", uid);
       await updateDoc(userRef, {
-        memberReceipts: arrayUnion(receiptId)
+        requestedReceipts: arrayUnion(receiptId)
       })
     } catch (error) {
       console.error('Error adding existing user to receipt:', error);
@@ -212,11 +224,11 @@ export const useFirestore = () => {
 
 return {
   createReceipt,
-  getHostReceipts,
   addNewUserToReceipt,
   addExistingUserToReceipt,
   joinReceipt, 
   getReceiptById,
-    updateItemsPaidStatus
+  updateItemsPaidStatus,
+  getUserReceipts
 }
 }

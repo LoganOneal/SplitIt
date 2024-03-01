@@ -4,12 +4,14 @@ import RequestScreen from "../screens/RequestScreen";
 import MyReceiptsScreen from '../screens/shared/MyReceiptsScreen';
 import React from 'react';
 import { useIsFocused } from '@react-navigation/native';
+import { useState } from 'react';
 
 const Tab = createBottomTabNavigator();
 
 export default function BottomNavigator({navigation}:any) {
     const isFocused = useIsFocused();
-
+    const [open, setOpen] = useState(false);
+    const onStateChange = ({ open }: { open: boolean }) => setOpen(open);
     const navigateToScanner = () => {
       navigation.navigate("Scanner");
     };
@@ -17,7 +19,9 @@ export default function BottomNavigator({navigation}:any) {
     const navigateToCreateReceipt = () => {
       navigation.navigate("CreateReceipt");
     };  
-
+    const navigateToJoinReceipt = () => {
+      navigation.navigate("JoinReceipt");
+    }
     return (
         <React.Fragment>
             <Tab.Navigator
@@ -27,28 +31,35 @@ export default function BottomNavigator({navigation}:any) {
                 <Tab.Screen name="Request" component={RequestScreen} />
             </Tab.Navigator>
             <Portal>
-        <FAB
+            <FAB.Group
+          open={open}
+          icon={open ? 'close' : 'plus'}
+          actions={[
+            {
+              icon: 'camera',
+              label: 'Scan',
+              onPress: navigateToScanner,
+            },
+            {
+              icon: 'receipt',
+              label: 'Join Receipt',
+              onPress: navigateToJoinReceipt,
+            },
+            {
+              icon: 'file-plus',
+              label: 'Add Receipt',
+              onPress: navigateToCreateReceipt,
+            },
+          ]}
+          onStateChange={onStateChange}
           visible={isFocused}
-          icon={'camera'}
           style={{
             position: 'absolute',
-            bottom: 100,
+            bottom: 40,
             right: 16,
           }}
-          color="white"
-          onPress={navigateToScanner}
         />
-        <FAB
-          visible={isFocused}
-          icon={'plus'}
-          style={{
-            position: 'absolute',
-            bottom: 100,
-            right: 90,
-          }}
-          color="white"
-          onPress={navigateToCreateReceipt}
-        />
+
       </Portal>
         </React.Fragment>
     );

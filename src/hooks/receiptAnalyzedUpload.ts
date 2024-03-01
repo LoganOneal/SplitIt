@@ -4,7 +4,7 @@ import { useFirestore } from "./useFirestore";
 
 export const receiptAnalyzedUpload = () => {
   const receipt: IReceipt = {
-    id: 0,
+    // id: 0,
     joinCode: "",
     name: "",
     //vendor: "",

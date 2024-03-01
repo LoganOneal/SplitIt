@@ -46,7 +46,7 @@ const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }
 
     // update total price on item select change 
     useEffect(() => {
-        const total = selectedItems.reduce((acc, item) => acc + item.price, 0);
+        const total = selectedItems.reduce((acc, item) => acc + (item.price ?? 0), 0);
         setIndividualTotal(total);
     }, [selectedItems]);
 

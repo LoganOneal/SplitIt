@@ -15,7 +15,7 @@ const HomeScreen = ({navigation}:any) => {
           styles.container,
         ]}
       >
-        <Card>
+        <Card style={styles.card}>
           <Text category="h1" style={styles.welcome}>
             Welcome,
           </Text>
@@ -23,7 +23,11 @@ const HomeScreen = ({navigation}:any) => {
             {authState?.userName ?? "Guest"}!
           </Text>
           <Text category="p1" style={styles.description}>
-            Upload, share, and split receipts across various payment platforms in a few easy steps.
+            Upload, share, and split receipts
+            {"\n"}
+            across various payment platforms
+            {"\n"}
+            in just a few easy steps.
           </Text>
           <Button
             style={styles.button}
@@ -46,7 +50,7 @@ const styles = StyleSheet.create({
     padding: 40,
   },
   button: {
-    marginTop: 100,
+    marginTop: 50,
     width: "100%"
   },
   welcome: {
@@ -54,7 +58,11 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   description: {
-    marginTop: 100,
-    alignSelf: "center",
+    marginTop: 50,
+    textAlign: "center"
+  },
+  card: {
+    borderRadius: 35,
+    paddingVertical: 30,
   }
 });

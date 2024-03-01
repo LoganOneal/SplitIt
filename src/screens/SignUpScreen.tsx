@@ -366,7 +366,7 @@ export default function SignUpScreen({ navigation }) {
               onPress={handleSubmit(onSubmit)}
               style={styles.button}
             >
-              Submit
+              Sign Up
             </Button>
             <Button
               appearance="ghost"

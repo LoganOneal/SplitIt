@@ -175,7 +175,7 @@ export default function SignInScreen({ navigation }) {
               disabled={numAttempts > 2}
               style={styles.button}
             >
-              Submit
+              Login
             </Button>
             <Text style={{ color: theme.colors.error }}>
               {numAttempts > 2 ? AppConstants.ERROR_TooManyAttempts : ""}

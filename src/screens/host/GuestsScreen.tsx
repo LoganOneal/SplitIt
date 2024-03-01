@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Dimensions, FlatList, StyleSheet, View } from 'react-native';
 import { collection, doc, getDoc, onSnapshot } from 'firebase/firestore';
-import { Button, Text } from '@ui-kitten/components';
+import { Button, Icon, IconElement, Text } from '@ui-kitten/components';
 
 import Guest from '../../components/Guest';
 import { db } from '../../services/firebase'
@@ -15,6 +15,13 @@ export default function GuestsScreen({ route, navigation }) {
   const [users, setUsers] = useState(usersInit);
   const authState = useAppSelector(selectAuthState);
   const userRef = (userId: string) => doc(db, "users", userId);
+
+  const PlusIcon = (props): IconElement => (
+    <Icon
+      {...props}
+      name='plus'
+    />
+  );
 
   useEffect(() => {
     try {
@@ -66,14 +73,16 @@ export default function GuestsScreen({ route, navigation }) {
         <Button
           appearance="outline"
           style={styles.button}
+          accessoryLeft={PlusIcon}
           onPress={() => navigation.navigate("Search Guest", {receiptId: receiptId})}>
-          ADD GUEST VIA SEARCH +
+          ADD GUEST VIA SEARCH
         </Button>
         <Button
           appearance="outline"
           style={styles.button}
+          accessoryLeft={PlusIcon}
           onPress={() => navigation.navigate("Text Guest", {receiptId: receiptId})}>
-          ADD GUEST VIA TEXT +
+          ADD GUEST VIA TEXT
         </Button>
         <Button
           style={styles.button}

@@ -1,11 +1,18 @@
 import React from "react";
 import { Dimensions, StyleSheet, View } from "react-native";
-import { Button, Card, Text } from '@ui-kitten/components';
+import { Button, Card, Icon, IconElement, Text } from '@ui-kitten/components';
 
 import * as AppConstants from "../../constants/constants";
 
 export default function QRCodeScreen({ route, navigation }) {
   const { receiptId } = route.params;
+
+  const PlusIcon = (props): IconElement => (
+    <Icon
+      {...props}
+      name='plus'
+    />
+  );
 
   return (
     <View
@@ -20,8 +27,9 @@ export default function QRCodeScreen({ route, navigation }) {
         <Button
           appearance="outline"
           style={styles.button}
+          accessoryLeft={PlusIcon}
           onPress={() => navigation.navigate("Guests", {receiptId: receiptId})}>
-          ADD GUEST MAUNALLY +
+          ADD GUEST MAUNALLY
         </Button>
         <Button
           style={styles.button}

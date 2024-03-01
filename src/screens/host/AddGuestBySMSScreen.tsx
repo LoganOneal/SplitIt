@@ -54,10 +54,10 @@ export default function AddGuestByTextScreen({ route, navigation }) {
 
   return (
     <View style={styles.container}>
+      <Card style={styles.card}>
       <Text category='h4' style={styles.header}>
         Add Guest Via Text
       </Text>
-      <Card>
         <Controller
           control={control}
           rules={{
@@ -70,8 +70,7 @@ export default function AddGuestByTextScreen({ route, navigation }) {
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
-            keyboardType="default"
-            size="large" />
+            keyboardType="default" />
           )}
           name="name"
         />
@@ -97,7 +96,6 @@ export default function AddGuestByTextScreen({ route, navigation }) {
             onChangeText={(val) => { onChange(onPhoneNumberChange(val)) }}
             value={value}
             keyboardType="numeric" 
-            size="large"
             style={styles.phoneNumberInput} />
           )}
           name="phoneNumber"
@@ -125,7 +123,8 @@ const styles = StyleSheet.create({
     marginTop: 42,
   },
   phoneNumberInput: {
-    marginTop: 25
+    marginTop: 15,
+    marginBottom: 10
   },
   error:{
     color: "#d60202"
@@ -137,9 +136,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    padding: 40
+    padding: 40,
   },
-  input: {
-    margin: 2,
-  },
+  card: {
+    borderRadius: 35,
+    paddingVertical: 30,
+  }
 });

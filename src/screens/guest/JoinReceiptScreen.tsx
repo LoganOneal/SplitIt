@@ -40,7 +40,7 @@ const JoinReceiptScreen = ({ navigation }): React.ReactElement => {
 
     try {
       const receiptId = await joinReceipt(formattedJoinCode);
-      navigation.navigate('SelectItems', {
+      navigation.navigate('Select Items', {
         receiptId: receiptId,
       });
     } catch (error) {

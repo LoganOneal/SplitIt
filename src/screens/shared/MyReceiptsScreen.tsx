@@ -53,7 +53,7 @@ const MyReceiptsScreen = ({navigation}): React.ReactElement => {
           status='primary'
           appearance='outline'
           accessoryLeft={PlusIcon}
-          onPress={() => navigation.navigate('JoinReceipt')}
+          onPress={() => navigation.navigate('Join Receipt')}
 
         >
           JOIN RECEIPT
@@ -62,7 +62,7 @@ const MyReceiptsScreen = ({navigation}): React.ReactElement => {
           style={styles.button}
           status='primary'
           accessoryLeft={PlusIcon}
-          onPress={() => navigation.navigate('CreateReceipt')}
+          onPress={() => navigation.navigate('Create Receipt')}
 
         >
           ADD RECEIPT

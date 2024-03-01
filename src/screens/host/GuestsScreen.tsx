@@ -72,7 +72,7 @@ export default function GuestsScreen({ route, navigation }) {
         <Button
           appearance="outline"
           style={styles.button}
-          onPress={() => navigation.navigate("Add Guest", {receiptId: receiptId})}>
+          onPress={() => navigation.navigate("Text Guest", {receiptId: receiptId})}>
           ADD GUEST VIA TEXT +
         </Button>
         <Button

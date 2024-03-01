@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { IconButton } from "react-native-paper";
-import { Button, Icon, Text } from "@ui-kitten/components"
+import { Button, Icon, Text, Card } from "@ui-kitten/components"
 import * as MediaLibrary from "expo-media-library";
 import { AZURE_API_KEY } from "@env";
 import { receiptAnalyzedUpload } from "../../hooks/receiptAnalyzedUpload";
@@ -65,7 +65,7 @@ const Scanner = ({navigation}:any) => {
         console.log("Analysis succeeded:", JSON.parse(JSON.stringify(result)));
         try {
           const receiptId = await extractDetails(result);
-          navigation.navigate("SelectItems", {
+          navigation.navigate("Select Items", {
             receiptId: receiptId,
           });
         } catch (error) {
@@ -184,15 +184,16 @@ const Scanner = ({navigation}:any) => {
             </TouchableOpacity>
           </View>
         </>
-      ) : (
+      ) : (  
         <View style={styles.optionContainer}>
+          <Card>
           <Text category='h4' style={styles.header}>
             Upload Receipt
           </Text>
           <View style={styles.iconContainer}>
             <Button
               style={styles.iconButton}
-              accessoryRight={
+              accessoryLeft={
                 <Icon
                   name="camera"
                   fill="#ffffff"
@@ -204,7 +205,7 @@ const Scanner = ({navigation}:any) => {
             </Button>
             <Button
               style={styles.iconButton}
-              accessoryRight={
+              accessoryLeft={
                  <Icon
                   name="folder"
                   fill="#ffffff"
@@ -215,6 +216,7 @@ const Scanner = ({navigation}:any) => {
               CHOOSE PICTURE
             </Button>
           </View>
+          </Card>
         </View>
       )}
     </SafeAreaView>
@@ -247,7 +249,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    flexDirection: "column"
+    flexDirection: "column",
   },
   buttonContainer: {
     flexDirection: "row",
@@ -277,14 +279,14 @@ const styles = StyleSheet.create({
   },
   optionContainer: {
     flex: 1,
-    padding: 40
+    margin: 40
   },
   header: {
     alignSelf: "center"
   },
   iconContainer: {
     marginVertical: 10,
-    marginTop: 200
+    marginTop: 50
   },
   iconButton: {
     width: "100%",

@@ -24,14 +24,14 @@ export default function HomeStack() {
       }}
     >
       <Stack.Screen name="Home" component={HomeScreen} />
-      <Stack.Screen name="BottomNavigator" component={BottomNavigator} />
+      <Stack.Screen name="Receipts and Requests" component={BottomNavigator} />
       <Stack.Screen name="Upload Receipt" component={Scanner} />
-      <Stack.Screen name="CreateReceipt" component={CreateReceipt} />
-      <Stack.Screen name="JoinReceipt" component={JoinReceiptScreen} />
-      <Stack.Screen name="SelectItems" component={SelectItemsScreen} />
+      <Stack.Screen name="Create Receipt" component={CreateReceipt} />
+      <Stack.Screen name="Join Receipt" component={JoinReceiptScreen} />
+      <Stack.Screen name="Select Items" component={SelectItemsScreen} />
       <Stack.Screen name="Share Receipt" component={QRCodeScreen} />
       <Stack.Screen name="Guests" component={GuestsScreen} />
-      <Stack.Screen name="Add Guest" component={AddGuestBySMSScreen} />
+      <Stack.Screen name="Text Guest" component={AddGuestBySMSScreen} />
       <Stack.Screen name="Search Guest" component={AddGuestBySearchScreen} />
     </Stack.Navigator>
   );

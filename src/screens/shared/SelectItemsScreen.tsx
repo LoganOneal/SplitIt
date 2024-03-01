@@ -83,7 +83,9 @@ const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }
                 console.log('No items selected or user not authenticated');
             }
         }else{
+            console.log("go to cehckout guest")
             //checking payment for guest then mark paid
+            navigation.navigate('GuestCheckout', { receiptId: receiptId, total: individualTotal });
         }
     };
 

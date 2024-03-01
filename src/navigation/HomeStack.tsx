@@ -16,6 +16,7 @@ import { Portal, FAB } from 'react-native-paper';
 import { useIsFocused } from '@react-navigation/native';
 import { useState } from 'react';
 import {useNavigation} from '@react-navigation/native';
+import CheckoutScreen from "../screens/guest/CheckoutScreen";
 const Stack = createNativeStackNavigator();
 
 export default function HomeStack() {
@@ -47,6 +48,7 @@ export default function HomeStack() {
         <Stack.Screen name="My Receipts" component={MyReceiptsScreen} />
         <Stack.Screen name="Request" component={RequestScreen} />
         <Stack.Screen name="Scanner" component={Scanner} />
+        <Stack.Screen name="GuestCheckout" component={CheckoutScreen} />
         <Stack.Screen name="CreateReceipt" component={CreateReceipt} />
         <Stack.Screen name="JoinReceipt" component={JoinReceiptScreen} />
         <Stack.Screen name="SelectItems" component={SelectItemsScreen} />

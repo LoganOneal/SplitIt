@@ -36,7 +36,7 @@ const HomeScreen = ({navigation}:any) => {
         </Text>
         <Button
           mode="contained"
-          onPress={() => navigation.navigate("BottomNavigator")} 
+          onPress={() => navigation.navigate("My Receipts")} 
         >
           Continue
         </Button>

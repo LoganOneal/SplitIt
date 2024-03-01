@@ -11,7 +11,8 @@ import AddGuestBySearchScreen from "../screens/host/AddGuestBySearchScreen";
 import CreateReceipt from "../screens/host/CreateReceipt";
 import JoinReceiptScreen from "../screens/guest/JoinReceiptScreen";
 import SelectItemsScreen from "../screens/shared/SelectItemsScreen";
-
+import MyReceiptsScreen from "../screens/shared/MyReceiptsScreen";
+import RequestScreen from "../screens/RequestScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -24,7 +25,8 @@ export default function HomeStack() {
       }}
     >
       <Stack.Screen name="Home" component={HomeScreen} />
-      <Stack.Screen name="BottomNavigator" component={BottomNavigator} />
+      <Stack.Screen name="My Receipts" component={MyReceiptsScreen} />
+      <Stack.Screen name="Request" component={RequestScreen} />
       <Stack.Screen name="Scanner" component={Scanner} />
       <Stack.Screen name="CreateReceipt" component={CreateReceipt} />
       <Stack.Screen name="JoinReceipt" component={JoinReceiptScreen} />

@@ -2,7 +2,6 @@ import * as React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "../screens/shared/HomeScreen";
 import CustomNavBar from "./CustomNavBar";
-import BottomNavigator from "./BottomNavigator";
 import Scanner from "../screens/shared/Scanner";
 import QRCodeScreen from "../screens/host/QRCodeScreen";
 import GuestsScreen from "../screens/host/GuestsScreen";
@@ -13,11 +12,30 @@ import JoinReceiptScreen from "../screens/guest/JoinReceiptScreen";
 import SelectItemsScreen from "../screens/shared/SelectItemsScreen";
 import MyReceiptsScreen from "../screens/shared/MyReceiptsScreen";
 import RequestScreen from "../screens/RequestScreen";
+import { Portal, FAB } from 'react-native-paper';
+import { useIsFocused } from '@react-navigation/native';
+import { useState } from 'react';
 
 const Stack = createNativeStackNavigator();
 
-export default function HomeStack() {
+export default function HomeStack({navigation}) {
+  const isFocused = useIsFocused();
+  const [open, setOpen] = useState(false);
+  const onStateChange = ({ open }: { open: boolean }) => setOpen(open);
+  const navigateToScanner = () => {
+    navigation.navigate("Scanner");
+  };
+
+  const navigateToCreateReceipt = () => {
+    navigation.navigate("CreateReceipt");
+  };  
+  const navigateToJoinReceipt = () => {
+    navigation.navigate("JoinReceipt");
+  }
+
   return (
+    <React.Fragment>
+
     <Stack.Navigator
       initialRouteName="Home"
       screenOptions={{
@@ -36,5 +54,37 @@ export default function HomeStack() {
       <Stack.Screen name="Add Guest" component={AddGuestBySMSScreen} />
       <Stack.Screen name="Search Guest" component={AddGuestBySearchScreen} />
     </Stack.Navigator>
+    <Portal>
+            <FAB.Group
+          open={open}
+          icon={open ? 'close' : 'plus'}
+          actions={[
+            {
+              icon: 'camera',
+              label: 'Scan',
+              onPress: navigateToScanner,
+            },
+            {
+              icon: 'receipt',
+              label: 'Join Receipt',
+              onPress: navigateToJoinReceipt,
+            },
+            {
+              icon: 'file-plus',
+              label: 'Add Receipt',
+              onPress: navigateToCreateReceipt,
+            },
+          ]}
+          onStateChange={onStateChange}
+          visible={isFocused}
+          style={{
+            position: 'absolute',
+            bottom: 40,
+            right: 16,
+          }}
+        />
+
+      </Portal>
+    </React.Fragment>
   );
 }

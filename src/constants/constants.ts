@@ -30,6 +30,7 @@ export const LABEL_State = "State";
 export const LABEL_Zip = "Zip";
 export const LABEL_SendRequest = "Send Request";
 export const LABEL_Password = "Password";
+export const LABEL_NewPassword = "New Password";
 export const LABEL_ConfirmPassword = "Confirm Password";
 export const LABEL_NotAUser = "Not a user? Register.";
 export const LABEL_Name = "Name";

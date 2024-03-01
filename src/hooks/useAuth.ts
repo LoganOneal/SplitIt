@@ -8,6 +8,7 @@ import {
   sendPasswordResetEmail,
   verifyPasswordResetCode,
   confirmPasswordReset,
+  updateEmail,
 } from "firebase/auth";
 import {
   IFirebaseUser,
@@ -182,6 +183,50 @@ export const useAuth = () => {
     });
   };
 
+  const getUserProfile = (): IFirebaseUser | null => {
+    const user = auth.currentUser;
+    if (user) {
+      const profile = user.providerData.map((profile) => ({
+        ...profile,
+        firebaseUID: user.uid,
+      }));
+      console.log("getProfile SUCCESS:", profile);
+      return profile[0]; // Assuming there's only one provider
+    } else {
+      console.log("No user signed in.");
+      return null;
+    }
+  };
+
+  const updateDisplayName = async (newDisplayName: string) => {
+    const user = auth.currentUser;
+    if (user) {
+      await updateProfile(user, {
+        displayName: newDisplayName,
+      })
+        .then(() => {
+          console.log("Display Name updated successfully");
+        })
+        .catch((error) => {
+          console.error("Error updating display name:", error);
+        });
+    }
+  }
+
+  // Function to change email address
+  const updateEmailAddress = async (newEmail: string) => {
+    const user = auth.currentUser;
+    if (user) {
+      await updateEmail(user, newEmail)
+        .then(() => {
+          console.log("Email updated successfully");
+        })
+        .catch((error) => {
+          console.error("Error updating email:", error);
+        });
+    }
+  };
+
   return {
     signupUser,
     signinUser,
@@ -190,5 +235,8 @@ export const useAuth = () => {
     verifyResetPasswordCode,
     confirmUserResetPassword,
     getProfile,
+    getUserProfile,
+    updateDisplayName,
+    updateEmailAddress,
   };
 };

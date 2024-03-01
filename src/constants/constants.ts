@@ -67,8 +67,8 @@ export const PLACEHOLDER_Service =
 export const PLACEHOLDER_Password = "Password";
 export const PLACEHOLDER_ConfirmPassword = "Confirm Password";
 export const PLACEHOLDER_FullName = "Enter your full name";
-export const PLACEHOLDER_FirstName = "Enter your first name";
-export const PLACEHOLDER_LastName = "Enter your last name";
+export const PLACEHOLDER_FirstName = "First name";
+export const PLACEHOLDER_LastName = "Last name";
 
 export const SPLASH_TEXT1 = "Feature 1";
 export const SPLASH_TEXT2 = "Feature 2";

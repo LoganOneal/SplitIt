@@ -16,6 +16,13 @@ const PlusIcon = (props): IconElement => (
   />
 );
 
+const LogOutIcon = (props): IconElement => (
+  <Icon
+    {...props}
+    name='log-out-outline'
+  />
+);
+
 const MyReceiptsScreen = ({navigation}): React.ReactElement => {
   const { getHostReceipts } = useFirestore();
   const [receipts, setReceipts] = useState<IReceipt[]>([]);
@@ -51,7 +58,6 @@ const MyReceiptsScreen = ({navigation}): React.ReactElement => {
         <Button
           style={styles.button}
           status='primary'
-          appearance='outline'
           accessoryLeft={PlusIcon}
           onPress={() => navigation.navigate('Join Receipt')}
 
@@ -68,16 +74,16 @@ const MyReceiptsScreen = ({navigation}): React.ReactElement => {
           ADD RECEIPT
         </Button>
         <Button
+          appearance='outline'
           style={styles.button}
           status='primary'
-          accessoryLeft={PlusIcon}
+          accessoryLeft={LogOutIcon}
           onPress={() => {
             dispatch(userLoggedOut());
             navigation.navigate('SignIn');
-          }
-          }
+          }}
         >
-          logout
+          LOG OUT
         </Button>
       </View>
     </View>

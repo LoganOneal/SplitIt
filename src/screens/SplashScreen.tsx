@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Dimensions, StyleSheet, StatusBar } from "react-native";
-import { Button, Surface, Text } from "react-native-paper";
+import { Card, Button, Icon, Text } from "@ui-kitten/components";
 import * as Animatable from "react-native-animatable";
 import * as AppConstants from "../constants/constants";
 import { ImageOverlay } from "../components/image-overlay";
@@ -19,10 +19,10 @@ const SplashScreen = ({ navigation }) => {
         style={[styles.contentContainer]}
         animation="fadeInUpBig"
       >
-        <Surface style={styles.surface} elevation={4}>
+        <Card style={styles.surface}>
           <View style={styles.headerContent}>
-            <Text variant="displaySmall">{AppConstants.CLIENT_NAME}</Text>
-            <Text variant="titleMedium">{AppConstants.APP_SLOGAN}</Text>
+            <Text category="h1">{AppConstants.CLIENT_NAME}</Text>
+            <Text category="s1">{AppConstants.APP_SLOGAN}</Text>
           </View>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <View
@@ -35,20 +35,25 @@ const SplashScreen = ({ navigation }) => {
             />
           </View>
           <View style={styles.footerContent}>
-            <Text variant="bodyLarge">{AppConstants.SPLASH_TEXT1}</Text>
-            <Text variant="bodyLarge">{AppConstants.SPLASH_TEXT2}</Text>
-            <Text variant="bodyLarge">{AppConstants.SPLASH_TEXT3}</Text>
+            <View style={styles.features}>
+              <Text category="p1">{AppConstants.SPLASH_TEXT1}</Text>
+              <Text category="p1">{AppConstants.SPLASH_TEXT2}</Text>
+              <Text category="p1">{AppConstants.SPLASH_TEXT3}</Text>
+            </View>
             <Button
-              icon="arrow-right-bold-circle-outline"
-              mode="contained"
-              compact
+              accessoryRight={
+                <Icon
+                  name="arrow-ios-forward-outline"
+                  fill="#ffffff"
+                />
+              }
               onPress={() => navigation.navigate("SignIn")}
               style={styles.button}
             >
               Get Started
             </Button>
           </View>
-        </Surface>
+        </Card>
       </Animatable.View>
     </ImageOverlay>
   );
@@ -71,9 +76,13 @@ const styles = StyleSheet.create({
   },
   headerContent: {
     padding: 15,
+    alignItems: "center"
   },
   footerContent: {
     padding: 15,
+  },
+  features: {
+    marginVertical: 20
   },
   button: {
     marginTop: 20,

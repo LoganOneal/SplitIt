@@ -16,6 +16,7 @@ import SettingsScreen from "../screens/shared/SettingsScreen";
 import ResetPasswordScreen from "../screens/ResetPasswordScreen";
 import EditProfileScreen from "../screens/shared/EditProfileScreen";
 import EditProfilePasswordScreen from "../screens/shared/EditProfilePasswordScreen";
+import EditPaymentSettingsScreen from "../screens/shared/EditPaymentSettingsScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -31,6 +32,7 @@ export default function HomeStack() {
       <Stack.Screen name="Settings" component={SettingsScreen} />
       <Stack.Screen name="EditProfile" component={EditProfileScreen} />
       <Stack.Screen name="EditProfilePassword" component={EditProfilePasswordScreen} />
+      <Stack.Screen name="EditPaymentSettings" component={EditPaymentSettingsScreen} />
       <Stack.Screen name="BottomNavigator" component={BottomNavigator} />
       <Stack.Screen name="CreateReceipt" component={CreateReceipt} />
       <Stack.Screen name="Scanner" component={Scanner} />

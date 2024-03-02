@@ -17,6 +17,8 @@ import { auth } from "../../services/firebase";
 import { useFirestore } from "../../hooks/useFirestore";
 import { useFocusEffect } from "@react-navigation/native";
 
+
+//TODO: Add page for payment stuff -> Allow user to add their venmo user name -> save to user in firestore().
 const SettingsScreen = ({ navigation }: any) => {
   const [profile, setProfile] = useState<IFirebaseUser | null>(null);
   const { getFirestoreUser } = useFirestore();
@@ -75,6 +77,16 @@ const SettingsScreen = ({ navigation }: any) => {
                 navigation.navigate("EditProfilePassword");
               }} style={styles.row}>
                 <Text style={styles.rowLabel}>Change Password</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.rowWrapper}>
+              <TouchableOpacity onPress={() => {
+                navigation.navigate("EditPaymentSettings", {
+                    profile: profile,
+                    navigation: navigation,
+                });
+              }} style={styles.row}>
+                <Text style={styles.rowLabel}>Edit Payment Settings</Text>
               </TouchableOpacity>
             </View>
           </View>

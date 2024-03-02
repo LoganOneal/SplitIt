@@ -20,7 +20,6 @@ import { auth } from "../../services/firebase";
 import { updateProfile } from "@firebase/auth";
 
 // TODO: Clean up code, add error checks
-// TODO: Profile Picture
 const EditProfileScreen = ({
   route,
   navigation,
@@ -47,7 +46,6 @@ const EditProfileScreen = ({
   const [nameError, setNameError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [phoneError, setPhoneError] = useState("");
-  const [photo, setPhoto] = useState<ImagePicker.ImagePickerAsset | null>(null);
 
   function handleSave(profile: IFirebaseUser) {
     let updatedUserInfo = {
@@ -109,25 +107,8 @@ const EditProfileScreen = ({
     }
 
     dispatch(userProfileUpdated(updatedUserInfo));
+    navigation.goBack();
   }
-
-  const handleImageUpload = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      quality: 1,
-      base64: true,
-      
-    });
-    if (!result.canceled) {
-      if (result.assets && result.assets.length > 0) {
-        setPhoto(
-          result.assets && result.assets.length > 0 ? result.assets[0] : null
-        );
-        
-      }
-    }
-  };
 
   return (
     <>
@@ -135,19 +116,6 @@ const EditProfileScreen = ({
         <View style={styles.container}>
           <View style={styles.header}>
             <Text style={styles.title}>Edit Profile</Text>
-            <TouchableOpacity onPress={handleImageUpload}>
-              <View style={styles.profile}>
-                <Image
-                  source={
-                    profile?.photoURL
-                      ? { uri: profile.photoURL }
-                      : require("../../../assets/images/defaultProfileImage.jpg")
-                  }
-                  style={styles.profileAvatar}
-                />
-                <Text style={styles.sectionTitle}>Click to edit</Text>
-              </View>
-            </TouchableOpacity>
           </View>
           <View style={styles.rowWrapper}>
             <View style={styles.row}>

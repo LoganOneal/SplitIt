@@ -231,21 +231,23 @@ export const useFirestore = () => {
       console.error("Error updating phone number:", error);
     }
   };
+
   const getFirestoreUser = async (uid: string): Promise<IFirebaseUser | null> => {
     try {
       const userDoc = await getDoc(userRef(uid));
       if (userDoc.exists()) {
         const userData = userDoc.data() as IFirebaseUser;
         console.log("Firestore User Data:", userData);
-        // return new firebase user object
+        
         return {
           email: userData.email,
           displayName: userDoc.data()?.name,
           phoneNumber: userData.phoneNumber,
           photoURL: userData.photoURL,
           firebaseUID: userDoc.id,
-          providerId: "", // Add the missing property 'providerId'
-          uid: userData.uid, // Add the missing property 'uid'
+          providerId: "", 
+          uid: userData.uid,
+          venmoName: userData.venmoName || "",
         };
       } else {
         console.log("Firestore User Document does not exist");
@@ -256,6 +258,21 @@ export const useFirestore = () => {
       return null;
     }
   };
+
+  const updateVenmoNameFirestore = async (venmoName: string) => {
+    try {
+      const user = auth.currentUser;
+      if (user) {
+        const userRef = doc(db, "users", user.uid);
+        await updateDoc(userRef, {
+          venmoName: venmoName,
+        });
+        console.log("Venmo Name updated successfully");
+      }
+    } catch (error) {
+      console.error("Error updating venmo name:", error);
+    }
+  }
 
   return {
     createReceipt,
@@ -268,5 +285,6 @@ export const useFirestore = () => {
     updateEmailAddressFirestore,
     updatePhoneNumberFirestore,
     getFirestoreUser,
+    updateVenmoNameFirestore,
   };
 };

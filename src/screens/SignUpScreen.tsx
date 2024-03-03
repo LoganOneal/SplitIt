@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import {
-  Button,
-  Surface,
-  TextInput,
   useTheme,
   Snackbar,
-  Text,
   ActivityIndicator,
 } from "react-native-paper";
+import {
+  Card,
+  Button,
+  Input,
+  Text
+} from "@ui-kitten/components";
 import {
   StyleSheet,
   Dimensions,
@@ -124,298 +126,277 @@ export default function SignUpScreen({ navigation }) {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <KeyboardAwareScrollView
-        contentContainerStyle={{ flexGrow: 1 }}
-        enableOnAndroid
-        enableAutomaticScroll
-        keyboardOpeningTime={0}
-      >
-        <ImageOverlay
-          style={styles.container}
-          source={require("../../assets/images/splash-pool.jpg")}
+    <ImageOverlay
+      style={styles.container}
+      source={require("../../assets/images/splash-pool.jpg")}
+    >
+      <SafeAreaView style={{ flex: 1 }}>
+        <StatusBar barStyle="light-content" />
+        <Animatable.View
+          style={[
+            styles.contentContainer,
+            { height: dynamicContainerHeight },
+          ]}
+          animation="fadeInUpBig"
         >
-          <StatusBar barStyle="light-content" />
-          <Animatable.View
-            style={[
-              styles.contentContainer,
-              { height: dynamicContainerHeight },
-            ]}
-            animation="fadeInUpBig"
-          >
-            <Surface style={styles.surface} elevation={1}>
-              <Text variant="headlineSmall" style={{ textAlign: "center" }}>
-                {AppConstants.TITLE_Register}
+          <Card style={styles.card}>
+            <Text category="h3" style={styles.title}>
+              {AppConstants.TITLE_Register}
+            </Text>
+            <Controller
+              control={control}
+              rules={{
+                required: {
+                  message: AppConstants.ERROR_FirstNameIsRequired,
+                  value: true,
+                },
+                pattern: {
+                  value: /^[A-Za-z]+$/i,
+                  message: AppConstants.ERROR_InvalidName,
+                },
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  placeholder={AppConstants.PLACEHOLDER_FirstName}
+                  textContentType="name"
+                  style={styles.textInput}
+                />
+              )}
+              name="firstName"
+            />
+            {errors.firstName?.message && (
+              <Text style={{ color: theme.colors.error }}>
+                {errors.firstName?.message}
               </Text>
-              <Controller
-                control={control}
-                rules={{
-                  required: {
-                    message: AppConstants.ERROR_FirstNameIsRequired,
-                    value: true,
+            )}
+
+            <Controller
+              control={control}
+              rules={{
+                required: {
+                  message: AppConstants.ERROR_LastNameIsRequired,
+                  value: true,
+                },
+                pattern: {
+                  value: /^[A-Za-z]+$/i,
+                  message: AppConstants.ERROR_InvalidName,
+                },
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  placeholder={AppConstants.PLACEHOLDER_LastName}
+                  textContentType="name"
+                  style={styles.textInput}
+                />
+              )}
+              name="lastName"
+            />
+            {errors.lastName?.message && (
+              <Text style={{ color: theme.colors.error }}>
+                {errors.lastName?.message}
+              </Text>
+            )}
+
+            <Controller
+              control={control}
+              rules={{
+                required: {
+                  message: AppConstants.ERROR_EmailIsRequired,
+                  value: true,
+                },
+                validate: {
+                  invalidEmail: (value) => {
+                    return validateEmail(value);
                   },
-                  pattern: {
-                    value: /^[A-Za-z]+$/i,
-                    message: AppConstants.ERROR_InvalidName,
-                  },
-                }}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    label={AppConstants.LABEL_FirstName}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value}
-                    mode="outlined"
-                    placeholder={AppConstants.PLACEHOLDER_FirstName}
-                    textContentType="name"
-                    style={styles.textInput}
-                  />
-                )}
-                name="firstName"
-              />
-              {errors.firstName?.message && (
+                },
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  placeholder="Email Address"
+                  textContentType="emailAddress"
+                  // right={
+                  //   watch("emailAddress") &&
+                  //   (validateEmail(value) ? (
+                  //     <TextInput.Icon icon="check" color="green" />
+                  //   ) : (
+                  //     <TextInput.Icon
+                  //       icon="close"
+                  //       color={theme.colors.error}
+                  //     />
+                  //   ))
+                  // }
+                  style={styles.textInput}
+                />
+              )}
+              name="emailAddress"
+            />
+            {errors.emailAddress &&
+              errors.emailAddress.type === "required" && (
                 <Text style={{ color: theme.colors.error }}>
-                  {errors.firstName?.message}
+                  {AppConstants.ERROR_EmailIsRequired}
                 </Text>
               )}
-
-              <Controller
-                control={control}
-                rules={{
-                  required: {
-                    message: AppConstants.ERROR_LastNameIsRequired,
-                    value: true,
-                  },
-                  pattern: {
-                    value: /^[A-Za-z]+$/i,
-                    message: AppConstants.ERROR_InvalidName,
-                  },
-                }}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    label={AppConstants.LABEL_LastName}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value}
-                    mode="outlined"
-                    placeholder={AppConstants.PLACEHOLDER_LastName}
-                    textContentType="name"
-                    style={styles.textInput}
-                  />
-                )}
-                name="lastName"
-              />
-              {errors.lastName?.message && (
+            {errors.emailAddress &&
+              errors.emailAddress.type === "invalidEmail" && (
                 <Text style={{ color: theme.colors.error }}>
-                  {errors.lastName?.message}
+                  {AppConstants.ERROR_InvalidEmail}
                 </Text>
               )}
+            {emailRegistered && (
+              <Text style={{ color: theme.colors.error }}>
+                {AppConstants.ERROR_EmailIsAlreadyRegistered}
+              </Text>
+            )}
 
-              <Controller
-                control={control}
-                rules={{
-                  required: {
-                    message: AppConstants.ERROR_EmailIsRequired,
-                    value: true,
-                  },
-                  validate: {
-                    invalidEmail: (value) => {
-                      return validateEmail(value);
-                    },
-                  },
-                }}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    label={AppConstants.LABEL_EmailAddress}
+            <Controller
+              control={control}
+              rules={{
+                maxLength: 16,
+                required: true,
+                validate: (val) => {
+                  const isValid = validatePassword(val);
+                  setIsPasswordValid(isValid);
+                  return isValid || AppConstants.ERROR_InvalidPassword;
+                },
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <>
+                  <Input
+                    placeholder="Password"
                     onBlur={onBlur}
-                    onChangeText={onChange}
+                    onChangeText={(text) => {
+                      onChange(text);
+                      handlePasswordChange(text);
+                    }}
                     value={value}
-                    mode="outlined"
-                    placeholder="Email Address"
-                    textContentType="emailAddress"
-                    right={
-                      watch("emailAddress") &&
-                      (validateEmail(value) ? (
-                        <TextInput.Icon icon="check" color="green" />
-                      ) : (
-                        <TextInput.Icon
-                          icon="close"
-                          color={theme.colors.error}
-                        />
-                      ))
-                    }
+                    secureTextEntry
+                    textContentType="password"
+                    // right={
+                    //   watch("password") &&
+                    //   watch("password").length > 0 &&
+                    //   (isPasswordValid ? (
+                    //     <TextInput.Icon icon="check" color="green" />
+                    //   ) : (
+                    //     <TextInput.Icon
+                    //       icon="close"
+                    //       color={theme.colors.error}
+                    //     />
+                    //   ))
+                    // }
                     style={styles.textInput}
                   />
-                )}
-                name="emailAddress"
-              />
-              {errors.emailAddress &&
-                errors.emailAddress.type === "required" && (
-                  <Text style={{ color: theme.colors.error }}>
-                    {AppConstants.ERROR_EmailIsRequired}
-                  </Text>
-                )}
-              {errors.emailAddress &&
-                errors.emailAddress.type === "invalidEmail" && (
-                  <Text style={{ color: theme.colors.error }}>
-                    {AppConstants.ERROR_InvalidEmail}
-                  </Text>
-                )}
-              {emailRegistered && (
-                <Text style={{ color: theme.colors.error }}>
-                  {AppConstants.ERROR_EmailIsAlreadyRegistered}
-                </Text>
+                  <PasswordRequirements
+                    password={password}
+                    show={isPasswordValid}
+                  />
+                </>
               )}
+              name="password"
+            />
+            {errors.password && errors.password.type === "required" && (
+              <Text style={{ color: theme.colors.error }}>
+                {AppConstants.ERROR_PasswordIsRequired}
+              </Text>
+            )}
+            {errors.password && errors.password.type === "validate" && (
+              <Text style={{ color: theme.colors.error }}>
+                {AppConstants.ERROR_InvalidPassword}
+              </Text>
+            )}
 
-              <Controller
-                control={control}
-                rules={{
-                  maxLength: 16,
-                  required: true,
-                  validate: (val) => {
-                    const isValid = validatePassword(val);
-                    setIsPasswordValid(isValid);
-                    return isValid || AppConstants.ERROR_InvalidPassword;
-                  },
-                }}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <>
-                    <TextInput
-                      label={AppConstants.LABEL_Password}
-                      mode="outlined"
-                      placeholder="Password"
-                      onBlur={onBlur}
-                      onChangeText={(text) => {
-                        onChange(text);
-                        handlePasswordChange(text);
-                      }}
-                      value={value}
-                      secureTextEntry
-                      textContentType="password"
-                      right={
-                        watch("password") &&
-                        watch("password").length > 0 &&
-                        (isPasswordValid ? (
-                          <TextInput.Icon icon="check" color="green" />
-                        ) : (
-                          <TextInput.Icon
-                            icon="close"
-                            color={theme.colors.error}
-                          />
-                        ))
-                      }
-                      style={styles.textInput}
-                    />
-                    <PasswordRequirements
-                      password={password}
-                      show={isPasswordValid}
-                    />
-                  </>
-                )}
-                name="password"
-              />
-              {errors.password && errors.password.type === "required" && (
+            <Controller
+              control={control}
+              rules={{
+                maxLength: 16,
+                required: true,
+                validate: (val) => {
+                  if (watch("password") != val) {
+                    return AppConstants.ERROR_ConfirmPassword;
+                  }
+                },
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  placeholder={AppConstants.PLACEHOLDER_ConfirmPassword}
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  secureTextEntry
+                  textContentType="password"
+                  // right={
+                  //   watch("password") &&
+                  //   watch("password").length > 0 &&
+                  //   (watch("password") === value ? (
+                  //     <TextInput.Icon icon="check" color="green" />
+                  //   ) : (
+                  //     <TextInput.Icon
+                  //       icon="close"
+                  //       color={theme.colors.error}
+                  //     />
+                  //   ))
+                  // }
+                  style={styles.textInput}
+                />
+              )}
+              name="confirmPassword"
+            />
+            {errors.confirmPassword &&
+              errors.confirmPassword.type === "required" && (
                 <Text style={{ color: theme.colors.error }}>
                   {AppConstants.ERROR_PasswordIsRequired}
                 </Text>
               )}
-              {errors.password && errors.password.type === "validate" && (
+            {errors.confirmPassword &&
+              errors.confirmPassword.type === "validate" && (
                 <Text style={{ color: theme.colors.error }}>
-                  {AppConstants.ERROR_InvalidPassword}
+                  {AppConstants.ERROR_ConfirmPassword}
                 </Text>
               )}
 
-              <Controller
-                control={control}
-                rules={{
-                  maxLength: 16,
-                  required: true,
-                  validate: (val) => {
-                    if (watch("password") != val) {
-                      return AppConstants.ERROR_ConfirmPassword;
-                    }
-                  },
-                }}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    label={AppConstants.LABEL_ConfirmPassword}
-                    mode="outlined"
-                    placeholder={AppConstants.PLACEHOLDER_ConfirmPassword}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value}
-                    secureTextEntry
-                    textContentType="password"
-                    right={
-                      watch("password") &&
-                      watch("password").length > 0 &&
-                      (watch("password") === value ? (
-                        <TextInput.Icon icon="check" color="green" />
-                      ) : (
-                        <TextInput.Icon
-                          icon="close"
-                          color={theme.colors.error}
-                        />
-                      ))
-                    }
-                    style={styles.textInput}
-                  />
-                )}
-                name="confirmPassword"
-              />
-              {errors.confirmPassword &&
-                errors.confirmPassword.type === "required" && (
-                  <Text style={{ color: theme.colors.error }}>
-                    {AppConstants.ERROR_PasswordIsRequired}
-                  </Text>
-                )}
-              {errors.confirmPassword &&
-                errors.confirmPassword.type === "validate" && (
-                  <Text style={{ color: theme.colors.error }}>
-                    {AppConstants.ERROR_ConfirmPassword}
-                  </Text>
-                )}
-
-              <Button
-                mode="contained"
-                compact
-                onPress={handleSubmit(onSubmit)}
-                style={styles.button}
-                loading={loading}
-              >
-                Submit
-              </Button>
-              <Button
-                mode="text"
-                compact
-                onPress={() => navigation.navigate("SignIn")}
-                style={styles.button}
-                loading={loading}
-              >
-                {AppConstants.LABEL_AlreadyAUser}
-              </Button>
-              <ActivityIndicator
-                animating={loading}
-                color={theme.colors.onPrimaryContainer}
-                size="large"
-              />
-            </Surface>
-          </Animatable.View>
-          <Snackbar
-            visible={showSnack}
-            onDismiss={onDismissSnackBar}
-            action={{
-              label: "Close",
-              onPress: () => {
-                onDismissSnackBar();
-              },
-            }}
-          >
-            {snackMessage}
-          </Snackbar>
-        </ImageOverlay>
-      </KeyboardAwareScrollView>
-    </SafeAreaView>
+            <Button
+              onPress={handleSubmit(onSubmit)}
+              style={styles.button}
+            >
+              Sign Up
+            </Button>
+            <Button
+              appearance="ghost"
+              onPress={() => navigation.navigate("SignIn")}
+              style={styles.button}
+            >
+              {AppConstants.LABEL_AlreadyAUser}
+            </Button>
+            <ActivityIndicator
+              animating={loading}
+              color={theme.colors.onPrimaryContainer}
+              size="small"
+              style={styles.spinner}
+            />
+          </Card>
+        </Animatable.View>
+        <Snackbar
+          visible={showSnack}
+          onDismiss={onDismissSnackBar}
+          action={{
+            label: "Close",
+            onPress: () => {
+              onDismissSnackBar();
+            },
+          }}
+        >
+          {snackMessage}
+        </Snackbar>
+      </SafeAreaView>
+    </ImageOverlay>
   );
 }
 
@@ -428,10 +409,9 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     marginHorizontal: 10,
-    marginVertical: 20,
-    marginTop: StatusBar.currentHeight,
+    marginVertical: 0,
   },
-  surface: {
+  card: {
     paddingTop: 25,
     justifyContent: "flex-start",
     paddingHorizontal: 20,
@@ -439,9 +419,15 @@ const styles = StyleSheet.create({
   },
   button: {
     marginVertical: 10,
-    marginTop: 10,
   },
   textInput: {
-    marginVertical: 10,
+    marginVertical: 8,
   },
+  title: {
+    textAlign: "center",
+    marginBottom: 35
+  },
+  spinner: {
+    marginTop: 5
+  }
 });

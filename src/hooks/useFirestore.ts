@@ -33,6 +33,8 @@ import {
   updateEmail,
   updateProfile,
 } from "firebase/auth";
+import { FirebaseFirestore } from "firebase/firestore";
+
 
 export const useFirestore = () => {
   const userRef = (uid: string) => doc(db, "users", uid);
@@ -62,38 +64,51 @@ export const useFirestore = () => {
     return receiptRef.id;
   };
 
-  const getHostReceipts = async (): Promise<IReceipt[]> => {
+  const getUserReceipts = async (): Promise<{hostReceipts: IReceipt[], requestedReceipts: IReceipt[]}> => {
     try {
-      // get receipts where receipt id is in user's hostReceipts
-      const receiptsColRef = collection(db, "receipts");
+      const receiptsColRef = collection(db, 'receipts');
+
       const userDoc = await getDoc(userRef(auth.currentUser?.uid!));
+      if (!userDoc.exists()) {
+        throw new Error('User document does not exist');
+      }
+  
       const hostReceiptsIds = userDoc.data()?.hostReceipts || [];
+      const requestedReceiptsIds = userDoc.data()?.memberReceipts || [];
+  
+      const hostReceipts: IReceipt[] = [];
+      const requestedReceipts: IReceipt[] = [];
 
-      const receipts: IReceipt[] = [];
-
-      // Fetch each receipt individually based on its ID
       for (const receiptId of hostReceiptsIds) {
         const receiptDocRef = doc(receiptsColRef, receiptId);
-        const receiptDocSnapshot: DocumentSnapshot<DocumentData> = await getDoc(
-          receiptDocRef
-        );
 
+        const receiptDocSnapshot = await getDoc(receiptDocRef);
+  
         if (receiptDocSnapshot.exists()) {
           const receiptData = receiptDocSnapshot.data() as IReceipt;
-
-          // Assuming your receipt data is in a field called 'receipt'
-          console.log("Receipts Data:", receiptData);
-          receipts.push(receiptData);
+          hostReceipts.push(receiptData);
         }
       }
 
-      return receipts;
+      for (const receiptId of requestedReceiptsIds) {
+        const receiptDocRef = doc(receiptsColRef, receiptId);
+        const receiptDocSnapshot = await getDoc(receiptDocRef);
+        if (receiptDocSnapshot.exists() && receiptDocSnapshot.data()?.host !== auth.currentUser?.uid){
+          const receiptData = receiptDocSnapshot.data() as IReceipt;
+          requestedReceipts.push(receiptData);
+        }
+      }
+  
+      return { hostReceipts, requestedReceipts };
     } catch (error) {
-      console.error("Error fetching host receipts:", error);
+
+      console.error('Error fetching receipts:', error);
+
       throw error;
     }
   };
 
+  
   const getReceiptById = async (receiptId: string): Promise<IReceipt> => {
     try {
       const receiptsColRef = collection(db, "receipts");
@@ -134,10 +149,10 @@ export const useFirestore = () => {
       );
       console.log("Receipt id", receipts.docs[0].id);
 
-      // add receipt to user's memberReceipts
+      // add receipt to user's requestedReceipts
       await updateDoc(userRef(auth.currentUser?.uid!), {
-        memberReceipts: arrayUnion(receipts.docs[0].id),
-      });
+        requestedReceipts: arrayUnion(receipts.docs[0].id)
+      })
 
       // add user to receipt's guests
       await updateDoc(doc(receiptsColRef, receipts.docs[0].id), {
@@ -164,7 +179,7 @@ export const useFirestore = () => {
         email: "",
         created: serverTimestamp(),
         hostReceipts: [],
-        memberReceipts: [receiptId],
+        requestedReceipts: [receiptId],
         hasAccount: false,
         phoneNumber: phoneNumber,
       });
@@ -180,6 +195,31 @@ export const useFirestore = () => {
       throw error;
     }
   };
+  const updateItemsPaidStatus = async (receiptId: string, itemIds: number[], isPaid: boolean) => {
+    try {
+        const receiptRef = doc(db, 'receipts', receiptId);
+        const receiptSnapshot = await getDoc(receiptRef);
+
+        if (receiptSnapshot.exists()) {
+          const receiptData = receiptSnapshot.data() as IReceipt;
+          const updatedItems = receiptData.items?.map(item => {
+            if (itemIds.includes(item.id as number)) {
+              return { ...item, paid: isPaid };
+            }
+            return item;
+          }) || [];
+
+          await updateDoc(receiptRef, {
+            items: updatedItems
+          });
+        } else {
+          console.error('Receipt not found');
+        }
+    } catch (error) {
+        console.error('Error updating items paid status:', error);
+        throw error;
+    }
+};
 
   const addExistingUserToReceipt = async (receiptId: string, uid: string) => {
     try {
@@ -193,8 +233,9 @@ export const useFirestore = () => {
       // add the receipt to the user
       const userRef = doc(db, "users", uid);
       await updateDoc(userRef, {
-        memberReceipts: arrayUnion(receiptId),
-      });
+
+        requestedReceipts: arrayUnion(receiptId)
+      })
     } catch (error) {
       console.error("Error adding existing user to receipt:", error);
       throw error;
@@ -326,11 +367,12 @@ export const useFirestore = () => {
 
   return {
     createReceipt,
-    getHostReceipts,
     addNewUserToReceipt,
     addExistingUserToReceipt,
-    joinReceipt,
+    joinReceipt, 
     getReceiptById,
+    updateItemsPaidStatus,
+    getUserReceipts,
     getFirestoreUser,
     reauthenticateUser,
     updateDisplayName,

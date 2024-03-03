@@ -6,24 +6,17 @@ import {
   View,
   TouchableOpacity 
 } from 'react-native';
-import {
-  Button,
-  Surface,
-  useTheme,
-  Text,
-  TextInput
-} from'react-native-paper';
+import { Button, Card, Text, Input } from '@ui-kitten/components';
 import { useDebounce } from 'use-debounce';
 import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore';  
 
 import { db } from '../../services/firebase'
 import * as AppConstants from '../../constants/constants';
 import { ISearchedGuest } from '../../constants/types';
-import SearchedUser from '../../components/SearchedUser';
+import SearchedGuest from '../../components/SearchedGuest';
 import { useFirestore } from '../../hooks/useFirestore';
 
 export default function AddGuestBySearchScreen({ route, navigation }) {
-  const theme = useTheme();
   const [search, setSearch] = useState("")
   const [searchQuery] = useDebounce(search, 1000)
   const usersInit: ISearchedGuest[] = []
@@ -70,46 +63,32 @@ export default function AddGuestBySearchScreen({ route, navigation }) {
         setNoUsersFoundAlert("No Users Found");
       }
     })
-  }, [searchQuery])
-
-  const handleAddMember = async (uid: string) => {
-    setLoading(true);
-    await addExistingUserToReceipt(receiptId, uid).then(() => {
-      setLoading(false);
-      navigation.goBack();
-    });
-  }
+  }, [searchQuery]);
 
   return (
     <View
-    style={[
-      styles.container,
-      { backgroundColor: theme.colors.primaryContainer },
-    ]}>
-      <TextInput
-        label={AppConstants.LABEL_SearchName}
-        placeholder={AppConstants.PLACEHOLDER_Name}
+    style={styles.container}>
+      <Text category='h4'>
+        Add Guest Via Search
+      </Text>
+      <Input
+        placeholder="Search Name"
         onChangeText={(val) => setSearch(val)}
         value={search}
-        mode="outlined"
         keyboardType="default"
+        size="large"
         style={styles.searchTextInput} />
       
       {users.length > 0 ?
         <FlatList
           data={users}
           showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => (
-            item.onReceipt ?
-              <SearchedUser  {...item} /> :
-              <TouchableOpacity onPress={() => handleAddMember(item.uid)} activeOpacity={0.75}>
-                <SearchedUser  {...item} />
-              </TouchableOpacity>
-            )
+          renderItem={({ item }) =>
+            <SearchedGuest  item={item} receiptId={receiptId} navigation={navigation} />
           }
           style={styles.flatList}
         /> :
-        <Text variant="titleMedium" style={styles.noMatchText}>{noUsersFoundAlert}</Text>
+        <Text category="s1" style={styles.noMatchText}>{noUsersFoundAlert}</Text>
       }
     </View>
   )
@@ -120,19 +99,18 @@ const { width } = Dimensions.get("screen");
 const styles = StyleSheet.create({
   flatList: {
     width: width * 0.85,
-    marginTop: width * 0.075,
+    marginTop: width * 0.075
   },
   searchTextInput: {
     width: width * 0.85,
-    marginTop: width * 0.075
+    marginTop: 35
   },
   noMatchText: {
     marginTop: 20
   },  
   container: {
     flex: 1,
-    justifyContent: "space-between",
     alignItems: "center",
-    padding: 1,
+    padding: 40
   },
 });

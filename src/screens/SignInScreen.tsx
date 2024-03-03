@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import {
-  Button,
-  Surface,
-  TextInput,
   useTheme,
   Snackbar,
-  Text,
   ActivityIndicator,
 } from "react-native-paper";
+import {
+  Button,
+  Card,
+  Input,
+  Text
+} from "@ui-kitten/components"
 import { StyleSheet, Dimensions, StatusBar } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import * as Animatable from "react-native-animatable";
@@ -102,8 +104,8 @@ export default function SignInScreen({ navigation }) {
         style={[styles.contentContainer]}
         animation="fadeInUpBig"
       >
-        <Surface style={styles.surface} elevation={1}>
-          <Text variant="headlineSmall" style={{ textAlign: "center" }}>
+        <Card style={styles.card}>
+          <Text category="h3" style={styles.title}>
             {AppConstants.TITLE_Login}
           </Text>
           <Controller
@@ -113,8 +115,7 @@ export default function SignInScreen({ navigation }) {
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <>
-              <TextInput
-                label={AppConstants.LABEL_EmailAddress}
+              <Input
                 onBlur={onBlur}
                 onChangeText={async Text => {
                   onChange(Text);
@@ -122,7 +123,6 @@ export default function SignInScreen({ navigation }) {
                   setValidEmail(await validateEmail(Text));
                 }}
                 value={value}
-                mode="outlined"
                 placeholder="Email Address"
                 textContentType="emailAddress"
                 style={styles.textInput}
@@ -144,9 +144,7 @@ export default function SignInScreen({ navigation }) {
               required: true,
             }}
             render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                label={AppConstants.LABEL_Password}
-                mode="outlined"
+              <Input
                 placeholder="Password"
                 onBlur={onBlur}
                 onChangeText={onChange}
@@ -165,42 +163,38 @@ export default function SignInScreen({ navigation }) {
           )}
           <>
           <Button
-              mode="text"
-              compact
+              appearance="ghost"
+              size="small"
               onPress={() => navigation.navigate("ResetPassword")}
-              style={{alignSelf: 'flex-end'}}
+              style={styles.resetPassword}
             >
               Forgot Password?
             </Button>
             <Button
-              mode="contained"
-              compact
               onPress={handleSubmit(onSubmit)}
               disabled={numAttempts > 2}
               style={styles.button}
-              loading={loading}
             >
-              Submit
+              Login
             </Button>
             <Text style={{ color: theme.colors.error }}>
               {numAttempts > 2 ? AppConstants.ERROR_TooManyAttempts : ""}
             </Text>
           </>
           <Button
-            mode="text"
-            compact
+            appearance="outline"
             onPress={() => navigation.navigate("SignUp")}
             style={styles.button}
-            loading={loading}
           >
             {AppConstants.LABEL_NotAUser}
           </Button>
           <ActivityIndicator
             animating={loading}
+            size="small"
+            style={styles.spinner}
             color={theme.colors.onPrimaryContainer}
-            size="large"
           />
-        </Surface>
+        </Card>
       </Animatable.View>
       <Snackbar
         visible={showSnack}
@@ -219,31 +213,40 @@ export default function SignInScreen({ navigation }) {
 }
 
 const { height } = Dimensions.get("screen");
-const container_height = height * 0.45;
+// const container_height = height * 0.45;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 10,
-    paddingVertical: 60,
+    paddingVertical: 100,
     flexDirection: "column",
     justifyContent: "flex-start",
   },
   contentContainer: {
     marginHorizontal: 10,
-    height: container_height,
   },
-  surface: {
+  card: {
     paddingTop: 30,
     justifyContent: "flex-start",
     paddingHorizontal: 20,
     borderRadius: 35,
-    height: container_height,
   },
   button: {
-    marginVertical: 10,
+    marginVertical: 2
   },
   textInput: {
-    marginVertical: 10,
+    marginVertical: 2,
   },
+  title: {
+    textAlign: "center",
+    marginBottom: 35
+  },
+  resetPassword: {
+    alignSelf: "flex-end",
+    marginBottom: 20
+  },
+  spinner: {
+    marginTop: 10
+  }
 });

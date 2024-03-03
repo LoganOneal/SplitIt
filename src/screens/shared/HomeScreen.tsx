@@ -1,47 +1,43 @@
 import { StyleSheet, View } from "react-native";
-import { Button } from "react-native-paper";
 import React from "react";
-import { useTheme, Text } from "react-native-paper";
+import { Text, Button, useTheme, ThemeProvider, Card } from "@ui-kitten/components";
 import { useAppSelector } from "../../store/hook";
 import { selectAuthState } from "../../store/authSlice";
+import { teal100 } from "react-native-paper/lib/typescript/styles/themes/v2/colors";
 
 const HomeScreen = ({navigation}:any) => {
   const theme = useTheme();
   const authState = useAppSelector(selectAuthState);
   return (
-    <>
+    <ThemeProvider theme={theme}>
       <View
         style={[
           styles.container,
-          { backgroundColor: theme.colors.primaryContainer },
         ]}
       >
-        <Text variant="headlineLarge">
-          Welcome {authState?.userName ?? "Guest"}
-        </Text>
-        <Text
-          style={{ color: theme.colors.onPrimaryContainer }}
-          variant="titleLarge"
-        >
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Praesentium,
-          eum placeat quibusdam voluptate mollitia aliquam error est magnam
-          neque fugiat magni consequuntur nesciunt. Voluptas provident harum
-          saepe laudantium vero officia.
-        </Text>
-        <Text
-          style={{ color: theme.colors.onPrimaryContainer }}
-          variant="titleLarge"
-        >
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae, non?
-        </Text>
-        <Button
-          mode="contained"
-          onPress={() => navigation.navigate("BottomNavigator")} 
-        >
-          Continue
-        </Button>
+        <Card style={styles.card}>
+          <Text category="h3" style={styles.welcome}>
+            Welcome,
+          </Text>
+          <Text category="h3" style={styles.welcome}>
+            {authState?.userName ?? "Guest"}!
+          </Text>
+          <Text category="p1" style={styles.description}>
+            Upload, share, and split receipts
+            {"\n"}
+            across various payment platforms
+            {"\n"}
+            in just a few easy steps.
+          </Text>
+          <Button
+            style={styles.button}
+            onPress={() => navigation.navigate("Receipts")} 
+          >
+            CONTINUE
+          </Button>
+        </Card>
       </View>
-    </>
+    </ThemeProvider>
   );
 };
 
@@ -50,8 +46,23 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "space-between",
     alignItems: "center",
-    padding: 15,
+    padding: 40,
   },
+  button: {
+    marginTop: 50,
+    width: "100%"
+  },
+  welcome: {
+    // fontWeight: 500
+    alignSelf: "center",
+  },
+  description: {
+    marginTop: 50,
+    textAlign: "center"
+  },
+  card: {
+    borderRadius: 35,
+    paddingVertical: 30,
+  }
 });

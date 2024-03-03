@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { StyleSheet } from "react-native";
-import { Button, Surface, Text, TextInput, useTheme } from "react-native-paper";
+import { useTheme } from "react-native-paper";
+import { Card, Button, Input, Text } from "@ui-kitten/components";
 import * as AppConstants from "../constants/constants";
 import { useAuth } from "../hooks/useAuth";
 import { useValidation } from "../hooks/useValidation";
@@ -63,15 +64,15 @@ const ResetPasswordRequestForm: React.FC<{
   }, [userNotFound, emailAddress]);
 
   return (
-    <Surface style={styles.surface} elevation={1}>
+    <Card style={styles.card}>
       {emailSent ? (
         <>
-          <Text variant="headlineSmall" style={{ textAlign: "center" }}>
+          <Text category="h3" style={styles.title}>
             Email Sent!
           </Text>
           <Text
-            variant="bodySmall"
-            style={{ textAlign: "center", marginVertical: 10 }}
+            category="p1"
+            style={styles.directions}
           >
             An email has been sent to the provided address. Please check your
             inbox and click the link to continue.
@@ -82,21 +83,16 @@ const ResetPasswordRequestForm: React.FC<{
                 {AppConstants.ERROR_TooManyRequests}
               </Text>
               <Button
-                mode="text"
-                compact
                 onPress={() => navigation.navigate("SignIn")}
                 style={styles.button}
-                loading={loading}
               >
                 Back to Sign In
               </Button>
             </>
           ) : (
             <Button
-              mode="contained"
               onPress={handleSubmit(onSubmit)}
-              style={styles.button}
-              loading={loading}
+              style={styles.resendButton}
             >
               Didn't get the email? Resend
             </Button>
@@ -104,12 +100,12 @@ const ResetPasswordRequestForm: React.FC<{
         </>
       ) : (
         <>
-          <Text variant="headlineSmall" style={{ textAlign: "center" }}>
+          <Text category="h3" style={styles.title}>
             Reset Password
           </Text>
           <Text
-            variant="bodySmall"
-            style={{ textAlign: "center", marginVertical: 10 }}
+            category="p1"
+            style={styles.directions}
           >
             Enter the email address associated with your account. You will be
             sent an email with instructions on how to reset your password.
@@ -125,22 +121,20 @@ const ResetPasswordRequestForm: React.FC<{
               },
             }}
             render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                label={AppConstants.LABEL_EmailAddress}
+              <Input
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
-                mode="outlined"
                 placeholder="Email Address"
                 textContentType="emailAddress"
-                right={
-                  watch("emailAddress") &&
-                  (validateEmail(value) ? (
-                    <TextInput.Icon icon="check" color="green" />
-                  ) : (
-                    <TextInput.Icon icon="close" color={theme.colors.error} />
-                  ))
-                }
+                // accessoryRight={
+                //   watch("emailAddress") &&
+                //   (validateEmail(value) ? (
+                //     <TextInput.Icon icon="check" color="green" />
+                //   ) : (
+                //     <TextInput.Icon icon="close" color={theme.colors.error} />
+                //   ))
+                // }
                 style={styles.textInput}
               />
             )}
@@ -168,30 +162,26 @@ const ResetPasswordRequestForm: React.FC<{
             </Text>
           )}
           <Button
-            mode="contained"
             onPress={handleSubmit(onSubmit)}
             style={styles.button}
-            loading={loading}
           >
             Reset Password
           </Button>
           <Button
-            mode="text"
-            compact
+            appearance="ghost"
             onPress={() => navigation.navigate("SignIn")}
             style={styles.button}
-            loading={loading}
           >
             Back to Sign In
           </Button>
         </>
       )}
-    </Surface>
+    </Card>
   );
 };
 
 const styles = StyleSheet.create({
-  surface: {
+  card: {
     paddingTop: 30,
     justifyContent: "center",
     paddingHorizontal: 20,
@@ -200,9 +190,21 @@ const styles = StyleSheet.create({
   button: {
     marginVertical: 10,
   },
+  resendButton: {
+    marginTop: 10,
+    marginBottom: 20
+  },
   textInput: {
     marginVertical: 10,
   },
+  title: {
+    textAlign: "center",
+    marginBottom: 35
+  },
+  directions: {
+    textAlign: "center",
+    marginBottom: 35
+  }
 });
 
 export default ResetPasswordRequestForm;

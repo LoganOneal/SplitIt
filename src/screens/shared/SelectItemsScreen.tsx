@@ -7,6 +7,9 @@ import { Button, Icon, IconElement, Layout, Card } from '@ui-kitten/components';
 import { useAppDispatch } from "../../store/hook";
 import { IReceipt, IReceiptItem } from '../../constants/types';
 import ItemCard from '../../components/ItemCard';
+import { useAppSelector } from "../../store/hook";
+import { selectAuthState } from "../../store/authSlice";
+import {auth} from "../../services/firebase";
 import { set } from 'react-hook-form';
 
 const PlusIcon = (props): IconElement => (
@@ -15,10 +18,11 @@ const PlusIcon = (props): IconElement => (
         name='plus'
     />
 );
+
 const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }): React.ReactElement => {
     const { receiptId } = route.params;
-
-    const { getReceiptById } = useFirestore();
+    const authState = useAppSelector(selectAuthState);
+    const { getReceiptById, updateItemsPaidStatus } = useFirestore();
     const [items, setItems] = useState<IReceiptItem[] | undefined>([]);
     const [receipt, setReceipt] = useState<IReceipt | undefined>(undefined);
     const [selectedItems, setSelectedItems] = useState<IReceiptItem[]>([]);
@@ -28,7 +32,8 @@ const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }
         const fetchReceipts = async () => {
             try {
                 const receipt = await getReceiptById(receiptId);
-
+                console.log("Host:", receipt.host)
+                console.log("Guess:", auth.currentUser?.uid!);
                 // setItems(receipt.items);
                 setReceipt(receipt);
                 console.log("Receipt Items:", receipt.items)
@@ -41,7 +46,7 @@ const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }
 
     // update total price on item select change 
     useEffect(() => {
-        const total = selectedItems.reduce((acc, item) => acc + item.price, 0);
+        const total = selectedItems.reduce((acc, item) => acc + (item.price ?? 0), 0);
         setIndividualTotal(total);
     }, [selectedItems]);
 
@@ -52,6 +57,37 @@ const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }
             setSelectedItems([...selectedItems, item]);
         }
     }
+    const handleCheckout = async () => {
+        //if host is selecting items
+        if(receipt && receipt.host === auth.currentUser?.uid){
+            if (authState.userName && selectedItems.length > 0) {
+                const itemIds = selectedItems.map(item => item.id); 
+                try {
+                    const filteredItemIds = itemIds.filter(id => typeof id === 'number') as number[];
+                    await updateItemsPaidStatus(receiptId, filteredItemIds, true); 
+                    
+                    const updatedItems = items?.map(item => {
+                        if (filteredItemIds.includes(item.id as number)) {
+                            return { ...item, paid: true };
+                        }
+                        return item;
+                    });
+                    setItems(updatedItems);
+                    setSelectedItems([]); 
+
+                    console.log('Checkout successful');
+                } catch (error) {
+                    console.error('Checkout failed:', error);
+                }
+            } else {
+                console.log('No items selected or user not authenticated');
+            }
+        }else{
+            console.log("go to cehckout guest")
+            //checking payment for guest then mark paid
+            navigation.navigate('GuestCheckout', { receiptId: receiptId, total: individualTotal });
+        }
+    };
 
     return (
         <View style={styles.container}>
@@ -69,7 +105,7 @@ const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }
                     </View>
                 </Card>
                 <FlatList
-                    data={receipt?.items}
+                    data={receipt?.items?.filter(item => !item.paid) ?? []}
                     showsVerticalScrollIndicator={false}
                     keyExtractor={(item) => `${item?.id}`}
                     style={{ paddingHorizontal: 12 }}
@@ -102,7 +138,7 @@ const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }
                         </View>
                         <Button
                             style={styles.button}
-                            onPress={() => console.log('Checkout', selectedItems)}
+                            onPress={handleCheckout}
                         >
                             Checkout
                         </Button>

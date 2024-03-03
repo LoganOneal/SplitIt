@@ -177,54 +177,13 @@ export const useAuth = () => {
   const getProfile = (): IFirebaseUser | void => {
     const user = auth.currentUser;
     user?.providerData.forEach((profile) => {
-      const fbProfile: IFirebaseUser = { ...profile, firebaseUID: user.uid };
+      const fbProfile: IFirebaseUser = {
+        ...profile, firebaseUID: user.uid,
+        venmoName: null
+      };
       console.log("getProfile SUCCESS");
       return fbProfile;
     });
-  };
-
-  const getUserProfile = (): IFirebaseUser | null => {
-    const user = auth.currentUser;
-    if (user) {
-      const profile = user.providerData.map((profile) => ({
-        ...profile,
-        firebaseUID: user.uid,
-      }));
-      console.log("getProfile SUCCESS:", profile);
-      return profile[0]; // Assuming there's only one provider
-    } else {
-      console.log("No user signed in.");
-      return null;
-    }
-  };
-
-  const updateDisplayName = async (newDisplayName: string) => {
-    const user = auth.currentUser;
-    if (user) {
-      await updateProfile(user, {
-        displayName: newDisplayName,
-      })
-        .then(() => {
-          console.log("Display Name updated successfully");
-        })
-        .catch((error) => {
-          console.error("Error updating display name:", error);
-        });
-    }
-  }
-
-  // Function to change email address
-  const updateEmailAddress = async (newEmail: string) => {
-    const user = auth.currentUser;
-    if (user) {
-      await updateEmail(user, newEmail)
-        .then(() => {
-          console.log("Email updated successfully");
-        })
-        .catch((error) => {
-          console.error("Error updating email:", error);
-        });
-    }
   };
 
   return {
@@ -235,8 +194,5 @@ export const useAuth = () => {
     verifyResetPasswordCode,
     confirmUserResetPassword,
     getProfile,
-    getUserProfile,
-    updateDisplayName,
-    updateEmailAddress,
   };
 };

@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { View, Text, ScrollView, StyleSheet } from "react-native";
-import { Button } from "react-native-paper";
+import { View, ScrollView, Alert, StyleSheet } from "react-native";
 import * as AppConstants from "../../constants/constants";
-import { TextInput, useTheme } from "react-native-paper";
+import { Text, Button, useTheme, TextInput } from "react-native-paper";
 import PasswordRequirements from "../../components/PasswordRequirements";
 import { useValidation } from "../../hooks/useValidation";
-import { EmailAuthProvider, reauthenticateWithCredential, updatePassword } from "firebase/auth";
+import { updatePassword } from "firebase/auth";
 import { auth } from "../../services/firebase";
+import { useFirestore } from "../../hooks/useFirestore";
 
 type EditProfilePasswordData = {
   password: string;
@@ -15,22 +15,20 @@ type EditProfilePasswordData = {
   confirmNewPassword: string;
 };
 
-// TODO: Clean up code, add error for incorrect password entered
-const EditProfilePasswordScreen = () => {
+const EditProfilePasswordScreen = ({ navigation }: { navigation: any }) => {
   const {
     control,
-    watch,
-    formState: { errors },
+    watch
   } = useForm<EditProfilePasswordData>();
   const theme = useTheme();
-
+  const { reauthenticateUser } = useFirestore();
+  const { validatePassword } = useValidation();
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [isPasswordValid, setIsPasswordValid] = useState(true);
   const [passwordsMatch, setPasswordsMatch] = useState(true);
-
-  const { validatePassword } = useValidation();
+  const [passwordError, setPasswordError] = useState("");
 
   const handlePasswordChange = (text: string) => {
     setPassword(text);
@@ -46,27 +44,32 @@ const EditProfilePasswordScreen = () => {
   const handleConfirmNewPasswordChange = (text: string) => {
     setConfirmNewPassword(text);
     setPasswordsMatch(text === newPassword);
-  }
+  };
 
-const handleSave = async () => {
+  const handleSave = async () => {
     console.log("Current Password: ", password);
     console.log("New password: ", newPassword);
-    
+    const user = auth.currentUser;
     try {
-        const user = auth.currentUser;
-        if (user) {
-            const credential = EmailAuthProvider.credential(user.email ?? "", password);
-            const authenticated = await reauthenticateWithCredential(user, credential);
-            if (authenticated) {
-                console.log("User authenticated");
-                await updatePassword(user, newPassword);
-                console.log("Password updated");
-            }
-        }
+      if (user) {
+        await reauthenticateUser(password);
+        await updatePassword(user, newPassword).then(() => {
+          console.log("Password updated successfully");
+        });
+        setPasswordError("");
+        Alert.alert("Success", "Password updated successfully.", [
+          {
+            text: "OK",
+            onPress: () => {
+              navigation.goBack();
+            },
+          },
+        ]);
+      }
     } catch (error) {
-        console.error("Error reauthenticating user:", error);
+      setPasswordError(error.message);
     }
-}
+  };
 
   return (
     <ScrollView>
@@ -76,7 +79,7 @@ const handleSave = async () => {
         </View>
         <View style={styles.rowWrapper}>
           <View style={styles.row}>
-            <View style={[styles.inputContainer, styles.rowValueContainer]}>
+            <View style={styles.rowValueContainer}>
               <Controller
                 control={control}
                 rules={{
@@ -104,11 +107,14 @@ const handleSave = async () => {
               />
             </View>
           </View>
+          {passwordError && (
+            <Text style={styles.errorText}>{passwordError}</Text>
+          )}
         </View>
         <View style={styles.row} />
         <View style={styles.rowWrapper}>
           <View style={styles.row}>
-            <View style={[styles.inputContainer, styles.rowValueContainer]}>
+            <View style={styles.rowValueContainer}>
               <Controller
                 control={control}
                 rules={{
@@ -125,7 +131,7 @@ const handleSave = async () => {
                     <TextInput
                       label={AppConstants.LABEL_NewPassword}
                       mode="outlined"
-                      placeholder="Password"
+                      placeholder="New Password"
                       onBlur={onBlur}
                       onChangeText={(text) => {
                         onChange(text);
@@ -156,13 +162,16 @@ const handleSave = async () => {
           </View>
         </View>
         {!isPasswordValid && (
-        <View style={styles.passwordRequirements}>
-          <PasswordRequirements password={newPassword} show={isPasswordValid} />
-        </View>
+          <View style={styles.passwordRequirements}>
+            <PasswordRequirements
+              password={newPassword}
+              show={isPasswordValid}
+            />
+          </View>
         )}
         <View style={styles.rowWrapper}>
           <View style={styles.row}>
-            <View style={[styles.inputContainer, styles.rowValueContainer]}>
+            <View style={styles.rowValueContainer}>
               <Controller
                 control={control}
                 rules={{
@@ -210,6 +219,7 @@ const handleSave = async () => {
         <Button
           icon="content-save"
           mode="contained-tonal"
+          style={{ margin: 24 }}
           onPress={handleSave}
           disabled={!passwordsMatch}
         >
@@ -229,9 +239,6 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     flexShrink: 1,
     flexBasis: 0,
-  },
-  textInput: {
-    marginVertical: 10,
   },
   header: {
     paddingLeft: 24,
@@ -255,26 +262,40 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
     paddingTop: 12,
   },
-  passwordRequirements: {
+  rowLabel: {
+    fontSize: 17,
+    fontWeight: "500",
+    paddingBottom: 10,
     paddingLeft: 24,
-    paddingBottom: 12,
-},
-  inputContainer: {
-    borderWidth: 1,
-    borderColor: "#cccccc",
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-  },
-  rowValueContainer: {
-    flexGrow: 1,
-    flexDirection: "row",
-    alignItems: "center",
+    paddingRight: 24,
+    color: "#000",
   },
   rowValue: {
     fontSize: 17,
     fontWeight: "500",
-    color: "#8B8B8B",
+    borderColor: "#cccccc",
     flex: 1,
+  },
+  errorText: {
+    fontSize: 12,
+    fontWeight: "500",
+    color: "red",
+    marginLeft: 24,
+    marginRight: 24,
+  },
+
+  rowValueContainer: {
+    flexGrow: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    paddingRight: 24,
+    paddingLeft: 24,
+  },
+
+  passwordRequirements: {
+    marginLeft: 24,
+    marginRight: 24,
+    paddingBottom: 12,
   },
 });

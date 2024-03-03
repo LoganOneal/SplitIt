@@ -8,6 +8,7 @@ import {
   sendPasswordResetEmail,
   verifyPasswordResetCode,
   confirmPasswordReset,
+  updateEmail,
 } from "firebase/auth";
 import {
   IFirebaseUser,
@@ -176,7 +177,10 @@ export const useAuth = () => {
   const getProfile = (): IFirebaseUser | void => {
     const user = auth.currentUser;
     user?.providerData.forEach((profile) => {
-      const fbProfile: IFirebaseUser = { ...profile, firebaseUID: user.uid };
+      const fbProfile: IFirebaseUser = {
+        ...profile, firebaseUID: user.uid,
+        venmoName: null
+      };
       console.log("getProfile SUCCESS");
       return fbProfile;
     });

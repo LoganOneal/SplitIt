@@ -17,6 +17,16 @@ export const useValidation = () =>  {
     const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+{}[\]:;<>,.?~\\-]).{8,}$/;
     return regex.test(password);
   }
+
+  const validateName = (name: string) => {
+    const regex = /^[A-Za-z]+$/i;
+    return regex.test(name);
+  }
+
+  const validatePhoneNumber = (phoneNumber: string) => {
+    const regex = /^\d{10}$/;
+    return regex.test(phoneNumber);
+  }
     
-  return { validateEmail, validatePassword}
+  return { validateEmail, validatePassword, validateName, validatePhoneNumber}
 };

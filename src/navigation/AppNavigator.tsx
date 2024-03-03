@@ -5,6 +5,7 @@ import PublicStack from "./PublicStack";
 import { useAppSelector } from "../store/hook";
 import { selectAuthState } from "../store/authSlice";
 import * as Linking from 'expo-linking';
+import DrawerNavigator from "./DrawerNavigator";
 
 /* Deep Linking Configuration
   - Can specify which screens to navigate to based on the deep link URL
@@ -26,7 +27,7 @@ const AppNavigator = (theme: Theme) => {
   return (
     // TODO - Pass theme prop into NavigationContainer
     <NavigationContainer linking={linking}>
-      {authState?.isLoggedIn ? <HomeStack /> : <PublicStack />}
+      {authState?.isLoggedIn ? <DrawerNavigator /> : <PublicStack />}
     </NavigationContainer>
   );
 };

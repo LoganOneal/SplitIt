@@ -10,6 +10,10 @@ import AddGuestBySearchScreen from "../screens/host/AddGuestBySearchScreen";
 import CreateReceipt from "../screens/host/CreateReceipt";
 import JoinReceiptScreen from "../screens/guest/JoinReceiptScreen";
 import SelectItemsScreen from "../screens/shared/SelectItemsScreen";
+import SettingsScreen from "../screens/shared/SettingsScreen";
+import EditProfileScreen from "../screens/shared/EditProfileScreen";
+import EditProfilePasswordScreen from "../screens/shared/EditProfilePasswordScreen";
+import EditPaymentSettingsScreen from "../screens/shared/EditPaymentSettingsScreen";
 import MyReceiptsScreen from "../screens/shared/MyReceiptsScreen";
 import RequestScreen from "../screens/RequestScreen";
 import { Portal, FAB } from 'react-native-paper';
@@ -17,6 +21,7 @@ import { useIsFocused } from '@react-navigation/native';
 import { useState } from 'react';
 import {useNavigation} from '@react-navigation/native';
 import CheckoutScreen from "../screens/guest/CheckoutScreen";
+
 const Stack = createNativeStackNavigator();
 
 export default function HomeStack() {
@@ -45,6 +50,10 @@ export default function HomeStack() {
         }}
       >
         <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Settings" component={SettingsScreen} />
+        <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+        <Stack.Screen name="EditProfilePassword" component={EditProfilePasswordScreen} />
+        <Stack.Screen name="EditPaymentSettings" component={EditPaymentSettingsScreen} />
         <Stack.Screen name="Receipts" component={MyReceiptsScreen} />
         <Stack.Screen name="Request" component={RequestScreen} />
         <Stack.Screen name="Upload Receipt" component={Scanner} />

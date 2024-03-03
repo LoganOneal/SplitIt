@@ -1,25 +1,13 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  TextInput,
-  ScrollView,
-  Image,
-  TouchableOpacity,
-  Alert,
-} from "react-native";
-import { Text, Button } from "react-native-paper";
-import { StyleSheet } from "react-native";
-import { useAuth } from "../../hooks/useAuth";
+import { View, ScrollView, Alert, StyleSheet } from "react-native";
+import { Text, Button, TextInput } from "react-native-paper";
 import { IFirebaseUser } from "../../interfaces/IAuthentication";
 import { useFirestore } from "../../hooks/useFirestore";
 import { useValidation } from "../../hooks/useValidation";
 import { selectAuthState, userProfileUpdated } from "../../store/authSlice";
 import { useAppDispatch, useAppSelector } from "../../store/hook";
-import * as ImagePicker from "expo-image-picker";
-import { auth } from "../../services/firebase";
-import { updateProfile } from "@firebase/auth";
+import ReauthenticateModal from "../../components/ReauthenticationModal";
 
-// TODO: Clean up code, add error checks
 const EditProfileScreen = ({
   route,
   navigation,
@@ -28,26 +16,20 @@ const EditProfileScreen = ({
   navigation: any;
 }) => {
   const { profile } = route.params;
-  const { updateDisplayName, updateEmailAddress } = useAuth();
-  const {
-    updateDisplayNameFirestore,
-    updateEmailAddressFirestore,
-    updatePhoneNumberFirestore,
-  } = useFirestore();
+  const { updateDisplayName, updateEmailAddress, updatePhoneNumber } =
+    useFirestore();
   const { validateName, validateEmail, validatePhoneNumber } = useValidation();
+  const dispatch = useAppDispatch();
+  const authState = useAppSelector(selectAuthState);
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [editingDisplayName, setEditingDisplayName] = useState(false);
-  const [editingEmail, setEditingEmail] = useState(false);
-  const [editingPhoneNumber, setEditingPhoneNumber] = useState(false);
-  const dispatch = useAppDispatch();
-  const authState = useAppSelector(selectAuthState);
   const [nameError, setNameError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [phoneError, setPhoneError] = useState("");
+  const [reauthModalVisible, setReauthModalVisible] = useState(false);
 
-  function handleSave(profile: IFirebaseUser) {
+  const handleSave = async (profile: IFirebaseUser) => {
     let updatedUserInfo = {
       userName: profile.displayName,
       userEmail: profile.email,
@@ -59,7 +41,9 @@ const EditProfileScreen = ({
       darkMode: false,
       userToken: authState.userToken,
     };
+    setReauthModalVisible(false);
 
+    // Update Display Name
     if (
       displayName != profile.displayName &&
       displayName != "" &&
@@ -67,29 +51,48 @@ const EditProfileScreen = ({
     ) {
       if (validateName(displayName)) {
         console.log("Updating Display Name");
-        updateDisplayNameFirestore(displayName);
-        updateDisplayName(displayName);
-        updatedUserInfo.userName = displayName;
-        setNameError("");
+
+        try {
+          await updateDisplayName(displayName);
+          updatedUserInfo.userName = displayName;
+          setNameError("");
+        } catch (error) {
+          console.error("Error updating display name:", error);
+          setNameError("Error updating display name.. Please try again");
+          return;
+        }
       } else {
         setNameError("Invalid Display Name");
         return;
       }
     }
 
+    // Update Email
     if (email != profile.email && email != "" && email != null) {
+        
       if (validateEmail(email)) {
         console.log("Updating Email Address");
-        updateEmailAddressFirestore(email);
-        updateEmailAddress(email);
-        updatedUserInfo.userEmail = email;
-        setEmailError("");
+
+        try {
+          await updateEmailAddress(email);
+          updatedUserInfo.userEmail = email;
+          setEmailError("");
+        } catch (error) {
+          console.error("Error updating email:", error);
+          if (error == "auth/requires-recent-login") {
+            setEmailError("Please reauthenticate to update email");
+            setReauthModalVisible(true);
+            return;
+          }
+          return;
+        }
       } else {
         setEmailError("Invalid Email Address");
         return;
       }
     }
 
+    // Update phone number
     if (
       phoneNumber != profile.phoneNumber &&
       phoneNumber != "" &&
@@ -97,18 +100,32 @@ const EditProfileScreen = ({
     ) {
       if (validatePhoneNumber(phoneNumber)) {
         console.log("Updating Phone Number");
-        updatePhoneNumberFirestore(phoneNumber);
-        updatedUserInfo.phoneNumber = phoneNumber;
-        setPhoneError("");
+
+        try {
+          await updatePhoneNumber(phoneNumber);
+          updatedUserInfo.phoneNumber = phoneNumber;
+          setPhoneError("");
+        } catch (error) {
+          console.error("Error updating phone number:", error);
+          setPhoneError("Error updating phone number.. Please try again");
+          return;
+        }
       } else {
         setPhoneError("Invalid Phone Number");
         return;
       }
     }
-
+    // Update state, show success message
     dispatch(userProfileUpdated(updatedUserInfo));
-    navigation.goBack();
-  }
+    Alert.alert("Success", "Profile updated successfully.", [
+      {
+        text: "OK",
+        onPress: () => {
+          navigation.goBack();
+        },
+      },
+    ]);
+  };
 
   return (
     <>
@@ -118,62 +135,54 @@ const EditProfileScreen = ({
             <Text style={styles.title}>Edit Profile</Text>
           </View>
           <View style={styles.rowWrapper}>
+            <Text style={styles.rowLabel}>Display Name</Text>
             <View style={styles.row}>
-              <Text style={styles.rowLabel}>Display Name</Text>
-              <View style={styles.rowSpacer} />
-              {editingDisplayName ? (
+              <View style={styles.rowValueContainer}>
                 <TextInput
                   style={styles.rowValue}
+                  mode="outlined"
                   value={displayName}
                   onChangeText={setDisplayName}
-                  autoFocus={true}
                   placeholder={profile?.displayName || "Enter Display Name"}
                 />
-              ) : (
-                <TouchableOpacity onPress={() => setEditingDisplayName(true)}>
-                  <Text style={styles.rowValue}>{profile?.displayName}</Text>
-                </TouchableOpacity>
-              )}
+              </View>
+            </View>
+            <View>
+              <Text style={styles.errorText}>{nameError}</Text>
             </View>
           </View>
           <View style={styles.rowWrapper}>
+            <Text style={styles.rowLabel}>Email Address</Text>
             <View style={styles.row}>
-              <Text style={styles.rowLabel}>Email Address</Text>
-              <View style={styles.rowSpacer} />
-              {editingEmail ? (
+              <View style={styles.rowValueContainer}>
                 <TextInput
                   style={styles.rowValue}
+                  mode="outlined"
                   value={email}
                   onChangeText={setEmail}
-                  autoFocus={true}
                   placeholder={profile?.email || "Enter Email Address"}
                 />
-              ) : (
-                <TouchableOpacity onPress={() => setEditingEmail(true)}>
-                  <Text style={styles.rowValue}>{profile?.email}</Text>
-                </TouchableOpacity>
-              )}
+              </View>
+            </View>
+            <View>
+              <Text style={styles.errorText}>{emailError}</Text>
             </View>
           </View>
           <View style={styles.rowWrapper}>
+            <Text style={styles.rowLabel}>Phone Number</Text>
             <View style={styles.row}>
-              <Text style={styles.rowLabel}>Phone Number</Text>
-              <View style={styles.rowSpacer} />
-              {editingPhoneNumber ? (
+              <View style={styles.rowValueContainer}>
                 <TextInput
                   style={styles.rowValue}
+                  mode="outlined"
                   value={phoneNumber}
                   onChangeText={setPhoneNumber}
-                  autoFocus={true}
                   placeholder={profile?.phoneNumber || "Enter Phone Number"}
                 />
-              ) : (
-                <TouchableOpacity onPress={() => setEditingPhoneNumber(true)}>
-                  <Text style={styles.rowValue}>
-                    {profile?.phoneNumber || "Enter Phone Number"}
-                  </Text>
-                </TouchableOpacity>
-              )}
+              </View>
+            </View>
+            <View>
+              <Text style={styles.errorText}>{phoneError}</Text>
             </View>
           </View>
 
@@ -181,15 +190,17 @@ const EditProfileScreen = ({
             <Button
               icon="content-save"
               mode="contained-tonal"
+              style={{ margin: 24 }}
               onPress={() => handleSave(profile)}
             >
               Save
             </Button>
-          </View>
-          <View>
-            <Text style={styles.errorText}>{nameError}</Text>
-            <Text style={styles.errorText}>{emailError}</Text>
-            <Text style={styles.errorText}>{phoneError}</Text>
+            <ReauthenticateModal
+              isVisible={reauthModalVisible}
+              closeModal={() => setReauthModalVisible(false)}
+              onSuccess={() => {
+                setReauthModalVisible(false);
+              }} />
           </View>
         </View>
       </ScrollView>
@@ -218,85 +229,9 @@ const styles = StyleSheet.create({
     color: "#1d1d1d",
     marginBottom: 6,
   },
-  subtitle: {
-    fontSize: 15,
-    fontWeight: "500",
-    color: "#929292",
-  },
-  contentFooter: {
-    marginTop: 24,
-    fontSize: 13,
-    fontWeight: "500",
-    color: "#929292",
-    textAlign: "center",
-  },
-  /** Profile */
-  profile: {
-    padding: 16,
-    flexDirection: "column",
-    alignItems: "center",
-    backgroundColor: "#fff",
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: "#e3e3e3",
-  },
-  profileAvatar: {
-    width: 120, // Adjust width to make the image larger
-    height: 120, // Adjust height to make the image larger
-    borderRadius: 9999,
-  },
-  profileName: {
-    marginTop: 12,
-    fontSize: 20,
-    fontWeight: "600",
-    color: "#090909",
-  },
-  profileEmail: {
-    marginTop: 6,
-    fontSize: 16,
-    fontWeight: "400",
-    color: "#848484",
-  },
-  profileAction: {
-    marginTop: 12,
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 12,
-  },
-  profileActionText: {
-    marginRight: 8,
-    fontSize: 15,
-    fontWeight: "600",
-    color: "#fff",
-  },
-  /** Section */
-  section: {
-    paddingTop: 12,
-  },
-  sectionTitle: {
-    marginVertical: 8,
-    marginHorizontal: 24,
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#a7a7a7",
-    textTransform: "uppercase",
-    justifyContent: "center",
-    letterSpacing: 1.2,
-  },
-  sectionBody: {
-    paddingLeft: 24,
-    backgroundColor: "#fff",
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: "#e3e3e3",
-  },
-  /** Row */
   row: {
     alignItems: "center",
-    justifyContent: "flex-end", // Adjust to "flex-end" to align contents to the right
+    justifyContent: "flex-end",
     height: 50,
   },
   rowWrapper: {
@@ -305,47 +240,34 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
     paddingTop: 12,
   },
-  rowFirst: {
-    borderTopWidth: 0,
-  },
-  rowIcon: {
-    width: 30,
-    height: 30,
-    borderRadius: 4,
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 12,
-  },
   rowLabel: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: "500",
+    paddingBottom: 10,
+    paddingLeft: 24,
+    paddingRight: 24,
     color: "#000",
-  },
-  rowSpacer: {
-    flexGrow: 1,
-    flexShrink: 1,
-    flexBasis: 0,
   },
   rowValue: {
     fontSize: 17,
     fontWeight: "500",
-    color: "#8B8B8B",
+    borderColor: "#cccccc",
+    flex: 1,
   },
   errorText: {
     fontSize: 12,
+    fontWeight: "500",
     color: "red",
     marginLeft: 24,
+    marginRight: 24,
   },
-  inputContainer: {
-    borderWidth: 1,
-    borderColor: "#cccccc",
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-  },
+
   rowValueContainer: {
     flexGrow: 1,
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "flex-end",
+    paddingRight: 24,
+    paddingLeft: 24,
   },
 });

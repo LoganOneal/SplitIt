@@ -1,15 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
-  TextInput,
   Image,
-  Button,
-  Dimensions,
   StyleSheet,
   SafeAreaView,
   TouchableOpacity,
-  Modal,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { IFirebaseUser } from "../../interfaces/IAuthentication";
@@ -17,8 +13,6 @@ import { auth } from "../../services/firebase";
 import { useFirestore } from "../../hooks/useFirestore";
 import { useFocusEffect } from "@react-navigation/native";
 
-
-//TODO: Add page for payment stuff -> Allow user to add their venmo user name -> save to user in firestore().
 const SettingsScreen = ({ navigation }: any) => {
   const [profile, setProfile] = useState<IFirebaseUser | null>(null);
   const { getFirestoreUser } = useFirestore();
@@ -38,10 +32,11 @@ const SettingsScreen = ({ navigation }: any) => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#f6f6f6" }}>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Settings</Text>
-          <ScrollView>
+      <ScrollView>
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <Text style={styles.title}>Settings</Text>
+
             <View style={styles.profile}>
               <Image
                 source={
@@ -54,71 +49,76 @@ const SettingsScreen = ({ navigation }: any) => {
               <Text style={styles.profileName}>{profile?.displayName}</Text>
               <Text style={styles.profileEmail}>{profile?.email}</Text>
             </View>
-          </ScrollView>
-        </View>
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Account Settings</Text>
-          <View style={styles.sectionBody}>
-            <View style={styles.rowWrapper}>
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate("EditProfile", {
-                    profile: profile,
-                    navigation: navigation,
-                  });
-                }}
-                style={styles.row}
-              >
-                <Text style={styles.rowLabel}>Edit Profile</Text>
-              </TouchableOpacity>
+          </View>
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Account Settings</Text>
+            <View style={styles.sectionBody}>
+              <View style={styles.rowWrapper}>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("EditProfile", {
+                      profile: profile,
+                      navigation: navigation,
+                    });
+                  }}
+                  style={styles.row}
+                >
+                  <Text style={styles.rowLabel}>Edit Profile</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.rowWrapper}>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("EditProfilePassword", {
+                      navigation: navigation,
+                    });
+                  }}
+                  style={styles.row}
+                >
+                  <Text style={styles.rowLabel}>Change Password</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.rowWrapper}>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("EditPaymentSettings", {
+                      profile: profile,
+                      navigation: navigation,
+                    });
+                  }}
+                  style={styles.row}
+                >
+                  <Text style={styles.rowLabel}>Edit Payment Settings</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-            <View style={styles.rowWrapper}>
-              <TouchableOpacity onPress={() => {
-                navigation.navigate("EditProfilePassword");
-              }} style={styles.row}>
-                <Text style={styles.rowLabel}>Change Password</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.rowWrapper}>
-              <TouchableOpacity onPress={() => {
-                navigation.navigate("EditPaymentSettings", {
-                    profile: profile,
-                    navigation: navigation,
-                });
-              }} style={styles.row}>
-                <Text style={styles.rowLabel}>Edit Payment Settings</Text>
-              </TouchableOpacity>
+            <Text style={styles.sectionTitle}>More</Text>
+            <View style={styles.sectionBody}>
+              <View style={styles.rowWrapper}>
+                <View style={styles.row}>
+                  <Text style={styles.rowLabel}>About</Text>
+                </View>
+              </View>
+              <View style={styles.rowWrapper}>
+                <View style={styles.row}>
+                  <Text style={styles.rowLabel}>Terms of Service</Text>
+                </View>
+              </View>
+              <View style={styles.rowWrapper}>
+                <View style={styles.row}>
+                  <Text style={styles.rowLabel}>Privacy Policy</Text>
+                </View>
+              </View>
             </View>
           </View>
-          <Text style={styles.sectionTitle}>More</Text>
-          <View style={styles.sectionBody}>
-            <View style={styles.rowWrapper}>
-              <View style={styles.row}>
-                <Text style={styles.rowLabel}>About</Text>
-              </View>
-            </View>
-            <View style={styles.rowWrapper}>
-              <View style={styles.row}>
-                <Text style={styles.rowLabel}>Terms of Service</Text>
-              </View>
-            </View>
-            <View style={styles.rowWrapper}>
-              <View style={styles.row}>
-                <Text style={styles.rowLabel}>Privacy Policy</Text>
-              </View>
-            </View>
-          </View>
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
 
 export default SettingsScreen;
 
-const { height } = Dimensions.get("screen");
-const container_height = height * 0.2;
-const header_height = height * 0.04;
 const styles = StyleSheet.create({
   container: {
     paddingVertical: 24,
@@ -138,18 +138,6 @@ const styles = StyleSheet.create({
     color: "#1d1d1d",
     marginBottom: 6,
   },
-  subtitle: {
-    fontSize: 15,
-    fontWeight: "500",
-    color: "#929292",
-  },
-  contentFooter: {
-    marginTop: 24,
-    fontSize: 13,
-    fontWeight: "500",
-    color: "#929292",
-    textAlign: "center",
-  },
   /** Profile */
   profile: {
     padding: 16,
@@ -161,8 +149,8 @@ const styles = StyleSheet.create({
     borderColor: "#e3e3e3",
   },
   profileAvatar: {
-    width: 120, // Adjust width to make the image larger
-    height: 120, // Adjust height to make the image larger
+    width: 120, 
+    height: 120, 
     borderRadius: 9999,
   },
   profileName: {
@@ -177,22 +165,6 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     color: "#848484",
   },
-  profileAction: {
-    marginTop: 12,
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 12,
-  },
-  profileActionText: {
-    marginRight: 8,
-    fontSize: 15,
-    fontWeight: "600",
-    color: "#fff",
-  },
-  /** Section */
   section: {
     paddingTop: 12,
   },
@@ -213,7 +185,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: "#e3e3e3",
   },
-  /** Row */
   row: {
     flexDirection: "row",
     alignItems: "center",
@@ -225,52 +196,9 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderColor: "#e3e3e3",
   },
-  rowFirst: {
-    borderTopWidth: 0,
-  },
-  rowIcon: {
-    width: 30,
-    height: 30,
-    borderRadius: 4,
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 12,
-  },
   rowLabel: {
     fontSize: 17,
     fontWeight: "500",
     color: "#000",
-  },
-  rowSpacer: {
-    flexGrow: 1,
-    flexShrink: 1,
-    flexBasis: 0,
-  },
-  rowValue: {
-    fontSize: 17,
-    fontWeight: "500",
-    color: "#8B8B8B",
-    marginRight: 4,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent background
-  },
-  modalContent: {
-    width: "80%",
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    padding: 20,
-    alignItems: "center",
-  },
-  closeButton: {
-    alignSelf: "flex-end",
-    padding: 10,
-  },
-  closeButtonText: {
-    color: "#007BFF",
-    fontSize: 16,
   },
 });

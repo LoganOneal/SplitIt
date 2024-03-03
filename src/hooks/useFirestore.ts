@@ -24,7 +24,15 @@ import {
 import { db, auth } from "../services/firebase";
 import { IReceipt } from "../interfaces/IReceipt";
 import { useAuth } from "./useAuth";
-import { User, UserCredential, UserInfo, updateEmail, updateProfile } from "firebase/auth";
+import {
+  EmailAuthProvider,
+  User,
+  UserCredential,
+  UserInfo,
+  reauthenticateWithCredential,
+  updateEmail,
+  updateProfile,
+} from "firebase/auth";
 
 export const useFirestore = () => {
   const userRef = (uid: string) => doc(db, "users", uid);
@@ -193,59 +201,23 @@ export const useFirestore = () => {
     }
   };
 
-  const updateDisplayNameFirestore = async (displayName: string) => {
-    try {
-      await updateDoc(userRef(auth.currentUser?.uid!), {
-        name: displayName,
-      });
-    } catch (error) {
-      console.error("Error updating display name:", error);
-      throw error;
-    }
-  };
-
-  // Function to update email address in both firestore 
-  const updateEmailAddressFirestore = async (email: string) => {
-    try {
-      await updateDoc(userRef(auth.currentUser?.uid!), {
-        email: email,
-      });
-    } catch (error) {
-      console.error("Error updating email:", error);
-      throw error;
-    }
-  };
-
-  const updatePhoneNumberFirestore = async (newPhoneNumber: string) => {
-    try {
-      const user = auth.currentUser;
-      // Update in firestore
-      if (user) {
-        const userRef = doc(db, "users", user.uid);
-        await updateDoc(userRef, {
-          phoneNumber: newPhoneNumber,
-        });
-        console.log("Phone Number updated successfully");
-      }
-    } catch (error) {
-      console.error("Error updating phone number:", error);
-    }
-  };
-
-  const getFirestoreUser = async (uid: string): Promise<IFirebaseUser | null> => {
+  // Function to get user data from firestore
+  const getFirestoreUser = async (
+    uid: string
+  ): Promise<IFirebaseUser | null> => {
     try {
       const userDoc = await getDoc(userRef(uid));
       if (userDoc.exists()) {
         const userData = userDoc.data() as IFirebaseUser;
         console.log("Firestore User Data:", userData);
-        
+
         return {
           email: userData.email,
           displayName: userDoc.data()?.name,
           phoneNumber: userData.phoneNumber,
           photoURL: userData.photoURL,
           firebaseUID: userDoc.id,
-          providerId: "", 
+          providerId: "",
           uid: userData.uid,
           venmoName: userData.venmoName || "",
         };
@@ -255,11 +227,88 @@ export const useFirestore = () => {
       }
     } catch (error) {
       console.error("Error fetching Firestore User Data:", error);
-      return null;
+      throw(error);
     }
   };
 
-  const updateVenmoNameFirestore = async (venmoName: string) => {
+  //TODO: Add function to reauthenticate, similar to the password shit
+  const reauthenticateUser = async (password: string) => {
+    const user = auth.currentUser
+    try {
+      if (user) {
+        const credential = EmailAuthProvider.credential(user.email ?? "", password)
+        await reauthenticateWithCredential(user, credential).then(() => {
+          console.log("Reauthenticated user successfully")
+        })
+      }
+    } catch (error) {
+      console.log("Error reauthenticating the user..", error)
+      throw (error)
+    }
+  }
+
+  // Function to update the display name in both auth and firestore.
+  const updateDisplayName = async (displayName: string) => {
+    const user = auth.currentUser;
+    try {
+      if (user) {
+        await updateProfile(user, {
+          displayName: displayName,
+        }).then(() => {
+          console.log("Display name updated in Auth successfully");
+        });
+        await updateDoc(userRef(auth.currentUser?.uid!), {
+          name: displayName,
+        }).then(() => {
+          console.log("Display name updated in Firestore successfully");
+        });
+      }
+    } catch (error) {
+      console.error("Error updating display name:", error);
+      throw error;
+    }
+  };
+
+  // Function to update email address in both auth and firestore
+  const updateEmailAddress = async (email: string) => {
+    const user = auth.currentUser;
+    try {
+      if (user) {
+        await updateEmail(user, email).then(() => {
+          console.log("Email updated in Auth successfully");
+        });
+        await updateDoc(userRef(auth.currentUser?.uid!), {
+          email: email,
+        }).then(() => {
+          console.log("Email updated in Firestore successfully");
+        });
+      }
+    } catch (error) {
+      console.error("Error updating email:", error);
+      throw error;
+    }
+  };
+
+  // Function to update the account phone number in firestore
+  const updatePhoneNumber = async (newPhoneNumber: string) => {
+    const user = auth.currentUser;
+    try {
+      if (user) {
+        const userRef = doc(db, "users", user.uid);
+        await updateDoc(userRef, {
+          phoneNumber: newPhoneNumber,
+        }).then(() => {
+          console.log("Phone Number updated successfully");
+        });
+      }
+    } catch (error) {
+      console.error("Error updating phone number:", error);
+      throw error;
+    }
+  };
+
+  // Function to update venmo account name in firestore
+  const updateVenmoName = async (venmoName: string) => {
     try {
       const user = auth.currentUser;
       if (user) {
@@ -271,8 +320,9 @@ export const useFirestore = () => {
       }
     } catch (error) {
       console.error("Error updating venmo name:", error);
+      throw error;
     }
-  }
+  };
 
   return {
     createReceipt,
@@ -281,10 +331,11 @@ export const useFirestore = () => {
     addExistingUserToReceipt,
     joinReceipt,
     getReceiptById,
-    updateDisplayNameFirestore,
-    updateEmailAddressFirestore,
-    updatePhoneNumberFirestore,
     getFirestoreUser,
-    updateVenmoNameFirestore,
+    reauthenticateUser,
+    updateDisplayName,
+    updateEmailAddress,
+    updatePhoneNumber,
+    updateVenmoName,
   };
 };

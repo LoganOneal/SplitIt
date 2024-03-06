@@ -91,7 +91,7 @@ export default function HomeStack() {
               icon: 'file-plus',
               label: 'Add Receipt',
               color: '#000',
-              style: {'backgroundColor': '# '},
+              style: {'backgroundColor': '#c9d7ff'},
               onPress: navigateToCreateReceipt,
             },
           ]}

@@ -63,7 +63,7 @@ export default function HomeStack() {
         <Stack.Screen name="Select Items" component={SelectItemsScreen} />
         <Stack.Screen name="Share Receipt" component={QRCodeScreen} />
         <Stack.Screen name="Guests" component={GuestsScreen} />
-        <Stack.Screen name="Add Guest" component={AddGuestBySMSScreen} />
+        <Stack.Screen name="Text Guest" component={AddGuestBySMSScreen} />
         <Stack.Screen name="Search Guest" component={AddGuestBySearchScreen} />
       </Stack.Navigator>
       <Portal>

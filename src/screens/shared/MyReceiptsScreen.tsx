@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ListRenderItemInfo, StyleSheet, View, TouchableOpacity} from 'react-native';
+import { ListRenderItemInfo, StyleSheet, View, TouchableOpacity } from 'react-native';
 import { Card, List, Text } from '@ui-kitten/components';
 import { useData } from '../../hooks/useData';
 import { IReceipt } from '../../interfaces/IReceipt';
@@ -10,27 +10,30 @@ import { Button, Icon, IconElement, Layout, Spinner } from '@ui-kitten/component
 import { useAppDispatch } from "../../store/hook";
 import { userLoggedOut } from "../../store/authSlice";
 
-const MyReceiptsScreen = ({navigation}): React.ReactElement => {
+const MyReceiptsScreen = ({ navigation }): React.ReactElement => {
+
   const { getUserReceipts } = useFirestore();
   const [hostReceipts, setHostReceipts] = useState<IReceipt[]>([]);
   const [requestedReceipts, setRequestedReceipts] = useState<IReceipt[]>([]);
   const [activeButton, setActiveButton] = useState('My Receipts');
+  const [isLoading, setIsLoading] = useState(true);
   const dispatch = useAppDispatch();
   // fetch receipts
   useEffect(() => {
+    console.log("is loading", isLoading)
     const fetchReceipts = async () => {
       try {
+        setIsLoading(true);
         const { hostReceipts, requestedReceipts } = await getUserReceipts();
         setHostReceipts(hostReceipts);
         setRequestedReceipts(requestedReceipts);
-  
-        console.log(hostReceipts)
-        console.log(requestedReceipts)
+        setIsLoading(false);
       } catch (error) {
         console.error('Error fetching host receipts:', error);
       }
     }
     fetchReceipts();
+    console.log("is loading", isLoading)
   }, []);
 
   const renderContent = () => {
@@ -38,12 +41,13 @@ const MyReceiptsScreen = ({navigation}): React.ReactElement => {
       case 'My Receipts':
         return (
           <FlatList
-          data={hostReceipts}
-          showsVerticalScrollIndicator={true}
-          keyExtractor={(item, index) => String(item?.id || index)}
-          style={{ width: '100%'}}
-          contentContainerStyle={{ paddingBottom: 10, paddingHorizontal: 45 }}
-          renderItem={({ item }) => <ReceiptCard  {...item} />}
+
+            data={hostReceipts}
+            showsVerticalScrollIndicator={true}
+            keyExtractor={(item, index) => String(item?.id || index)}
+            style={{ width: '100%' }}
+            contentContainerStyle={{ paddingBottom: 10, paddingHorizontal: 45 }}
+            renderItem={({ item }) => <ReceiptCard  {...item} />}
           />
         );
       case 'Requested Receipts':
@@ -52,7 +56,7 @@ const MyReceiptsScreen = ({navigation}): React.ReactElement => {
             data={requestedReceipts}
             showsVerticalScrollIndicator={true}
             keyExtractor={(item, index) => String(item?.id || index)}
-            style={{ width: '100%'}}
+            style={{ width: '100%' }}
             contentContainerStyle={{ paddingBottom: 10, paddingHorizontal: 45 }}
             renderItem={({ item }) => <ReceiptCard  {...item} />}
           />
@@ -62,7 +66,7 @@ const MyReceiptsScreen = ({navigation}): React.ReactElement => {
     }
   };
 
- return (
+  return (
     <View style={styles.container}>
       <View style={styles.buttonContainer}>
         <Button
@@ -70,7 +74,7 @@ const MyReceiptsScreen = ({navigation}): React.ReactElement => {
           onPress={() => setActiveButton('My Receipts')}
         >
           <View>
-          <Text category="s1" style={[styles.buttonText, activeButton === 'My Receipts' && styles.activeButtonText]}>My Receipts</Text>
+            <Text category="s1" style={[styles.buttonText, activeButton === 'My Receipts' && styles.activeButtonText]}>My Receipts</Text>
           </View>
         </Button>
         <Button
@@ -78,11 +82,14 @@ const MyReceiptsScreen = ({navigation}): React.ReactElement => {
           onPress={() => setActiveButton('Requested Receipts')}
         >
           <View>
-          <Text category="s1" style={[styles.buttonText, activeButton === 'Requested Receipts' && styles.activeButtonText]}>Requested Receipts</Text>
+            <Text category="s1" style={[styles.buttonText, activeButton === 'Requested Receipts' && styles.activeButtonText]}>Requested Receipts</Text>
           </View>
         </Button>
       </View>
+
       <View style={styles.content}>
+        {isLoading && <View style={styles.loadingContainer}><Spinner size="giant"/></View>}
+
         {renderContent()}
       </View>
     </View>
@@ -116,13 +123,18 @@ const styles = StyleSheet.create({
     width: "100%"
   },
   activeButtonText: {
-    color: '#FFF', 
+    color: '#FFF',
   },
   content: {
     flex: 1,
   },
   inactiveButton: {
     backgroundColor: "#b0b0b0"
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   }
 });
 

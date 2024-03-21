@@ -122,6 +122,7 @@ const Scanner = ({navigation}:any) => {
     });
     if (!result.canceled) {
       if (result.assets && result.assets.length > 0) {
+        console.log("Result:", result.assets[0].base64)
         setPhoto(
           result.assets && result.assets.length > 0 ? result.assets[0] : null
         );

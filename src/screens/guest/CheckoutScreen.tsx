@@ -34,7 +34,7 @@ const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }
   const handleCheckout = async () => {
     if (paymentMethod == "venmo") {
       console.log("checkout with vddeffffnmo");
-      Linking.openURL('venmo://paycharge?recipients=loganofneal&amount=1&note=TESfTTT').catch(err => console.error('An error occurred', err));
+      Linking.openURL('venmo://incomplete/requests?recipients=loganofneal&amount=1&note=TESfTTT')
     }
   };
 

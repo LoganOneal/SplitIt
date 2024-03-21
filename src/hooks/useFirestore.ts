@@ -83,9 +83,10 @@ export const useFirestore = () => {
         const receiptDocRef = doc(receiptsColRef, receiptId);
 
         const receiptDocSnapshot = await getDoc(receiptDocRef);
-  
+        
         if (receiptDocSnapshot.exists()) {
-          const receiptData = receiptDocSnapshot.data() as IReceipt;
+          let receiptData = receiptDocSnapshot.data() as IReceipt;
+          receiptData.firebaseId = receiptId;
           hostReceipts.push(receiptData);
         }
       }
@@ -94,7 +95,8 @@ export const useFirestore = () => {
         const receiptDocRef = doc(receiptsColRef, receiptId);
         const receiptDocSnapshot = await getDoc(receiptDocRef);
         if (receiptDocSnapshot.exists() && receiptDocSnapshot.data()?.host !== auth.currentUser?.uid){
-          const receiptData = receiptDocSnapshot.data() as IReceipt;
+          let receiptData = receiptDocSnapshot.data() as IReceipt;
+          receiptData.firebaseId = receiptId;
           requestedReceipts.push(receiptData);
         }
       }

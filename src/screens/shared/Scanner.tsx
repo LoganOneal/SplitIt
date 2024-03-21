@@ -117,7 +117,7 @@ const Scanner = ({navigation}:any) => {
     let result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       cameraType: ImagePicker.CameraType.back,
-      quality: 1,
+      // quality: 1,
       base64: true,
     });
     if (!result.canceled) {
@@ -133,7 +133,7 @@ const Scanner = ({navigation}:any) => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       // allowsEditing: false,
-      quality: 1,
+      // quality: 1,
       base64: true,
     });
     if (!result.canceled) {

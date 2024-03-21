@@ -15,6 +15,7 @@ export interface IReceiptCategory {
   
   export interface IReceipt {
     id?: number;
+    firebaseId?: string;
     joinCode?: string;
     name?: string;
     vendor?: string;

@@ -1,23 +1,36 @@
 import React, { useEffect, useState } from 'react';
-import { ListRenderItemInfo, StyleSheet, View, TouchableOpacity } from 'react-native';
-import { Card, List, Text } from '@ui-kitten/components';
-import { useData } from '../../hooks/useData';
+import { StyleSheet, View } from 'react-native';
+import { Text } from '@ui-kitten/components';
 import { IReceipt } from '../../interfaces/IReceipt';
 import { useFirestore } from '../../hooks/useFirestore';
 import ReceiptCard from '../../components/ReceiptCard';
 import { FlatList } from 'react-native';
-import { Button, Icon, IconElement, Layout, Spinner } from '@ui-kitten/components';
+import { Button, Spinner } from '@ui-kitten/components';
 import { useAppDispatch } from "../../store/hook";
-import { userLoggedOut } from "../../store/authSlice";
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
-const MyReceiptsScreen = ({ navigation }): React.ReactElement => {
+const MyReceiptsScreen = ({navigation}): React.ReactElement => {
 
   const { getUserReceipts } = useFirestore();
   const [hostReceipts, setHostReceipts] = useState<IReceipt[]>([]);
   const [requestedReceipts, setRequestedReceipts] = useState<IReceipt[]>([]);
   const [activeButton, setActiveButton] = useState('My Receipts');
   const [isLoading, setIsLoading] = useState(true);
-  const dispatch = useAppDispatch();
+
+  const handleReceiptCardPressHost = (receipt: IReceipt) => {
+    console.log(receipt);
+    navigation.navigate('Select Items', {
+      receiptId: receipt.firebaseId,
+    });
+  };
+
+  const handleReceiptCardPressGuest = (receipt: IReceipt) => {
+    console.log(receipt);
+    navigation.navigate('Select Items', {
+      receiptId: receipt.firebaseId,
+    });
+  };
+
   // fetch receipts
   useEffect(() => {
     console.log("is loading", isLoading)
@@ -41,13 +54,16 @@ const MyReceiptsScreen = ({ navigation }): React.ReactElement => {
       case 'My Receipts':
         return (
           <FlatList
-
             data={hostReceipts}
             showsVerticalScrollIndicator={true}
             keyExtractor={(item, index) => String(item?.id || index)}
             style={{ width: '100%' }}
             contentContainerStyle={{ paddingBottom: 10, paddingHorizontal: 45 }}
-            renderItem={({ item }) => <ReceiptCard  {...item} />}
+            renderItem={({ item }) => (
+              <TouchableWithoutFeedback onPress={() => handleReceiptCardPressHost(item)}>
+                <ReceiptCard {...item} />
+              </TouchableWithoutFeedback>
+            )}
           />
         );
       case 'Requested Receipts':
@@ -58,7 +74,11 @@ const MyReceiptsScreen = ({ navigation }): React.ReactElement => {
             keyExtractor={(item, index) => String(item?.id || index)}
             style={{ width: '100%' }}
             contentContainerStyle={{ paddingBottom: 10, paddingHorizontal: 45 }}
-            renderItem={({ item }) => <ReceiptCard  {...item} />}
+            renderItem={({ item }) => (
+              <TouchableWithoutFeedback onPress={() => handleReceiptCardPressGuest(item)}>
+                <ReceiptCard {...item} />
+              </TouchableWithoutFeedback>
+            )}
           />
         );
       default:
@@ -88,8 +108,7 @@ const MyReceiptsScreen = ({ navigation }): React.ReactElement => {
       </View>
 
       <View style={styles.content}>
-        {isLoading && <View style={styles.loadingContainer}><Spinner size="giant"/></View>}
-
+        {isLoading && <View style={styles.loadingContainer}><Spinner size="giant" /></View>}
         {renderContent()}
       </View>
     </View>
@@ -107,7 +126,6 @@ const styles = StyleSheet.create({
   },
   button: {
     flex: 1,
-    // backgroundColor: '#e0e0e0',
     padding: 0,
     margin: 5,
     justifyContent: 'center',

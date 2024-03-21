@@ -1,9 +1,8 @@
 import * as React from 'react';
 import { isRejected } from '@reduxjs/toolkit';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { IReceipt } from '../interfaces/IReceipt';
 import { Button, Card, Layout, Text } from '@ui-kitten/components';
-import { StyleSheet, View, ViewProps } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Icon, IconElement } from '@ui-kitten/components';
 import { ProgressBar } from '@ui-kitten/components';
 

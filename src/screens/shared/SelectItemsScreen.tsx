@@ -71,6 +71,7 @@ const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }
                 setSelectedItems([]); 
 
                 console.log('Checkout successful');
+                navigation.navigate('Receipts');
             } catch (error) {
                 console.error('Checkout failed:', error);
             }

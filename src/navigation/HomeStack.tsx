@@ -21,24 +21,12 @@ import { useIsFocused } from '@react-navigation/native';
 import { useState } from 'react';
 import {useNavigation} from '@react-navigation/native';
 import CheckoutScreen from "../screens/guest/CheckoutScreen";
+import TabNavigator from "./TabNavigator";
 
 const Stack = createNativeStackNavigator();
 
 export default function HomeStack() {
   const navigation = useNavigation();
-  const isFocused = useIsFocused();
-  const [open, setOpen] = useState(false);
-  const onStateChange = ({ open }: { open: boolean }) => setOpen(open);
-  const navigateToScanner = () => {
-    navigation.navigate("Upload Receipt");
-  };
-
-  const navigateToCreateReceipt = () => {
-    navigation.navigate("Create Receipt");
-  };
-  const navigateToJoinReceipt = () => {
-    navigation.navigate("Join Receipt");
-  }
 
   return (
     <React.Fragment>
@@ -49,7 +37,7 @@ export default function HomeStack() {
           header: (props) => <CustomNavBar {...props} />,
         }}
       >
-        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Home" component={TabNavigator} />
         <Stack.Screen name="Settings" component={SettingsScreen} />
         <Stack.Screen name="EditProfile" component={EditProfileScreen} />
         <Stack.Screen name="EditProfilePassword" component={EditProfilePasswordScreen} />
@@ -66,44 +54,6 @@ export default function HomeStack() {
         <Stack.Screen name="Text Guest" component={AddGuestBySMSScreen} />
         <Stack.Screen name="Search Guest" component={AddGuestBySearchScreen} />
       </Stack.Navigator>
-      <Portal>
-        <FAB.Group
-          fabStyle={[{backgroundColor: '#c9d7ff'}]}
-          color='#000'
-          open={open}
-          icon={open ? 'close' : 'plus'}
-          actions={[
-            {
-              icon: 'camera',
-              label: 'Scan',
-              color: '#000',
-              style: {'backgroundColor': '#c9d7ff'},
-              onPress: navigateToScanner,
-            },
-            {
-              icon: 'receipt',
-              label: 'Join Receipt',
-              color: '#000',
-              style: {'backgroundColor': '#c9d7ff'},
-              onPress: navigateToJoinReceipt,
-            },
-            {
-              icon: 'file-plus',
-              label: 'Add Receipt',
-              color: '#000',
-              style: {'backgroundColor': '#c9d7ff'},
-              onPress: navigateToCreateReceipt,
-            },
-          ]}
-          onStateChange={onStateChange}
-          visible={isFocused}
-          style={{
-            position: 'absolute',
-            right: 16,
-          }}
-        />
-
-      </Portal>
     </React.Fragment>
   );
 }

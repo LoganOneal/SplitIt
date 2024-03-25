@@ -62,23 +62,23 @@ const TabNavigator = () => {
       }}
     >
       <BottomNavigationTab 
-        title='RECEIPTS' 
+        title='Receipts' 
         icon={ReceiptIcon}
       />
       <BottomNavigationTab 
-        title='REQUESTS' 
+        title='Requests' 
         icon={RequestIcon}
       />      
       <BottomNavigationTab 
-        title='SCAN' 
+        title='Scan' 
         icon={ScanIcon}
       />
       <BottomNavigationTab 
-        title='JOIN' 
+        title='Join' 
         icon={JoinIcon}
       />
       <BottomNavigationTab 
-        title='ADD' 
+        title='Add' 
         icon={AddIcon}
       />
     </BottomNavigation>

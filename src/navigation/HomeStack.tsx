@@ -1,6 +1,5 @@
 import * as React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import HomeScreen from "../screens/shared/HomeScreen";
 import CustomNavBar from "./CustomNavBar";
 import Scanner from "../screens/shared/Scanner";
 import QRCodeScreen from "../screens/host/QRCodeScreen";
@@ -44,12 +43,11 @@ export default function HomeStack() {
     <React.Fragment>
 
       <Stack.Navigator
-        initialRouteName="Home"
+        initialRouteName="Receipts"
         screenOptions={{
           header: (props) => <CustomNavBar {...props} />,
         }}
       >
-        <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Settings" component={SettingsScreen} />
         <Stack.Screen name="EditProfile" component={EditProfileScreen} />
         <Stack.Screen name="EditProfilePassword" component={EditProfilePasswordScreen} />

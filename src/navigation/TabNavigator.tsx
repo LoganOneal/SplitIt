@@ -1,12 +1,15 @@
 import * as React from "react";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { BottomNavigation, BottomNavigationTab, Icon, IconElement } from '@ui-kitten/components';
-
 import { StyleSheet } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+
+import MyReceiptsScreen from "../screens/shared/MyReceiptsScreen";
+import RequestedReceiptsScreen from "../screens/shared/RequestedReceiptsScreen";
 import Scanner from "../screens/shared/Scanner";
 import CreateReceipt from "../screens/host/CreateReceipt";
 import JoinReceiptScreen from "../screens/guest/JoinReceiptScreen";
-import { useNavigation } from "@react-navigation/native";
+
 
 const TabNavigator = () => {
   const navigation = useNavigation()
@@ -83,8 +86,8 @@ const TabNavigator = () => {
   
   return (
     <Navigator tabBar={state => <BottomTabBar {...state} /> }>
-        <Screen name="My Receipts" component={Scanner} options={{headerShown: false}} />
-        <Screen name="Requested Receipts" component={JoinReceiptScreen} options={{headerShown: false}} />
+        <Screen name="My Receipts" component={MyReceiptsScreen} options={{headerShown: false}} />
+        <Screen name="Requested Receipts" component={RequestedReceiptsScreen} options={{headerShown: false}} />
         <Screen name="Upload Receipt" component={Scanner} options={{headerShown: false}} />
         <Screen name="Join Receipt" component={JoinReceiptScreen} options={{headerShown: false}} />
         <Screen name="Create Receipt" component={CreateReceipt} options={{headerShown: false}} />

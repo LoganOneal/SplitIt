@@ -12,7 +12,7 @@ const CameraIcon = (props): IconElement => (
 
 const Header = (props: ViewProps): React.ReactElement => (
   <View {...props} style={styles.header}>
-    <Text category='h3'>
+    <Text category='h4'>
       Join a Receipt
     </Text>
   </View>
@@ -70,8 +70,6 @@ const JoinReceiptScreen = ({ navigation }): React.ReactElement => {
         </Button>
         <Button
           style={styles.qrButton}
-          status='secondary'
-          appearance='outline'
           onPress={() => navigation.navigate('JoinReceipt')}
           accessoryLeft={CameraIcon}
         >

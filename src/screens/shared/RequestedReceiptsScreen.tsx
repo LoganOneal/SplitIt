@@ -12,7 +12,7 @@ import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 const MyReceiptsScreen = ({navigation}): React.ReactElement => {
 
   const { getUserReceipts } = useFirestore();
-  const [hostReceipts, setHostReceipts] = useState<IReceipt[]>([]);
+  const [requestedReceipts, setRequestedReceipts] = useState<IReceipt[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const handleReceiptCardPressHost = (receipt: IReceipt) => {
@@ -35,8 +35,8 @@ const MyReceiptsScreen = ({navigation}): React.ReactElement => {
     const fetchReceipts = async () => {
       try {
         setIsLoading(true);
-        const { hostReceipts } = await getUserReceipts();
-        setHostReceipts(hostReceipts);
+        const { requestedReceipts } = await getUserReceipts();
+        setRequestedReceipts(requestedReceipts);
         setIsLoading(false);
       } catch (error) {
         console.error('Error fetching host receipts:', error);
@@ -49,22 +49,22 @@ const MyReceiptsScreen = ({navigation}): React.ReactElement => {
   return (
     <View style={styles.container}>
       <Text category='h4' style={styles.title}>
-        My Receipts
+        Requested Receipts
       </Text>
       <View style={styles.content}>
         {isLoading && <View style={styles.loadingContainer}><Spinner size="giant" /></View>}
         <FlatList
-          data={hostReceipts}
-          showsVerticalScrollIndicator={true}
-          keyExtractor={(item, index) => String(item?.id || index)}
-          style={styles.flatList}
-          contentContainerStyle={{ paddingBottom: 10, paddingHorizontal: 45 }}
-          renderItem={({ item }) => (
-            <TouchableWithoutFeedback onPress={() => handleReceiptCardPressHost(item)}>
-              <ReceiptCard {...item} />
-            </TouchableWithoutFeedback>
-          )}
-        />
+            data={requestedReceipts}
+            showsVerticalScrollIndicator={true}
+            keyExtractor={(item, index) => String(item?.id || index)}
+            style={styles.flatList}
+            contentContainerStyle={{ paddingBottom: 10, paddingHorizontal: 45 }}
+            renderItem={({ item }) => (
+              <TouchableWithoutFeedback onPress={() => handleReceiptCardPressGuest(item)}>
+                <ReceiptCard {...item} />
+              </TouchableWithoutFeedback>
+            )}
+          />
       </View>
     </View>
   );

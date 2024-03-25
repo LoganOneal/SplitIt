@@ -8,6 +8,7 @@ import { FlatList } from 'react-native';
 import { Button, Spinner } from '@ui-kitten/components';
 import { useAppDispatch } from "../../store/hook";
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import LoadingIndicator from '../../components/LoadingIndicator';
 
 const MyReceiptsScreen = ({navigation}): React.ReactElement => {
 
@@ -108,7 +109,7 @@ const MyReceiptsScreen = ({navigation}): React.ReactElement => {
       </View>
 
       <View style={styles.content}>
-        {isLoading && <View style={styles.loadingContainer}><Spinner size="giant" /></View>}
+        {isLoading && <LoadingIndicator isLoading={isLoading} />}
         {renderContent()}
       </View>
     </View>
@@ -149,11 +150,6 @@ const styles = StyleSheet.create({
   inactiveButton: {
     backgroundColor: "#b0b0b0"
   },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  }
 });
 
 export default MyReceiptsScreen;

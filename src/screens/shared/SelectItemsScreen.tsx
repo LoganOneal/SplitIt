@@ -5,7 +5,8 @@ import { useFirestore } from '../../hooks/useFirestore';
 import { FlatList } from 'react-native';
 import { Button, Icon, IconElement, Layout, Card } from '@ui-kitten/components';
 import { useAppDispatch } from "../../store/hook";
-import { IReceipt, IReceiptItem } from '../../constants/types';
+import { IReceipt, IReceiptItem } from '../../interfaces/IReceipt';
+
 import ItemCard from '../../components/ItemCard';
 import { useAppSelector } from "../../store/hook";
 import { selectAuthState } from "../../store/authSlice";
@@ -32,11 +33,7 @@ const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }
         const fetchReceipts = async () => {
             try {
                 const receipt = await getReceiptById(receiptId);
-                console.log("Host:", receipt.host)
-                console.log("Guess:", auth.currentUser?.uid!);
-                // setItems(receipt.items);
                 setReceipt(receipt);
-                console.log("Receipt Items:", receipt.items)
             } catch (error) {
                 console.error('Error setting receipt items:', error);
             }
@@ -57,35 +54,45 @@ const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }
             setSelectedItems([...selectedItems, item]);
         }
     }
-    const handleCheckout = async () => {
-        //if host is selecting items
-        if(receipt && receipt.host === auth.currentUser?.uid){
-            if (authState.userName && selectedItems.length > 0) {
-                const itemIds = selectedItems.map(item => item.id); 
-                try {
-                    const filteredItemIds = itemIds.filter(id => typeof id === 'number') as number[];
-                    await updateItemsPaidStatus(receiptId, filteredItemIds, true); 
-                    
-                    const updatedItems = items?.map(item => {
-                        if (filteredItemIds.includes(item.id as number)) {
-                            return { ...item, paid: true };
-                        }
-                        return item;
-                    });
-                    setItems(updatedItems);
-                    setSelectedItems([]); 
 
-                    console.log('Checkout successful');
-                } catch (error) {
-                    console.error('Checkout failed:', error);
-                }
-            } else {
-                console.log('No items selected or user not authenticated');
+    const handleHostCheckout = async () => {
+        if (authState.userName && selectedItems.length > 0) {
+            const itemIds = selectedItems.map(item => item.id); 
+            try {
+                const filteredItemIds = itemIds.filter(id => typeof id === 'number') as number[];
+                await updateItemsPaidStatus(receiptId, filteredItemIds, true); 
+                
+                const updatedItems = items?.map(item => {
+                    if (filteredItemIds.includes(item.id as number)) {
+                        return { ...item, paid: true };
+                    }
+                    return item;
+                });
+                setItems(updatedItems);
+                setSelectedItems([]); 
+
+                console.log('Checkout successful');
+                navigation.navigate('Receipts');
+            } catch (error) {
+                console.error('Checkout failed:', error);
             }
-        }else{
-            console.log("go to cehckout guest")
-            //checking payment for guest then mark paid
-            navigation.navigate('GuestCheckout', { receiptId: receiptId, total: individualTotal });
+        } else {
+            console.log('No items selected or user not authenticated');
+        }
+    }
+
+    const handleGuestCheckout = async () => {
+        navigation.navigate('GuestCheckout', { receiptId: receiptId, total: individualTotal });
+    }
+
+    const handleCheckout = async () => {
+        /* Host Checkout */
+        if(receipt && receipt.host === auth.currentUser?.uid){
+            handleHostCheckout();
+        }
+        /* Guest Checkout */
+        else{
+           handleGuestCheckout();
         }
     };
 

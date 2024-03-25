@@ -11,6 +11,7 @@ export interface IReceiptCategory {
     name?: string;
     price?: number;
     paid?: boolean;
+    purchasers?: string[];
   }
   
   export interface IReceipt {

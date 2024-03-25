@@ -15,13 +15,6 @@ const MyReceiptsScreen = ({navigation}): React.ReactElement => {
   const [requestedReceipts, setRequestedReceipts] = useState<IReceipt[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const handleReceiptCardPressHost = (receipt: IReceipt) => {
-    console.log(receipt);
-    navigation.navigate('Select Items', {
-      receiptId: receipt.firebaseId,
-    });
-  };
-
   const handleReceiptCardPressGuest = (receipt: IReceipt) => {
     console.log(receipt);
     navigation.navigate('Select Items', {

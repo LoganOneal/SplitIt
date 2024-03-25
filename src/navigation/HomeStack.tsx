@@ -1,6 +1,5 @@
 import * as React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import HomeScreen from "../screens/shared/HomeScreen";
 import CustomNavBar from "./CustomNavBar";
 import Scanner from "../screens/shared/Scanner";
 import QRCodeScreen from "../screens/host/QRCodeScreen";
@@ -14,11 +13,6 @@ import SettingsScreen from "../screens/shared/SettingsScreen";
 import EditProfileScreen from "../screens/shared/EditProfileScreen";
 import EditProfilePasswordScreen from "../screens/shared/EditProfilePasswordScreen";
 import EditPaymentSettingsScreen from "../screens/shared/EditPaymentSettingsScreen";
-import MyReceiptsScreen from "../screens/shared/MyReceiptsScreen";
-import RequestScreen from "../screens/RequestScreen";
-import { Portal, FAB } from 'react-native-paper';
-import { useIsFocused } from '@react-navigation/native';
-import { useState } from 'react';
 import {useNavigation} from '@react-navigation/native';
 import CheckoutScreen from "../screens/guest/CheckoutScreen";
 import TabNavigator from "./TabNavigator";
@@ -42,8 +36,6 @@ export default function HomeStack() {
         <Stack.Screen name="EditProfile" component={EditProfileScreen} />
         <Stack.Screen name="EditProfilePassword" component={EditProfilePasswordScreen} />
         <Stack.Screen name="EditPaymentSettings" component={EditPaymentSettingsScreen} />
-        <Stack.Screen name="Receipts" component={MyReceiptsScreen} />
-        <Stack.Screen name="Request" component={RequestScreen} />
         <Stack.Screen name="Upload Receipt" component={Scanner} />
         <Stack.Screen name="GuestCheckout" component={CheckoutScreen} />
         <Stack.Screen name="Create Receipt" component={CreateReceipt} />

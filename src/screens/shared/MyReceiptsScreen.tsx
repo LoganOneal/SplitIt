@@ -8,6 +8,7 @@ import { FlatList } from 'react-native';
 import { Button, Spinner } from '@ui-kitten/components';
 import { useAppDispatch } from "../../store/hook";
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import LoadingIndicator from '../../components/LoadingIndicator';
 
 const MyReceiptsScreen = ({navigation}): React.ReactElement => {
 
@@ -16,14 +17,6 @@ const MyReceiptsScreen = ({navigation}): React.ReactElement => {
   const [isLoading, setIsLoading] = useState(true);
 
   const handleReceiptCardPressHost = (receipt: IReceipt) => {
-    console.log(receipt);
-    navigation.navigate('Select Items', {
-      receiptId: receipt.firebaseId,
-    });
-  };
-
-  const handleReceiptCardPressGuest = (receipt: IReceipt) => {
-    console.log(receipt);
     navigation.navigate('Select Items', {
       receiptId: receipt.firebaseId,
     });
@@ -31,7 +24,6 @@ const MyReceiptsScreen = ({navigation}): React.ReactElement => {
 
   // fetch receipts
   useEffect(() => {
-    console.log("is loading", isLoading)
     const fetchReceipts = async () => {
       try {
         setIsLoading(true);
@@ -43,7 +35,6 @@ const MyReceiptsScreen = ({navigation}): React.ReactElement => {
       }
     }
     fetchReceipts();
-    console.log("is loading", isLoading)
   }, []);
 
   return (

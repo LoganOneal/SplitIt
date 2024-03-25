@@ -10,16 +10,14 @@ import {
   Input,
   Text
 } from "@ui-kitten/components"
-import { StyleSheet, Dimensions, StatusBar } from "react-native";
+import { StyleSheet, Dimensions, StatusBar, View } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import * as Animatable from "react-native-animatable";
 import { useAppDispatch } from "../store/hook";
 import * as AppConstants from "../constants/constants";
-import { ImageOverlay } from "../components/image-overlay";
 import { useAuth } from "../hooks/useAuth";
 import { IAuthState } from "../interfaces/IAuthentication";
 import { userLoggedIn } from "../store/authSlice";
-
 type SignInFormData = {
   emailAddress: string;
   password: string;
@@ -46,9 +44,8 @@ export default function SignInScreen({ navigation }) {
   };
 
   const onDismissSnackBar = () => setShowSnack(false);
-  
+
   const handleSignIn = async (email: string, password: string) => {
-    console.log(numAttempts)
     let parsedResponse = null;
     let firebaseToken = null;
     setLoading(true);
@@ -95,10 +92,8 @@ export default function SignInScreen({ navigation }) {
   }
 
   return (
-    <ImageOverlay
-      style={styles.container}
-      source={require("../../assets/images/splash-pool.jpg")}
-    >
+    <>
+    <View style={[styles.container]}> 
       <StatusBar barStyle="light-content" />
       <Animatable.View
         style={[styles.contentContainer]}
@@ -115,19 +110,19 @@ export default function SignInScreen({ navigation }) {
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <>
-              <Input
-                onBlur={onBlur}
-                onChangeText={async Text => {
-                  onChange(Text);
-                  setSnackMessage(Text);
-                  setValidEmail(await validateEmail(Text));
-                }}
-                value={value}
-                placeholder="Email Address"
-                textContentType="emailAddress"
-                style={styles.textInput}
-              />
-              <Text style={{ color: theme.colors.error }}>{validEmail}</Text>
+                <Input
+                  onBlur={onBlur}
+                  onChangeText={async Text => {
+                    onChange(Text);
+                    setSnackMessage(Text);
+                    setValidEmail(await validateEmail(Text));
+                  }}
+                  value={value}
+                  placeholder="Email Address"
+                  textContentType="emailAddress"
+                  style={styles.textInput}
+                />
+                <Text style={{ color: theme.colors.error }}>{validEmail}</Text>
               </>
             )}
             name="emailAddress"
@@ -162,7 +157,7 @@ export default function SignInScreen({ navigation }) {
             </Text>
           )}
           <>
-          <Button
+            <Button
               appearance="ghost"
               size="small"
               onPress={() => navigation.navigate("ResetPassword")}
@@ -208,7 +203,8 @@ export default function SignInScreen({ navigation }) {
       >
         {snackMessage}
       </Snackbar>
-    </ImageOverlay>
+      </View>
+    </>
   );
 }
 

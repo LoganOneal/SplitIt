@@ -14,6 +14,7 @@ import * as MediaLibrary from "expo-media-library";
 import { AZURE_API_KEY } from "@env";
 import { receiptAnalyzedUpload } from "../../hooks/receiptAnalyzedUpload";
 import { useFirestore } from "../../hooks/useFirestore";
+import LoadingIndicator from "../../components/LoadingIndicator";
 
 const Scanner = ({navigation}:any) => {
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState<
@@ -24,6 +25,8 @@ const Scanner = ({navigation}:any) => {
   >(undefined);
   const [photo, setPhoto] = useState<ImagePicker.ImagePickerAsset | null>(null);
   const { getReceiptById } = useFirestore();
+  const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
     (async () => {
       const cameraPermission =
@@ -55,6 +58,7 @@ const Scanner = ({navigation}:any) => {
 
       if (!operationResponse.ok) {
         console.error(`HTTP error! status: ${operationResponse.status}`);
+        setIsLoading(false);
         break;
       }
 
@@ -71,8 +75,10 @@ const Scanner = ({navigation}:any) => {
         } catch (error) {
           console.error("Error:", error);
         }
+        setIsLoading(false);
         break;
       } else if (status === "failed") {
+        setIsLoading(false);
         console.error("Analysis failed:", JSON.stringify(result));
         break;
       } else {
@@ -88,6 +94,8 @@ const Scanner = ({navigation}:any) => {
       const modelId = "prebuilt-receipt";
       const apiVersion = "2023-07-31";
       const url = `${endPoint}formrecognizer/documentModels/${modelId}:analyze?api-version=${apiVersion}`;
+      setIsLoading(true)
+      
       try {
         const response = await fetch(url, {
           method: "POST",
@@ -166,15 +174,16 @@ const Scanner = ({navigation}:any) => {
             source={{ uri: `data:image/jpg;base64,${photo?.base64}` }}
           />
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} onPress={sharePic}>
-              <Text style={styles.buttonText}>Share</Text>
-            </TouchableOpacity>
             {hasMediaLibraryPermission && (
               <TouchableOpacity style={styles.button} onPress={savePhoto}>
                 <Text style={styles.buttonText}>Save</Text>
               </TouchableOpacity>
             )}
-            <TouchableOpacity style={styles.button} onPress={UploadImage}>
+            <TouchableOpacity
+              style={isLoading ? styles.buttonInactive : styles.button}
+              onPress={UploadImage}
+              disabled={isLoading}
+            >
               <Text style={styles.buttonText}>Upload</Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -184,6 +193,7 @@ const Scanner = ({navigation}:any) => {
               <Text style={styles.buttonText}>Exit</Text>
             </TouchableOpacity>
           </View>
+          <LoadingIndicator isLoading={isLoading} />
         </>
       ) : (  
         <View style={styles.optionContainer}>
@@ -266,6 +276,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderWidth: 1,
     borderColor: "white",
+    borderRadius: 20,
+  },
+  buttonInactive: {
+    backgroundColor: "#b0b0b0",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderWidth: 1,
+    borderColor: "#b0b0b0",
     borderRadius: 20,
   },
   buttonText: {

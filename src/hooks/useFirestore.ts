@@ -66,6 +66,7 @@ export const useFirestore = () => {
 
   const getUserReceipts = async (): Promise<{hostReceipts: IReceipt[], requestedReceipts: IReceipt[]}> => {
     try {
+      console.log("firebase user", auth.currentUser)
       const receiptsColRef = collection(db, 'receipts');
 
       const userDoc = await getDoc(userRef(auth.currentUser?.uid!));
@@ -121,7 +122,6 @@ export const useFirestore = () => {
 
       if (receiptDocSnapshot.exists()) {
         const receiptData = receiptDocSnapshot.data() as IReceipt;
-        console.log("Receipt Data:", receiptData);
 
         // set receipt item ids to be the same as the receipt item index
         receiptData.items = receiptData?.items?.map((item, index) => {
@@ -149,7 +149,6 @@ export const useFirestore = () => {
       const receipts = await getDocs(
         query(receiptsColRef, where("joinCode", "==", joinCode))
       );
-      console.log("Receipt id", receipts.docs[0].id);
 
       // add receipt to user's requestedReceipts
       await updateDoc(userRef(auth.currentUser?.uid!), {
@@ -198,21 +197,28 @@ export const useFirestore = () => {
     }
   };
   const updateItemsPaidStatus = async (receiptId: string, itemIds: number[], isPaid: boolean) => {
+    const userUid = auth.currentUser?.uid;
+
     try {
         const receiptRef = doc(db, 'receipts', receiptId);
         const receiptSnapshot = await getDoc(receiptRef);
 
         if (receiptSnapshot.exists()) {
           const receiptData = receiptSnapshot.data() as IReceipt;
+
+          // add user to purchasers array if not already in it 
           const updatedItems = receiptData.items?.map(item => {
             if (itemIds.includes(item.id as number)) {
-              return { ...item, paid: isPaid };
+              if (item.purchasers && !item.purchasers.includes(userUid)) {
+                const updatedPurchasers = [...item.purchasers, userUid];
+                return { ...item, purchasers: updatedPurchasers, paid: isPaid};
+              }
             }
             return item;
           }) || [];
 
           await updateDoc(receiptRef, {
-            items: updatedItems
+            items: updatedItems,
           });
         } else {
           console.error('Receipt not found');
@@ -252,7 +258,6 @@ export const useFirestore = () => {
       const userDoc = await getDoc(userRef(uid));
       if (userDoc.exists()) {
         const userData = userDoc.data() as IFirebaseUser;
-        console.log("Firestore User Data:", userData);
 
         return {
           email: userData.email,

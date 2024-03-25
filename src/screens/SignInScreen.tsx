@@ -46,7 +46,6 @@ export default function SignInScreen({ navigation }) {
   const onDismissSnackBar = () => setShowSnack(false);
 
   const handleSignIn = async (email: string, password: string) => {
-    console.log(numAttempts)
     let parsedResponse = null;
     let firebaseToken = null;
     setLoading(true);

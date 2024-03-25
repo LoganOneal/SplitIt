@@ -68,6 +68,7 @@ export const receiptAnalyzedUpload = () => {
             name: item.valueObject.Description?.valueString,
             price: item.valueObject.TotalPrice?.valueNumber,
             paid: false,
+            purchasers: [],
           };
           receiptItems.push(receiptItem);
           console.log(`...Item #${itemIndex + 1}`);

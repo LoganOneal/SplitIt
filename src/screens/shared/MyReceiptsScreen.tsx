@@ -18,14 +18,12 @@ const MyReceiptsScreen = ({navigation}): React.ReactElement => {
   const [isLoading, setIsLoading] = useState(true);
 
   const handleReceiptCardPressHost = (receipt: IReceipt) => {
-    console.log(receipt);
     navigation.navigate('Select Items', {
       receiptId: receipt.firebaseId,
     });
   };
 
   const handleReceiptCardPressGuest = (receipt: IReceipt) => {
-    console.log(receipt);
     navigation.navigate('Select Items', {
       receiptId: receipt.firebaseId,
     });
@@ -33,7 +31,6 @@ const MyReceiptsScreen = ({navigation}): React.ReactElement => {
 
   // fetch receipts
   useEffect(() => {
-    console.log("is loading", isLoading)
     const fetchReceipts = async () => {
       try {
         setIsLoading(true);
@@ -46,7 +43,6 @@ const MyReceiptsScreen = ({navigation}): React.ReactElement => {
       }
     }
     fetchReceipts();
-    console.log("is loading", isLoading)
   }, []);
 
   const renderContent = () => {
@@ -64,6 +60,7 @@ const MyReceiptsScreen = ({navigation}): React.ReactElement => {
                 <ReceiptCard {...item} />
               </TouchableWithoutFeedback>
             )}
+            // ListEmptyComponent={<Text>No receipts</Text>} // Rendered when data is empty
           />
         );
       case 'Requested Receipts':

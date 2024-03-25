@@ -21,7 +21,7 @@ export interface IReceiptItem {
   name?: string;
   price?: number;
   paid?: boolean;
-  buyer?: IFirebaseUser;
+  purchasers?: string[];
 }
 
 export interface IReceipt {

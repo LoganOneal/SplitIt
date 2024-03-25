@@ -50,13 +50,11 @@ export default function ResetPasswordScreen({ navigation }) {
     const checkInitialUrl = async () => {
       const initialUrl = await Linking.getInitialURL();
       if (initialUrl) {
-        // console.log("CALLING WITH INITIAL: ", initialUrl);
         handleDeepLinkURL(initialUrl);
       }
     };
 
     const handleUrl = ({ url }: { url: string }) => {
-      // console.log("CALLING WITH URL: ", url);
       handleDeepLinkURL(url);
     };
 

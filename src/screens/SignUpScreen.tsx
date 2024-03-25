@@ -15,7 +15,7 @@ import {
   Dimensions,
   StatusBar,
   SafeAreaView,
-  ScrollView,
+  View,
 } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import * as Animatable from "react-native-animatable";
@@ -126,9 +126,8 @@ export default function SignUpScreen({ navigation }) {
   };
 
   return (
-    <ImageOverlay
+    <View
       style={styles.container}
-      source={require("../../assets/images/splash-pool.jpg")}
     >
       <SafeAreaView style={{ flex: 1 }}>
         <StatusBar barStyle="light-content" />
@@ -396,7 +395,7 @@ export default function SignUpScreen({ navigation }) {
           {snackMessage}
         </Snackbar>
       </SafeAreaView>
-    </ImageOverlay>
+    </View>
   );
 }
 
@@ -408,7 +407,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   contentContainer: {
-    marginHorizontal: 10,
+    marginHorizontal: 20,
     marginVertical: 0,
   },
   card: {

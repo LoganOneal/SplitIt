@@ -5,7 +5,8 @@ import { useFirestore } from '../../hooks/useFirestore';
 import { FlatList } from 'react-native';
 import { Button, Icon, IconElement, Layout, Card } from '@ui-kitten/components';
 import { useAppDispatch } from "../../store/hook";
-import { IReceipt, IReceiptItem } from '../../constants/types';
+import { IReceipt, IReceiptItem } from '../../interfaces/IReceipt';
+
 import ItemCard from '../../components/ItemCard';
 import { useAppSelector } from "../../store/hook";
 import { selectAuthState } from "../../store/authSlice";

@@ -3,7 +3,8 @@ import { isRejected } from '@reduxjs/toolkit';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { Button, Card, CheckBox, CheckBoxProps, Text } from '@ui-kitten/components';
 import { StyleSheet, View, ViewProps } from 'react-native';
-import { IReceiptItem } from '../constants/types';
+import { IReceiptItem } from "../interfaces/IReceipt";
+
 
 
 const ReceiptCard = ({

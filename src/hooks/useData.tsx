@@ -3,8 +3,8 @@ import Storage from '@react-native-async-storage/async-storage';
 
 import {
   IUseData,
-  IReceipt,
 } from '../constants/types';
+import { IReceipt } from "../interfaces/IReceipt";
 
 import {
   RECEIPTS,

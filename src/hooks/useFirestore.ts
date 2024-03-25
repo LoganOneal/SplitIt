@@ -66,6 +66,7 @@ export const useFirestore = () => {
 
   const getUserReceipts = async (): Promise<{hostReceipts: IReceipt[], requestedReceipts: IReceipt[]}> => {
     try {
+      console.log("firebase user", auth.currentUser)
       const receiptsColRef = collection(db, 'receipts');
 
       const userDoc = await getDoc(userRef(auth.currentUser?.uid!));
